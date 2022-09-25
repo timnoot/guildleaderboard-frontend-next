@@ -60,9 +60,9 @@ const Guild = (props) => {
   let position_change
   if (Boolean(props.position_change) && props.sortOn === "senither_weight" && !props.sortReversed) {
     if (props.position_change > 0) {
-      position_change = <th className="text-left md:px-1"><Image src="/uparrowgreen.svg" width={27} height={27}/></th>
+      position_change = <th className="text-left md:px-1"><Image src="/uparrowgreen.svg" width={27} height={27} /></th>
     } else {
-      position_change = <th className="text-left md:px-1"><Image src="/downarrowred.svg" width={27} height={27}/></th>
+      position_change = <th className="text-left md:px-1"><Image src="/downarrowred.svg" width={27} height={27} /></th>
     }
   } else {
     position_change = <th></th>
@@ -346,9 +346,9 @@ class Guilds extends React.Component {
 export default function Home({ guildsJson }) {
   const [cookies, setCookie] = useCookies(['showScammers', 'weightUsed']);
 
-	function changeCookie(key, value) {
-		setCookie(key, value, { path: '/' });
-	}
+  function changeCookie(key, value) {
+    setCookie(key, value, { path: '/' });
+  }
   return (
     <div className='bg-secondary min-h-screen space-y-10 sm:h-96 overflow-y-auto overflow-x-hidden scrollbar' onScroll={() => {
       hideAll({ duration: 0 });
