@@ -46,10 +46,12 @@ const Guild = (props) => {
             </div>
           }
         >
-          <svg width="1.5em" height="1.5em" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" textRendering="geometricPrecision" shapeRendering="geometricPrecision">
-            <polygon id="svg_1" y="50%" x="50%" stroke="#e6d2d2" fill="#d54e4e" points="44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703" />
-            <text id="svg_2" textAnchor="middle" dominantBaseline="middle" fontSize="40px" fill="rgb(255, 255, 255)" y="50%" x="50%">{props.scammers}</text>
-          </svg>
+          <div>
+            <svg width="1.5em" height="1.5em" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" textRendering="geometricPrecision" shapeRendering="geometricPrecision">
+              <polygon id="svg_1" y="50%" x="50%" stroke="#e6d2d2" fill="#d54e4e" points="44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703" />
+              <text id="svg_2" textAnchor="middle" dominantBaseline="middle" fontSize="40px" fill="rgb(255, 255, 255)" y="50%" x="50%">{props.scammers}</text>
+            </svg>
+          </div>
         </Tippy>
       </th>
     );
@@ -78,6 +80,8 @@ const Guild = (props) => {
     weightColor = "bg-green-700"
   }
 
+  const [TimeAgo, SetTimeAgo] = React.useState("")
+  React.useEffect(() => { SetTimeAgo(props.capture_date); }, [])
 
   return (
     <tr
@@ -138,7 +142,9 @@ const Guild = (props) => {
           </span>
         </Tippy>
       </th>
-      <th className='px-1 lg:px-5 hidden lg:table-cell'>{props.capture_date}</th>
+      <th className='px-1 lg:px-5 hidden lg:table-cell'>
+        {TimeAgo || props.capture_date}
+      </th>
     </tr>
   );
 };
