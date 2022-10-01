@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 
 import { spaces } from '../utils/other.js'
+import { numberWithCommas } from '../utils/numformatting.js'
 
 import axios from 'axios';
 
@@ -15,12 +16,12 @@ export const StatsHeader = ({ stats }) => {
 					property='og:description'
 					content={`Tracking:
 ${spaces(3)}Guilds 🏢 ${stats.guilds_tracked}
-${spaces(3)}Players 👥 ${stats.players_tracked}
+${spaces(3)}Players 👥 ${numberWithCommas(stats.players_tracked)}
 
 Top Guilds:
-${spaces(3)}🥇 ${stats.top_guilds[0].name} 💪 ${stats.top_guilds[0].senither_weight} Weight
-${spaces(3)}🥈 ${stats.top_guilds[1].name} 💪 ${stats.top_guilds[1].senither_weight} Weight
-${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${stats.top_guilds[2].senither_weight} Weight`}
+${spaces(3)}🥇 ${stats.top_guilds[0].name} 💪 ${numberWithCommas(stats.top_guilds[0].senither_weight)} Weight
+${spaces(3)}🥈 ${stats.top_guilds[1].name} 💪 ${numberWithCommas(stats.top_guilds[1].senither_weight)} Weight
+${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(stats.top_guilds[2].senither_weight)} Weight`}
 				/>
 			</Head>
 			<h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
