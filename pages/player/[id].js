@@ -611,6 +611,7 @@ export default class Player extends React.Component {
 💪 Senither: ${numberWithCommas(this.props.player.senither_weight)}
 🌺 Lily: ${numberWithCommas(this.props.player.lily_weight)}
 💵 Networth: ${numberShortener(this.props.player.networth)}
+
 📚 Avg Skill: ${numberWithCommas(this.props.player.average_skill)}
 💀 Catacombs: ${numberWithCommas(this.props.player.catacombs)} (🚑 ${parseInt(this.props.player.healer)} 🧙🏽 ${parseInt(this.props.player.mage)} 🗡️ ${parseInt(this.props.player.berserk)} 🏹 ${parseInt(this.props.player.archer)} 🛡️ ${parseInt(this.props.player.tank)})
 🔫 Slayer: ${numberShortener(this.props.player.wolf_xp + this.props.player.spider_xp + this.props.player.zombie_xp + this.props.player.blaze_xp + this.props.player.enderman_xp)} 🧟 ${getSlayerLevel('zombie', this.props.player.zombie_xp).level} 🕸️ ${getSlayerLevel('spider', this.props.player.spider_xp).level} 🐺 ${getSlayerLevel('wolf', this.props.player.wolf_xp).level} 🔮 ${getSlayerLevel('enderman', this.props.player.enderman_xp).level} 🔥 ${getSlayerLevel('blaze', this.props.player.blaze_xp).level}`}
