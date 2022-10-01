@@ -24,7 +24,7 @@ export class JoinLog extends React.Component {
             </p>
           </div>
           <div className='rounded-xl py-0.5 px-2 text-sm flex-grow justify-end text-right flex items-center'>
-            <div classname='text-center'>
+            <div className='text-center'>
               <div>
                 {this.props.time_difference.toNiceStringWDays().toString()}
               </div>

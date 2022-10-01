@@ -37,11 +37,12 @@ function positionChange(change) {
 
 
 const Guild = (props) => {
+	let guildJson = props.guildJson;
+
 	const router = useRouter();
 	const goRouteId = () => {
-		router.push(`/guild/${props.name}`);
+		router.push(`/guild/${guildJson.name}`);
 	};
-	let guildJson = props.guildJson;
 
 	let scammerElement = (
 		<th className='md:pr-2'>
@@ -73,11 +74,11 @@ const Guild = (props) => {
 			</Tippy>
 		</th>
 	);
-	const [ScammerInGuild, setScammerInGuild] = React.useState(<th></th>);
+	const [ScammerInGuild, setScammerInGuild] = useState(<th></th>);
 	if (guildJson.scammers > 0 && props.showScammers) {
-		React.useEffect(() => { setScammerInGuild(scammerElement); }, [props.showScammers])
+		useEffect(() => { setScammerInGuild(scammerElement); }, [props.showScammers])
 	} else {
-		React.useEffect(() => { setScammerInGuild(<th></th>); }, [props.showScammers])
+		useEffect(() => { setScammerInGuild(<th></th>); }, [props.showScammers])
 	}
 
 	let position_change
@@ -99,8 +100,8 @@ const Guild = (props) => {
 		weightColor = "bg-green-700"
 	}
 
-	const [TimeAgo, SetTimeAgo] = React.useState("Loading...");
-	React.useEffect(() => { SetTimeAgo(props.capture_date); }, [])
+	const [TimeAgo, SetTimeAgo] = useState("Loading...");
+	useEffect(() => { SetTimeAgo(props.capture_date); }, [])
 
 	return (
 		<tr

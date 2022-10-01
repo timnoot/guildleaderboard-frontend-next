@@ -1,6 +1,11 @@
 import React from 'react';
-import Chart from 'react-apexcharts'
-import { numberWithCommas } from "../Functions.js"
+// import Chart from 'react-apexcharts'
+import dynamic from 'next/dynamic'
+    
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+
+import { numberWithCommas } from '../utils/numformatting.js'
+
 
 export class CustomChart2 extends React.Component {
 	constructor(props) {

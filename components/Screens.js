@@ -1,12 +1,11 @@
 import React from 'react';
-import { Loading } from '../Functions.js';
-
+import { SpinnerCircular } from 'spinners-react';
 
 export class LoadingScreen extends React.Component {
     render() {
         return (
             <div className='bg-secondary flex justify-center items-center h-screen '>
-                <Loading size='50%'/>
+                <SpinnerCircular size={'50%'} thickness={180} speed={200} color="rgba(57, 125, 172, 1)" secondaryColor="rgba(0, 0, 0, 0.0)" />
             </div>
         );
     }

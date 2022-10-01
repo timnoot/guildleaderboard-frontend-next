@@ -1,5 +1,5 @@
 import React from 'react';
-import { numberWithCommas, numberShortener } from '../Functions.js';
+import { numberWithCommas, numberShortener } from '../utils/numformatting.js'
 
 export const ProgressBar = (props) => {
     let color = props.color || 'bg-progressblue';
