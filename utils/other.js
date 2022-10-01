@@ -3,7 +3,7 @@ export function capitalizeFirstLetter(string) {
 }
 
 export function spaces(num) {
-    return "\u200b " * num + "\u200b"
+    return "\u200b ".repeat(num) + "\u200b"
 }
 
 export function getSlayerLevel(type, xp) {
