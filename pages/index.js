@@ -76,10 +76,40 @@ const Guild = (props) => {
 	);
 	const [ScammerInGuild, setScammerInGuild] = useState(<th></th>);
 	if (guildJson.scammers > 0 && props.showScammers) {
-		useEffect(() => { setScammerInGuild(scammerElement); }, [props.showScammers])
+		scammerElement = (
+			<th className='md:pr-2'>
+				<Tippy
+					// position="top"
+					// animation={false}
+					interactive={true}
+					// appendTo={document.body}
+					duration={0}
+					theme='tomato'
+					content={
+						<div className='block-inline'>
+							<a
+								className='text-blue-500 underline'
+								href='https://discord.gg/skyblock'
+							>
+								SkyBlockZ
+							</a>{' '}
+							found {guildJson.scammers} scammers in this guild.
+						</div>
+					}
+				>
+					<div>
+						<svg width="1.5em" height="1.5em" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" textRendering="geometricPrecision" shapeRendering="geometricPrecision">
+							<polygon id="svg_1" y="50%" x="50%" stroke="#e6d2d2" fill="#d54e4e" points="44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703" />
+							<text id="svg_2" textAnchor="middle" dominantBaseline="middle" fontSize="40px" fill="rgb(255, 255, 255)" y="50%" x="50%">{guildJson.scammers}</text>
+						</svg>
+					</div>
+				</Tippy>
+			</th>
+		);
 	} else {
-		useEffect(() => { setScammerInGuild(<th></th>); }, [props.showScammers])
+		scammerElement = <th></th>;
 	}
+	useEffect(() => { setScammerInGuild(scammerElement); }, [props.showScammers])
 
 	let position_change
 

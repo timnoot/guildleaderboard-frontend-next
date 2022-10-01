@@ -1,4 +1,9 @@
 import React from 'react';
+// image from next
+import Image from 'next/image'
+
+
+
 // import { ReactComponent as SettingsIcon } from '../svgs/settingsicon.svg';
 // import { ReactComponent as DiscordIcon } from '../svgs/Discord-Logo-White.svg';
 const SettingsIcon = (
@@ -54,7 +59,7 @@ const DropDown = (props) => {
 			}
 			}>
 				<span className="h-[55px] w-[55px]">
-					<img src={img} alt='weight' />
+					<Image src={img} width='50' height='50' layout='responsive' alt='weight' />
 				</span>
 				<span className='p-2 text-lg'>
 					{`${(props.cookies.weightUsed || 'Senither') === "Senither" ? "Lily" : "Senither"} Weight`}
@@ -66,7 +71,7 @@ const DropDown = (props) => {
 			}
 			}>
 				<span className="h-[55px] w-[55px]">
-					<img src='/barrier.png' alt='weight' />
+					<Image src='/barrier.png' width='50' height='50' layout='responsive' alt='barrier' />
 				</span>
 				<span className='p-2 text-lg'>
 					{props.cookies.showScammers ? 'Hide Scammers' : 'Show Scammers'}

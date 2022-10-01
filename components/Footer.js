@@ -10,7 +10,7 @@ export class Footer extends React.Component {
 						className='text-blue-500 underline hover:cursor-pointer'
 						href='https://hypixel-leaderboard.senither.com'
 					>
-						Senither's Hypixel Skyblock Leaderboard
+						Senither&apos;s Hypixel Skyblock Leaderboard
 					</a>
 					.
 				</div>

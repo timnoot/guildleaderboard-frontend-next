@@ -19,7 +19,7 @@ import { StatBlockTop, BackButton, MenuButton } from '../../components/StatBlock
 import { Footer } from '../../components/Footer';
 import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
-
+import { LoadingScreen, ErrorScreen } from '../../components/Screens.js';
 
 const DiscordIcon = (
     <svg width="1.5rem" height="1.5rem" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -272,7 +272,7 @@ class Players extends React.Component {
 
     render() {
         if (!this.props.guildJson) {
-            return <Loading />;
+            return <LoadingScreen />;
         }
         let players_data = this.props.guildJson.members.slice();
         let sortOn = this.state.sortOn;
@@ -385,7 +385,7 @@ class JoinLogs extends React.Component {
 
     render() {
         if (!this.state.historyGuildJson) {
-            return <div>loading</div>;
+            return <LoadingScreen />;
         }
 
         let logsElements = [];
