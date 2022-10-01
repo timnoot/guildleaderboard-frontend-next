@@ -2,8 +2,6 @@ import React from 'react';
 // image from next
 import Image from 'next/image'
 
-
-
 // import { ReactComponent as SettingsIcon } from '../svgs/settingsicon.svg';
 // import { ReactComponent as DiscordIcon } from '../svgs/Discord-Logo-White.svg';
 const SettingsIcon = (

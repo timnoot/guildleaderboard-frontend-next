@@ -1,4 +1,3 @@
-// import Head from 'next/head'
 import React, { useState, useEffect } from 'react';
 
 import { TimeDelta } from '../utils/timedelta.js';
