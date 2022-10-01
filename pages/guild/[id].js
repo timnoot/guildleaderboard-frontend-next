@@ -99,13 +99,15 @@ const GuildHeader = (props) => {
                 <meta property='og:site_name' content='Guildleaderboard' />
                 <meta
                     property='og:description'
-                    content={`📚 Avg Skill: ${props.guildJson.skills}
+                    content={`👥 Members: ${props.guildJson.members.length}
+💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
+
 💪 Senither: ${numberWithCommas(props.guildJson.senither_weight)}
 🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight)}
-💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
+
+📚 Avg Skill: ${props.guildJson.skills}
 💀 Catacombs: ${props.guildJson.catacombs}                        
-🔫 Slayer: ${numberWithCommas(props.guildJson.slayer)}                        
-👥 Members: ${props.guildJson.members.length}`}
+🔫 Slayer: ${numberWithCommas(props.guildJson.slayer)}`}
                 />
             </Head>
             <h1 className='text-[1.8em] sm:text-[3em] font-semibold text-white'>

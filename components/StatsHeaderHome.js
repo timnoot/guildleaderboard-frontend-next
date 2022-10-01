@@ -1,6 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 
+import { spaces } from '../utils/other.js'
+
 import axios from 'axios';
 
 export const StatsHeader = ({ stats }) => {
@@ -12,13 +14,13 @@ export const StatsHeader = ({ stats }) => {
 				<meta
 					property='og:description'
 					content={`Tracking:
-	Guilds 🏢 ${stats.guilds_tracked}
-	Players 👥 ${stats.players_tracked}
+${spaces(3)}Guilds 🏢 ${stats.guilds_tracked}
+${spaces(3)}Players 👥 ${stats.players_tracked}
 
 Top Guilds:
-	🥇 ${stats.top_guilds[0].name} 💪 ${stats.top_guilds[0].senither_weight} Weight
-	🥈 ${stats.top_guilds[1].name} 💪 ${stats.top_guilds[1].senither_weight} Weight
-	🥉 ${stats.top_guilds[2].name} 💪 ${stats.top_guilds[2].senither_weight} Weight`}
+${spaces(3)}🥇 ${stats.top_guilds[0].name} 💪 ${stats.top_guilds[0].senither_weight} Weight
+${spaces(3)}🥈 ${stats.top_guilds[1].name} 💪 ${stats.top_guilds[1].senither_weight} Weight
+${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${stats.top_guilds[2].senither_weight} Weight`}
 				/>
 			</Head>
 			<h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
