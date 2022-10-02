@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import Tippy from '@tippyjs/react';
 import { hideAll } from 'tippy.js';
 
@@ -22,7 +24,7 @@ export const OutsideLink = (props) => {
                 <div className='pr-1'>
                     {props.name}
                 </div>
-                <img className='h-5 w-5' src='/offwebsite.png' alt='' />
+                <Image src='/offwebsite.png' height='20' width='20' />
             </a>
         </div>
     )
@@ -44,7 +46,7 @@ export const CopyButton = (props) => {
                     <div className='pr-1'>
                         {props.text}
                     </div>
-                    <img className='h-5 w-5' src='/copy.png' alt='' />
+                    <Image src='/copy.png' height='20' width='20' />
                 </div>
             </div>
         </Tippy>
@@ -55,7 +57,7 @@ export const BackButton = (props) => {
     return (
         <div className='inline-block'>
             <div className={`${props.className} flex align-middle p-2 text-sm font-normal text-white rounded-lg m-1`}>
-                <img className='h-5 w-5' src='/back.png' alt='' />
+                <Image src='/back.png' height='20' width='20' />
                 <div className='pl-1'>
                     {props.name}
                 </div>

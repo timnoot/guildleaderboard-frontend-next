@@ -10,7 +10,10 @@ export const StatsHeader = ({ stats }) => {
 	return (
 		<header>
 			<Head>
-				<meta property='og:title' content={'SkyBlock Guildleaderboard'} />
+				<meta property='title' content='Hypixel SkyBlock Guild Leaderboard'/>
+				<meta property='description' content={`Tracking 🏢${stats.guilds_tracked} Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`}/>
+				
+				<meta property='og:title' content='SkyBlock Guildleaderboard' />
 				<meta property='og:site_name' content='Guildleaderboard' />
 				<meta
 					property='og:description'

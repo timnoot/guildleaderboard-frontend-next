@@ -34,7 +34,6 @@ function positionChange(change) {
 
 }
 
-
 const Guild = (props) => {
 	let guildJson = props.guildJson;
 

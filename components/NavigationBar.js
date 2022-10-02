@@ -1,9 +1,7 @@
-import React from 'react';
-// image from next
+import React from 'react'
 import Image from 'next/image'
 
-// import { ReactComponent as SettingsIcon } from '../svgs/settingsicon.svg';
-// import { ReactComponent as DiscordIcon } from '../svgs/Discord-Logo-White.svg';
+
 const SettingsIcon = (
 	<svg width="2.5em" height="2.5em" id="svg2" version="1.0" viewBox="0 0 82 82" xmlns="http://www.w3.org/2000/svg">
 		<g id="g3518" transform="translate(-252.4 4.5158)">
@@ -124,7 +122,7 @@ export class NavigationBar extends React.Component {
 			<nav className="block ">
 				<section className='py-2.5 flex justify-between items-center text-white text-xs md:text-lg px-[5%] bg-[#2B2D31] text-center'>
 					<a className='flex items-center relative ' href="https://discord.gg/ej92B474Ej">
-						<img width='100em' src='/logo459.png' alt='SkyHub Logo' />
+						<Image src='/logo459.png' width='100em' height='100em' alt='Sky Hub Logo'/>
 						<h2 className="ml-5 text-lg md:text-2xl">Sky Hub</h2>
 					</a>
 					<ul className=''>

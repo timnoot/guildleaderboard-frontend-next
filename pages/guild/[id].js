@@ -95,6 +95,9 @@ const GuildHeader = (props) => {
     return (
         <div className='text-center font-[Helvetica]'>
             <Head>
+                <meta property='title' content={`${props.guildJson.name}`} />
+                <meta property='description' content={`View the stats of ${props.guildJson.name} here!`} />
+
                 <meta property='og:title' content={props.guildJson.name} />
                 <meta property='og:site_name' content='Guildleaderboard' />
                 <meta
@@ -178,7 +181,7 @@ const Player = (props) => {
                 reference={ref}
                 theme='tomato'
                 interactive={true}
-                appendTo={document.body}
+                // appendTo={document.body}
                 followCursor='horizontal'
                 plugins={[followCursor]}
                 content={
@@ -756,91 +759,71 @@ class CompareGuilds extends React.Component {
 
 }
 
-
-export default class Guild extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            playerIsError: false,
-            error: null,
-
-            selectedPage: 'players',
-        };
-    }
-    handleSwitchClick(selected) {
-        this.setState({
-            selectedPage: selected,
-        });
+export default function guild({ guild }) {
+    if (!guild) {
+        const router = useRouter();
+        useEffect(() => {
+            router.push(`/`);
+        }, []);
     }
 
-    renderComponent() {
-        if (this.state.selectedPage === 'players') {
-            return <Players guildJson={this.props.guild} />;
-        } else if (this.state.selectedPage === 'history') {
-            return <JoinLogs guildId={this.props.guild.id} />;
-        } else if (this.state.selectedPage === 'metrics') {
-            return (
-                <CompareGuilds
-                    id={this.props.guild.id}
-                    name={this.props.guild.name}
-                />
-            );
-        }
-        return <div>Not implemented yet</div>;
-    }
+    const [selectedPage, setSelectedPage] = useState('players');
 
-    render() {
-        if (this.state.playerIsError) {
-            return <ErrorScreen error={this.state.error.toString()} />;
-        }
+    let component
 
-        return (
-            <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar' onScroll={() => {
-                hideAll({ duration: 0 });
-            }}>
-                <GuildHeader
-                    guildJson={this.props.guild}
-                    selectedPage={this.state.selectedPage}
-                />
-                <div className='text-center font-[Helvetica]'>
-                    <div className='inline-block p-1'>
-                        <MenuButton
-                            onClick={(i) => this.handleSwitchClick('players')}
-                            disabled={this.state.selectedPage === 'players'}
-                        >
-                            Show Players
-                        </MenuButton>
-                    </div>
-                    <div className='inline-block p-1'>
-                        <MenuButton
-                            onClick={(i) => this.handleSwitchClick('metrics')}
-                            disabled={this.state.selectedPage === 'metrics'}
-                        >
-                            Show Metrics
-                        </MenuButton>
-                    </div>
-                    <div className='inline-block p-1'>
-                        <MenuButton
-                            onClick={(i) => this.handleSwitchClick('history')}
-                            disabled={this.state.selectedPage === 'history'}
-                        >
-                            Show History
-                        </MenuButton>
-                    </div>
-                </div>
-                {this.renderComponent()}
-                <Footer />
-            </div>
+    if (selectedPage === 'players') {
+        component = <Players guildJson={guild} />;
+    } else if (selectedPage === 'history') {
+        component = <JoinLogs guildId={guild.id} />;
+    } else if (selectedPage === 'metrics') {
+        component = (
+            <CompareGuilds
+                id={guild.id}
+                name={guild.name}
+            />
         );
     }
 
-    // componentDidMount() {
-    //     let paths = window.location.href.split('/');
-    //     let guildid = paths[paths.length - 1];
-    //     // window.location.hash = `#/guild/${result.name}`
 
-    // }
+    return (
+        <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar' onScroll={() => {
+            hideAll({ duration: 0 });
+        }}>
+            <GuildHeader
+                guildJson={guild}
+                selectedPage={selectedPage}
+            />
+            <div className='text-center font-[Helvetica]'>
+                <div className='inline-block p-1'>
+                    <MenuButton
+                        onClick={(i) => setSelectedPage('players')}
+                        disabled={selectedPage === 'players'}
+                    >
+                        Show Players
+                    </MenuButton>
+                </div>
+                <div className='inline-block p-1'>
+                    <MenuButton
+                        onClick={(i) => setSelectedPage('metrics')}
+                        disabled={selectedPage === 'metrics'}
+                    >
+                        Show Metrics
+                    </MenuButton>
+                </div>
+                <div className='inline-block p-1'>
+                    <MenuButton
+                        onClick={(i) => setSelectedPage('history')}
+                        disabled={selectedPage === 'history'}
+                    >
+                        Show History
+                    </MenuButton>
+                </div>
+            </div>
+            {component}
+            <Footer />
+        </div>
+    );
+
 }
 
 export const getServerSideProps = async (context) => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head'
 import Link from 'next/link';
+import { useRouter } from 'next/router'
 
 import axios from "axios";
 
@@ -551,235 +552,205 @@ class PlayerStats extends React.Component {
     }
 }
 
-export default class Player extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            playerIsFailed: false,
-            error: null,
-            selectedPage: 'stats'
-        };
+export default function player({ player }) {
+    console.log(player)
+    const [selectedPage, setSelectedPage] = useState('stats');
 
+    if (player) {
+        const router = useRouter();
+        useEffect(() => {
+            router.push(`/player/${player.name}`);
+        }, [player.name]);
     }
 
-    handleSwitchClick(selected) {
-        this.setState({
-            selectedPage: selected,
-        });
+    let component
+
+    if (selectedPage === 'stats') {
+        component = <PlayerStats playerJson={player} />;
+    } else if (selectedPage === 'metrics') {
+        component = <PlayerMetrics uuid={player.uuid} name={player.name} />;
+    } else if (selectedPage === 'history') {
+        component = <JoinLogs uuid={player.uuid} />
     }
 
-    renderComponent() {
-        if (this.props.player.limited && this.state.selectedPage !== 'history') {
-            return (
-                <div className='text-center'>
-                    <div className='text-white text-lg'>
-                        This player has not been updated yet or is not in one of the leaderboard guilds!<br />
-                        Get your guild added to the leaderboard by making a ticket in <a href='https://discord.gg/ej92B474Ej' className='text-blue-500 underline'>our discord</a>.
-                    </div>
+    if (player.limited && selectedPage !== 'history') {
+        component = (
+            <div className='text-center'>
+                <div className='text-white text-lg'>
+                    This player has not been updated yet or is not in one of the leaderboard guilds!<br />
+                    Get your guild added to the leaderboard by making a ticket in <a href='https://discord.gg/ej92B474Ej' className='text-blue-500 underline'>our discord</a>.
                 </div>
-            )
-        }
-
-        if (this.state.selectedPage === 'stats') {
-            return <PlayerStats playerJson={this.props.player} />;
-        } else if (this.state.selectedPage === 'metrics') {
-            return <PlayerMetrics uuid={this.props.player.uuid} name={this.props.player.name} />;
-        } else if (this.state.selectedPage === 'history') {
-            return <JoinLogs uuid={this.props.player.uuid} />
-        }
-    }
-
-    render() {
-        let last_updated = TimeDelta.fromDate(this.props.player.capture_date)
-        let notUpdatedText
-        // 25 hours
-        if (last_updated.toMS() > 1000 * 60 * 60 * 25) {
-            notUpdatedText = <span className='text-red-500'>Last updated {last_updated.toNiceStringWDays()}</span>
-
-        } else {
-            notUpdatedText = <></>
-        }
-
-        return (
-            <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar text-white text-center font-[Helvetica]'>
-                <Head>
-                    <meta property='og:title' content={this.props.player.name} />
-                    <meta property='og:site_name' content='Guildleaderboard' />
-                    <meta
-                        property='og:description'
-                        content={`
-💪 Senither: ${numberWithCommas(this.props.player.senither_weight)}
-🌺 Lily: ${numberWithCommas(this.props.player.lily_weight)}
-💵 Networth: ${numberShortener(this.props.player.networth)}
-
-📚 Avg Skill: ${numberWithCommas(this.props.player.average_skill)}
-💀 Catacombs: ${numberWithCommas(this.props.player.catacombs)} (🚑 ${parseInt(this.props.player.healer)} 🧙🏽 ${parseInt(this.props.player.mage)} 🗡️ ${parseInt(this.props.player.berserk)} 🏹 ${parseInt(this.props.player.archer)} 🛡️ ${parseInt(this.props.player.tank)})
-🔫 Slayer: ${numberShortener(this.props.player.wolf_xp + this.props.player.spider_xp + this.props.player.zombie_xp + this.props.player.blaze_xp + this.props.player.enderman_xp)} 🧟 ${getSlayerLevel('zombie', this.props.player.zombie_xp).level} 🕸️ ${getSlayerLevel('spider', this.props.player.spider_xp).level} 🐺 ${getSlayerLevel('wolf', this.props.player.wolf_xp).level} 🔮 ${getSlayerLevel('enderman', this.props.player.enderman_xp).level} 🔥 ${getSlayerLevel('blaze', this.props.player.blaze_xp).level}`}
-                    />
-                    <meta property='og:image' content={`https://crafatar.com/avatars/${this.props.player.uuid}?size=512&overlay`} />
-                </Head>
-                <div>
-                    <div>
-                        <h1 className='text-[2em] sm:text-[3em] font-semibold'>
-                            {this.props.player.name}
-                        </h1>
-                        <h2 className={`text-[1em] sm:text-[1.5em] font-semibold ${Boolean(this.props.player.guild_name) ? '' : 'hidden'}`}>
-                            From{' '}
-                            <Link href={`/guild/${this.props.player.guild_name}`}>
-                                <a className='cursor-pointer inline-block text-blue-500 underline'>
-                                    {this.props.player.guild_name}
-                                </a>
-                            </Link>
-                        </h2>
-
-                        <div className='p-2 text-center'>
-                            <StatBlockTop
-                                color='bg-purple-700'
-                                value={numberWithCommas(this.props.player.senither_weight)}
-                                name='Senither Weight'
-                            />
-                            <StatBlockTop
-                                color='bg-green-700'
-                                value={numberWithCommas(this.props.player.lily_weight)}
-                                name='Lily Weight'
-                            />
-                            <StatBlockTop
-                                value={numberShortener(this.props.player.networth)}
-                                name='Networth'
-                                color='bg-blue-700'
-                            />
-                            <StatBlockTop
-                                color='bg-blue-500'
-                                value={numberWithCommas(this.props.player.average_skill)}
-                                name='Skill Average'
-                            />
-                            <StatBlockTop
-                                color='bg-green-500'
-                                value={numberWithCommas(this.props.player.catacombs)}
-                                name='Catacombs'
-                            />
-                            <StatBlockTop
-                                color='bg-red-500'
-                                value={numberWithCommas(this.props.player.wolf_xp + this.props.player.spider_xp + this.props.player.zombie_xp + this.props.player.blaze_xp + this.props.player.enderman_xp)}
-                                name='Slayer'
-                            />
-                        </div>
-                        {notUpdatedText}
-                        <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
-                        <OutsideLink href={`https://sky.shiiyu.moe/${this.props.player.uuid}`} name='SkyCrypt' />
-                        <OutsideLink href={`https://plancke.io/hypixel/player/stats/${this.props.player.uuid}`} name='Plancke' />
-                        <OutsideLink href={`https://sky.coflnet.com/player/${this.props.player.uuid}`} name='Coflnet' />
-                        <CopyButton text="UUID" copy={this.props.player.uuid} />
-                    </div>
-                    <div>
-                        <Link href={this.props.player.guild_name ? `/guild/${this.props.player.guild_name}` : '/'}>
-                            <a>
-                                <BackButton className='bg-red-600 cursor-pointer' name={`Back to ${this.props.player.guild_name || 'Leaderboard'}`} />
-                            </a>
-                        </Link>
-                    </div>
-                </div>
-                <div className='text-center font-[Helvetica] my-4'>
-                    <div className='inline-block p-1'>
-                        <MenuButton
-                            onClick={(i) => this.handleSwitchClick('stats')}
-                            disabled={this.state.selectedPage === 'stats'}
-                        >
-                            Show Stats
-                        </MenuButton>
-                    </div>
-                    <div className='inline-block p-1'>
-                        <MenuButton
-                            onClick={(i) => this.handleSwitchClick('metrics')}
-                            disabled={this.state.selectedPage === 'metrics'}
-                        >
-                            Show Metrics
-                        </MenuButton>
-                    </div>
-                    <div className='inline-block p-1'>
-                        <MenuButton
-                            onClick={(i) => this.handleSwitchClick('history')}
-                            disabled={this.state.selectedPage === 'history'}
-                        >
-                            Show History
-                        </MenuButton>
-                    </div>
-                </div>
-                {this.renderComponent()}
-                <Footer />
             </div>
         )
     }
 
-    getUUID(nameOrUUID) {
-        fetch(`https://playerdb.co/api/player/minecraft/${nameOrUUID}`)
-            .then((res) => res.json())
-            .then(
-                (r) => {
-                    let result
-                    try {
-                        result = {
-                            'name': r ? r.data.player.username : nameOrUUID,
-                            'uuid': r ? r.data.player.raw_id : nameOrUUID,
-                            'limited': true
-                        }
-                    } catch (e) {
-                        result = {
-                            'name': nameOrUUID,
-                            'uuid': nameOrUUID,
-                            'limited': true
-                        }
-                    }
-                    this.setState({
-                        playerIsLoaded: true,
-                        playerJson: result,
-                    });
-                    window.location.hash = `#/player/${result.name}`
-                },
-                (error) => {
-                    console.log(error);
-                    let result = {
-                        'name': nameOrUUID,
-                        'uuid': nameOrUUID,
-                        'limited': true
-                    }
-                    this.setState({
-                        playerIsLoaded: true,
-                        playerJson: result,
-                    });
-                }
-            );
+    let last_updated = TimeDelta.fromDate(player.capture_date)
+    let notUpdatedText
+    // 25 hours
+    if (last_updated.toMS() > 1000 * 60 * 60 * 25) {
+        notUpdatedText = <span className='text-red-500'>Last updated {last_updated.toNiceStringWDays()}</span>
+
+    } else {
+        notUpdatedText = <></>
     }
 
-    // componentDidMount() {
-    //     let paths = window.location.href.split('/');
-    //     let uuid = paths[paths.length - 1];
+    return (
+        <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar text-white text-center font-[Helvetica]'>
+            <Head>
+                <meta property='title' content={`${player.name}`} />
+                <meta property='description' content={`View the stats of ${player.name} here!`} />
 
-    //     fetch(`${APIURL}player/${uuid}`)
-    //         .then((res) => res.json())
-    //         .then(
-    //             (result) => {
-    //                 if (result === null) {
-    //                     this.getUUID(uuid);
-    //                 } else {
-    //                     this.setState({
-    //                         playerIsLoaded: true,
-    //                         playerJson: result,
-    //                     });
-    //                     window.location.hash = `#/player/${result.name}`
-    //                 }
-    //             },
-    //             (error) => {
-    //                 console.log(error);
-    //                 this.setState({
-    //                     playerIsLoaded: true,
-    //                     playerIsFailed: true,
-    //                     error: error,
-    //                 });
-    //             }
-    //         );
-    // }
+                <meta property='og:title' content={player.name} />
+                <meta property='og:site_name' content='Guildleaderboard' />
+                <meta
+                    property='og:description'
+                    content={`
+💪 Senither: ${numberWithCommas(player.senither_weight)}
+🌺 Lily: ${numberWithCommas(player.lily_weight)}
+💵 Networth: ${numberShortener(player.networth)}
+
+📚 Avg Skill: ${numberWithCommas(player.average_skill)}
+💀 Catacombs: ${numberWithCommas(player.catacombs)} (🚑 ${parseInt(player.healer)} 🧙🏽 ${parseInt(player.mage)} 🗡️ ${parseInt(player.berserk)} 🏹 ${parseInt(player.archer)} 🛡️ ${parseInt(player.tank)})
+🔫 Slayer: ${numberShortener(player.wolf_xp + player.spider_xp + player.zombie_xp + player.blaze_xp + player.enderman_xp)} 🧟 ${getSlayerLevel('zombie', player.zombie_xp).level} 🕸️ ${getSlayerLevel('spider', player.spider_xp).level} 🐺 ${getSlayerLevel('wolf', player.wolf_xp).level} 🔮 ${getSlayerLevel('enderman', player.enderman_xp).level} 🔥 ${getSlayerLevel('blaze', player.blaze_xp).level}`}
+                />
+                <meta property='og:image' content={`https://crafatar.com/avatars/${player.uuid}?size=512&overlay`} />
+            </Head>
+            <div>
+                <div>
+                    <h1 className='text-[2em] sm:text-[3em] font-semibold'>
+                        {player.name}
+                    </h1>
+                    <h2 className={`text-[1em] sm:text-[1.5em] font-semibold ${Boolean(player.guild_name) ? '' : 'hidden'}`}>
+                        From{' '}
+                        <Link href={`/guild/${player.guild_name}`}>
+                            <a className='cursor-pointer inline-block text-blue-500 underline'>
+                                {player.guild_name}
+                            </a>
+                        </Link>
+                    </h2>
+
+                    <div className='p-2 text-center'>
+                        <StatBlockTop
+                            color='bg-purple-700'
+                            value={numberWithCommas(player.senither_weight)}
+                            name='Senither Weight'
+                        />
+                        <StatBlockTop
+                            color='bg-green-700'
+                            value={numberWithCommas(player.lily_weight)}
+                            name='Lily Weight'
+                        />
+                        <StatBlockTop
+                            value={numberShortener(player.networth)}
+                            name='Networth'
+                            color='bg-blue-700'
+                        />
+                        <StatBlockTop
+                            color='bg-blue-500'
+                            value={numberWithCommas(player.average_skill)}
+                            name='Skill Average'
+                        />
+                        <StatBlockTop
+                            color='bg-green-500'
+                            value={numberWithCommas(player.catacombs)}
+                            name='Catacombs'
+                        />
+                        <StatBlockTop
+                            color='bg-red-500'
+                            value={numberWithCommas(player.wolf_xp + player.spider_xp + player.zombie_xp + player.blaze_xp + player.enderman_xp)}
+                            name='Slayer'
+                        />
+                    </div>
+                    {notUpdatedText}
+                    <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
+                    <OutsideLink href={`https://sky.shiiyu.moe/${player.uuid}`} name='SkyCrypt' />
+                    <OutsideLink href={`https://plancke.io/hypixel/player/stats/${player.uuid}`} name='Plancke' />
+                    <OutsideLink href={`https://sky.coflnet.com/player/${player.uuid}`} name='Coflnet' />
+                    <CopyButton text="UUID" copy={player.uuid} />
+                </div>
+                <div>
+                    <Link href={player.guild_name ? `/guild/${player.guild_name}` : '/'}>
+                        <a>
+                            <BackButton className='bg-red-600 cursor-pointer' name={`Back to ${player.guild_name || 'Leaderboard'}`} />
+                        </a>
+                    </Link>
+                </div>
+            </div>
+            <div className='text-center font-[Helvetica] my-4'>
+                <div className='inline-block p-1'>
+                    <MenuButton
+                        onClick={(i) => setSelectedPage('stats')}
+                        disabled={selectedPage === 'stats'}
+                    >
+                        Show Stats
+                    </MenuButton>
+                </div>
+                <div className='inline-block p-1'>
+                    <MenuButton
+                        onClick={(i) => setSelectedPage('metrics')}
+                        disabled={selectedPage === 'metrics'}
+                    >
+                        Show Metrics
+                    </MenuButton>
+                </div>
+                <div className='inline-block p-1'>
+                    <MenuButton
+                        onClick={(i) => setSelectedPage('history')}
+                        disabled={selectedPage === 'history'}
+                    >
+                        Show History
+                    </MenuButton>
+                </div>
+            </div>
+            {component}
+            <Footer />
+        </div>
+    )
+
+
+
 }
+
+
+//     getUUID(nameOrUUID) {
+//         fetch(`https://playerdb.co/api/player/minecraft/${nameOrUUID}`)
+//             .then((res) => res.json())
+//             .then(
+//                 (r) => {
+//                     let result
+//                     try {
+//                         result = {
+//                             'name': r ? r.data.player.username : nameOrUUID,
+//                             'uuid': r ? r.data.player.raw_id : nameOrUUID,
+//                             'limited': true
+//                         }
+//                     } catch (e) {
+//                         result = {
+//                             'name': nameOrUUID,
+//                             'uuid': nameOrUUID,
+//                             'limited': true
+//                         }
+//                     }
+//                     this.setState({
+//                         playerIsLoaded: true,
+//                         playerJson: result,
+//                     });
+//                     window.location.hash = `#/player/${result.name}`
+//                 },
+//                 (error) => {
+//                     console.log(error);
+//                     let result = {
+//                         'name': nameOrUUID,
+//                         'uuid': nameOrUUID,
+//                         'limited': true
+//                     }
+//                     this.setState({
+//                         playerIsLoaded: true,
+//                         playerJson: result,
+//                     });
+//                 }
+//             );
+//     }
 
 export const getServerSideProps = async (context) => {
     const player = await axios.get(`${APIURL}player/${context.params?.id}`).then(res => res.data)
