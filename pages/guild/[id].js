@@ -52,7 +52,7 @@ const DiscordIcon = (
 
 const GuildHeader = (props) => {
   let backButtonElement = (
-    <div className='w-max mx-auto'>
+    <div className='mx-auto w-max'>
       <Link href='/'>
         <a>
           <BackButton className='bg-red-600' name={`Back to leaderboard`} />
@@ -249,36 +249,36 @@ const Player = (props) => {
         <th className='px-1 sm:px-4'>{props.position}</th>
         <th className='pr-[2em] text-left'>{player_data.name}</th>
         <th>
-          <div className='my-1 mx-6 px-1 xs:px-0 font-normal bg-purple-700 rounded-md'>
+          <div className='px-1 my-1 font-normal bg-purple-700 rounded-md lg:mx-6 xl:px-0'>
             {numberWithCommas(player_data.senither_weight)}
           </div>
         </th>
         <th className='px-1'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-green-700 rounded-md'>
+          <div className='px-1 my-1 font-normal bg-green-700 rounded-md lg:mx-2 xl:px-0'>
             {numberWithCommas(player_data.lily_weight)}
           </div>
         </th>
         <th className='px-1'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-blue-700 rounded-md'>
+          <div className='px-1 my-1 font-normal bg-blue-700 rounded-md lg:mx-2 xl:px-0'>
             {numberShortener(player_data.networth)}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 mx-10 px-1 xs:px-0 font-normal bg-blue-500 rounded-md'>
+          <div className='px-1 mx-10 my-1 font-normal bg-blue-500 rounded-md xl:px-0'>
             {player_data.average_skill}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-red-500 rounded-md'>
+          <div className='px-1 my-1 font-normal bg-red-500 rounded-md lg:mx-2 xl:px-0'>
             {numberWithCommas(Math.round(player_data.total_slayer))}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 px-1 mx-6 xs:px-0 font-normal bg-green-400 rounded-md'>
+          <div className='px-1 mx-6 my-1 font-normal bg-green-400 rounded-md xl:px-0'>
             {player_data.catacombs}
           </div>
         </th>
-        <th className='sm:px-5 hidden lg:table-cell'>{TimeAgo}</th>
+        <th className='hidden sm:px-5 lg:table-cell'>{TimeAgo}</th>
         <th></th>
       </tr>
       {element}
@@ -377,7 +377,7 @@ class Players extends React.Component {
               Networth
             </th>
             <th
-              className='hover:cursor-pointer hidden md:table-cell'
+              className='hidden hover:cursor-pointer md:table-cell'
               onClick={() => {
                 this.onSortClick('average_skill');
               }}
@@ -385,7 +385,7 @@ class Players extends React.Component {
               Average Skills
             </th>
             <th
-              className='hover:cursor-pointer hidden md:table-cell'
+              className='hidden hover:cursor-pointer md:table-cell'
               onClick={() => {
                 this.onSortClick('total_slayer');
               }}
@@ -393,7 +393,7 @@ class Players extends React.Component {
               Slayers
             </th>
             <th
-              className='hover:cursor-pointer hidden md:table-cell'
+              className='hidden hover:cursor-pointer md:table-cell'
               onClick={() => {
                 this.onSortClick('catacombs');
               }}
@@ -517,7 +517,7 @@ class JoinLogs extends React.Component {
       <div className='text-center'>
         {logsElements}
         <div className='pt-3'>
-          <div className='bg-tertiary p-2 md:p-6 text-white rounded-md w-11/12 xl:w-2/3 inline-flex text-xs xs:text-sm md:text-xl'>
+          <div className='inline-flex w-11/12 p-2 text-xs text-white rounded-md bg-tertiary md:p-6 xl:w-2/3 xs:text-sm md:text-xl'>
             <div className='text-left align-middle' style={{ flexGrow: 1 }}>
               <button
                 className={`bg-primary rounded-md p-2 ${
@@ -716,7 +716,7 @@ class CompareGuilds extends React.Component {
             />
           </div>
         </div>
-        <div className='text-center text-white text-sm'>
+        <div className='text-sm text-center text-white'>
           <MenuButton
             onClick={() => {
               this.setState({ daysShow: 7, change: this.state.change + 1 });
