@@ -761,12 +761,12 @@ class CompareGuilds extends React.Component {
 
 export default function Guild({ guild }) {
     const router = useRouter();
-
-    if (!guild) {
-        useEffect(() => {
+    
+    useEffect(() => {
+        if (!guild) {
             router.push(`/`);
-        }, []);
-    }
+        }
+    }, []);
 
     const [selectedPage, setSelectedPage] = useState('players');
 
