@@ -218,7 +218,7 @@ const Guild = (props) => {
       {ScammerInGuild}
       <th className='text-left'>{guildJson.name}</th>
       <th className=' '>
-        <div className=' bg-yellow-500 mx-6 my-1 px-1 xs:px-0 font-normal rounded-md'>
+        <div className=' bg-yellow-500 mx-6 my-1 p-1 font-normal rounded-md'>
           {guildJson.members}
         </div>
       </th>
@@ -230,9 +230,7 @@ const Guild = (props) => {
             guildJson.multiplier
           )}`}
         >
-          <div
-            className={`font-normal my-1 ${weightColor} rounded-md px-1 xs:px-0`}
-          >
+          <div className={`font-normal my-1 ${weightColor} rounded-md p-1`}>
             {numberWithCommas(weight * guildJson.multiplier)}
           </div>
         </Tippy>
@@ -243,9 +241,7 @@ const Guild = (props) => {
             guildJson.networth * guildJson.members
           )} total guild networth`}
         >
-          <div
-            className={`my-1 mx-3 font-normal bg-blue-700 rounded-md px-1 xs:px-0`}
-          >
+          <div className={`my-1 mx-3 font-normal bg-blue-700 rounded-md p-1`}>
             {numberShortener(guildJson.networth)}
           </div>
         </Tippy>
@@ -254,7 +250,7 @@ const Guild = (props) => {
         <Tippy
           content={`${guildJson.name} is #${props.skills_index} in Average Skills`}
         >
-          <div className='my-1 mx-10 font-normal bg-blue-500 rounded-md px-1 xs:px-0'>
+          <div className='my-1 mx-10 font-normal bg-blue-500 rounded-md p-1'>
             {guildJson.skills}
           </div>
         </Tippy>
@@ -263,7 +259,7 @@ const Guild = (props) => {
         <Tippy
           content={`${guildJson.name} is #${props.slayer_index} in Slayers`}
         >
-          <div className='my-1 mx-2 font-normal bg-red-500 rounded-md px-1 xs:px-0'>
+          <div className='my-1 mx-2 font-normal bg-red-500 rounded-md p-1'>
             {numberWithCommas(Math.round(guildJson.slayer))}
           </div>
         </Tippy>
@@ -272,7 +268,7 @@ const Guild = (props) => {
         <Tippy
           content={`${guildJson.name} is #${props.catacombs_index} in Catacombs`}
         >
-          <div className='my-1 mx-6 font-normal bg-green-400 rounded-md px-1 xs:px-0'>
+          <div className='my-1 mx-6 font-normal bg-green-400 rounded-md p-1'>
             {guildJson.catacombs}
           </div>
         </Tippy>

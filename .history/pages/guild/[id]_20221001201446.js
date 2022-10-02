@@ -28,6 +28,24 @@ import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen, ErrorScreen } from '../../components/Screens.js';
 
+const ClassName = {
+  root: 'react-tags',
+  rootIsActive: 'is-active',
+  rootIsDisabled: 'is-disabled',
+  rootIsInvalid: 'is-invalid',
+  label: 'react-tags__label',
+  tagList: 'react-tags__list',
+  tagListItem: 'react-tags__list-item',
+  tag: 'react-tags__tag',
+  tagName: 'react-tags__tag-name',
+  comboBox: 'react-tags__combobox',
+  input: 'react-tags__combobox-input',
+  listBox: 'react-tags__listbox',
+  noOptions: 'react-tags__listbox-no-options',
+  option: 'react-tags__listbox-option',
+  optionIsActive: 'is-active',
+};
+
 const DiscordIcon = (
   <svg
     width='1.5rem'

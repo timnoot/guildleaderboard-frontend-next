@@ -712,7 +712,7 @@ class CompareGuilds extends React.Component {
               noSuggestionsText='No matching guilds found'
               onDelete={this.onDelete.bind(this)}
               onAddition={this.onAddition.bind(this)}
-              className={ClassName}
+              className='rounded-md'
               placeholderText='Add a guild'
             />
           </div>

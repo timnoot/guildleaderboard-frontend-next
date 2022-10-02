@@ -27,6 +27,7 @@ import { Footer } from '../../components/Footer';
 import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen, ErrorScreen } from '../../components/Screens.js';
+import { DefaultClassNames } from 'react-tag-autocomplete';
 
 const DiscordIcon = (
   <svg
@@ -70,7 +71,7 @@ const GuildHeader = (props) => {
   if (props.selectedPage === 'players') {
     element = (
       <h1 className='pb-2 text-center text-white sm:text-1xl'>
-        Scammer Database provided by{' '}
+        {DefaultClassNames}
         <a
           className='text-blue-500 underline'
           href='https://discord.gg/skyblock'
@@ -712,7 +713,7 @@ class CompareGuilds extends React.Component {
               noSuggestionsText='No matching guilds found'
               onDelete={this.onDelete.bind(this)}
               onAddition={this.onAddition.bind(this)}
-              className={ClassName}
+              className='rounded-md'
               placeholderText='Add a guild'
             />
           </div>

@@ -14,18 +14,19 @@
   }
 
   .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #2f3136;
+    background: #2F3136;
   }
 }
 
 .tippy-box[data-theme~='tomato'] {
-  background-color: #dc2626;
+  background-color: #DC2626;
 }
+
 
 .react-tags {
   position: relative;
   padding: 6px 0 0 6px;
-  border: 1px solid #d1d1d1;
+  border: 1px solid #D1D1D1;
   border-radius: 1px;
   background: white;
 
@@ -38,7 +39,7 @@
 }
 
 .react-tags.is-focused {
-  border-color: #b1b1b1;
+  border-color: #B1B1B1;
 }
 
 .react-tags__selected {
@@ -50,9 +51,9 @@
   box-sizing: border-box;
   margin: 0 6px 6px 0;
   padding: 6px 8px;
-  border: 1px solid #d1d1d1;
+  border: 1px solid #D1D1D1;
   border-radius: 2px;
-  background: #f1f1f1;
+  background: #F1F1F1;
 
   /* match the font styles */
   font-size: inherit;
@@ -61,13 +62,13 @@
 
 .react-tags__selected-tag:after {
   content: '\2715';
-  color: #aaa;
+  color: #AAA;
   margin-left: 8px;
 }
 
 .react-tags__selected-tag:hover,
 .react-tags__selected-tag:focus {
-  border-color: #b1b1b1;
+  border-color: #B1B1B1;
 }
 
 .react-tags__search {
@@ -82,10 +83,12 @@
 }
 
 @media screen and (min-width: 30em) {
+
   .react-tags__search {
     /* this will become the offsetParent for suggestions */
     position: relative;
   }
+
 }
 
 .react-tags__search-input {
@@ -115,9 +118,11 @@
 }
 
 @media screen and (min-width: 30em) {
+
   .react-tags__suggestions {
     width: 240px;
   }
+
 }
 
 .react-tags__suggestions ul {
@@ -125,7 +130,7 @@
   padding: 0;
   list-style: none;
   background: white;
-  border: 1px solid #d1d1d1;
+  border: 1px solid #D1D1D1;
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
@@ -156,6 +161,6 @@
 }
 
 .progress-bar {
-  width: calc(100% * var(--progress));
+  width: calc(100%*var(--progress));
   padding-left: var(--overhang);
 }

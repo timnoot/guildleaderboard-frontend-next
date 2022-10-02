@@ -264,12 +264,12 @@ const Player = (props) => {
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 mx-10 px-1 xs:px-0 font-normal bg-blue-500 rounded-md'>
+          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-blue-500 rounded-md'>
             {player_data.average_skill}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-red-500 rounded-md'>
+          <div className='my-1 mx-7 px-1 xs:px-0 font-normal bg-red-500 rounded-md'>
             {numberWithCommas(Math.round(player_data.total_slayer))}
           </div>
         </th>
@@ -712,7 +712,6 @@ class CompareGuilds extends React.Component {
               noSuggestionsText='No matching guilds found'
               onDelete={this.onDelete.bind(this)}
               onAddition={this.onAddition.bind(this)}
-              className={ClassName}
               placeholderText='Add a guild'
             />
           </div>

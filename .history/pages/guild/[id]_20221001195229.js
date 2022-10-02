@@ -249,32 +249,32 @@ const Player = (props) => {
         <th className='px-1 sm:px-4'>{props.position}</th>
         <th className='pr-[2em] text-left'>{player_data.name}</th>
         <th>
-          <div className='my-1 mx-6 px-1 xs:px-0 font-normal bg-purple-700 rounded-md'>
+          <div className='my-1 px-1 xs:px-0 font-normal bg-purple-700 rounded-md'>
             {numberWithCommas(player_data.senither_weight)}
           </div>
         </th>
         <th className='px-1'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-green-700 rounded-md'>
+          <div className='my-1 px-1 xs:px-0 font-normal bg-green-700 rounded-md'>
             {numberWithCommas(player_data.lily_weight)}
           </div>
         </th>
         <th className='px-1'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-blue-700 rounded-md'>
+          <div className='my-1 px-1 xs:px-0 font-normal bg-blue-700 rounded-md'>
             {numberShortener(player_data.networth)}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 mx-10 px-1 xs:px-0 font-normal bg-blue-500 rounded-md'>
+          <div className='my-1 px-1 xs:px-0 font-normal bg-blue-500 rounded-md'>
             {player_data.average_skill}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 mx-2 px-1 xs:px-0 font-normal bg-red-500 rounded-md'>
+          <div className='my-1 px-1 xs:px-0 font-normal bg-red-500 rounded-md'>
             {numberWithCommas(Math.round(player_data.total_slayer))}
           </div>
         </th>
         <th className='hidden md:table-cell'>
-          <div className='my-1 px-1 mx-6 xs:px-0 font-normal bg-green-400 rounded-md'>
+          <div className='my-1 px-1 xs:px-0 font-normal bg-green-400 rounded-md'>
             {player_data.catacombs}
           </div>
         </th>
@@ -712,7 +712,6 @@ class CompareGuilds extends React.Component {
               noSuggestionsText='No matching guilds found'
               onDelete={this.onDelete.bind(this)}
               onAddition={this.onAddition.bind(this)}
-              className={ClassName}
               placeholderText='Add a guild'
             />
           </div>

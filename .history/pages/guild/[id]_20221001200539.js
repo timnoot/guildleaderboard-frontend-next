@@ -28,6 +28,10 @@ import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen, ErrorScreen } from '../../components/Screens.js';
 
+const ClassName = {
+  tag: 'bg-primary',
+};
+
 const DiscordIcon = (
   <svg
     width='1.5rem'
