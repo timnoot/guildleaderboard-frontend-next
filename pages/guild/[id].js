@@ -759,7 +759,7 @@ class CompareGuilds extends React.Component {
 
 }
 
-export default function guild({ guild }) {
+export default function Guild({ guild }) {
     if (!guild) {
         const router = useRouter();
         useEffect(() => {

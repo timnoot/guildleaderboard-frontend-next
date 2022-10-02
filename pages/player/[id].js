@@ -552,7 +552,7 @@ class PlayerStats extends React.Component {
     }
 }
 
-export default function player({ player }) {
+export default function Player({ player }) {
     console.log(player)
     const [selectedPage, setSelectedPage] = useState('stats');
 
