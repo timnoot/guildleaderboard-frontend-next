@@ -553,15 +553,12 @@ class PlayerStats extends React.Component {
 }
 
 export default function Player({ player }) {
-    console.log(player)
     const [selectedPage, setSelectedPage] = useState('stats');
 
-    if (player) {
-        const router = useRouter();
-        useEffect(() => {
-            router.push(`/player/${player.name}`);
-        }, [player.name]);
-    }
+    const router = useRouter();
+    useEffect(() => {
+        router.push(`/player/${player.name}`);
+    }, [player.name]);
 
     let component
 
