@@ -84,7 +84,7 @@ const DropDown = (props) => {
   return (
     <div className='bg-primary absolute translate-x-[-80%] rounded-md p-3 overflow-hidden w-72'>
       <div
-        className='bg-primary hover:bg-lightprimary rounded-md p-2 items-center flex justify-between'
+        className='flex items-center justify-between p-2 rounded-md bg-primary hover:bg-lightprimary'
         onClick={() => {
           props.changeCookie(
             'weightUsed',
@@ -116,7 +116,7 @@ const DropDown = (props) => {
         </span>
       </div>
       <div
-        className='bg-primary hover:bg-lightprimary rounded-md p-2 items-center flex justify-between'
+        className='flex items-center justify-between p-2 rounded-md bg-primary hover:bg-lightprimary'
         onClick={() => {
           props.changeCookie('showScammers', !props.cookies.showScammers);
           props.cookies.showScammers = !props.cookies.showScammers;
@@ -183,53 +183,57 @@ export class NavigationBar extends React.Component {
 
   render() {
     return (
-      <nav className='block '>
-        <section className='py-2.5 flex justify-between items-center text-white text-xs md:text-lg px-[5%] bg-[#2B2D31] text-center'>
-          <a
-            className='flex items-center relative '
-            href='https://discord.gg/ej92B474Ej'
-          >
-            <img width='100em' src='/logo459.png' alt='SkyHub Logo' />
-            <h2 className='ml-5 text-lg md:text-2xl'>Sky Hub</h2>
-          </a>
-          <ul className=''>
-            <li
-              className='float-right px-4 overflow-hidden hover:cursor-pointer'
-              ref={this.wrapperRef}
+      <div id='/'>
+        <nav className='block '>
+          <section className='py-2.5 flex justify-between items-center text-white text-xs md:text-lg px-[5%] bg-[#2B2D31] text-center'>
+            <a
+              className='relative flex items-center '
+              href='https://discord.gg/ej92B474Ej'
             >
-              <div
-                onClick={() => {
-                  this.setState({ isOpen: !this.state.isOpen });
-                }}
+              <img width='100em' src='/logo459.png' alt='SkyHub Logo' />
+              <h2 className='ml-5 text-lg md:text-2xl'>Sky Hub</h2>
+            </a>
+            <ul className=''>
+              <li
+                className='float-right px-4 overflow-hidden hover:cursor-pointer'
+                ref={this.wrapperRef}
               >
-                {SettingsIcon}
-              </div>
-              {this.state.isOpen ? (
-                <DropDown
-                  cookies={this.cookies}
-                  changeCookie={this.changeCookie}
-                />
-              ) : null}
-            </li>
-            <li className='float-right px-1 md:px-9 overflow-hidden hidden xs:block'>
-              <a href='https://discord.gg/ej92B474Ej'>{DiscordIcon}</a>
-            </li>
-            <li className='float-right px-1 md:px-9 overflow-hidden hidden md:block'>
-              <a href='https://www.patreon.com/sbhub'>
-                <div className='inline-block px-1 py-2 text-base font-normal text-white'>
-                  <span className='p-2 rounded-l-lg bg-primary'>Patreons</span>
-                  <span
-                    id='patronscount'
-                    className='bg-[#FF424D] rounded-r-lg p-2'
-                  >
-                    {this.props.patronscount}
-                  </span>
+                <div
+                  onClick={() => {
+                    this.setState({ isOpen: !this.state.isOpen });
+                  }}
+                >
+                  {SettingsIcon}
                 </div>
-              </a>
-            </li>
-          </ul>
-        </section>
-      </nav>
+                {this.state.isOpen ? (
+                  <DropDown
+                    cookies={this.cookies}
+                    changeCookie={this.changeCookie}
+                  />
+                ) : null}
+              </li>
+              <li className='hidden float-right px-1 overflow-hidden md:px-9 xs:block'>
+                <a href='https://discord.gg/ej92B474Ej'>{DiscordIcon}</a>
+              </li>
+              <li className='hidden float-right px-1 overflow-hidden md:px-9 md:block'>
+                <a href='https://www.patreon.com/sbhub'>
+                  <div className='inline-block px-1 py-2 text-base font-normal text-white'>
+                    <span className='p-2 rounded-l-lg bg-primary'>
+                      Patreons
+                    </span>
+                    <span
+                      id='patronscount'
+                      className='bg-[#FF424D] rounded-r-lg p-2'
+                    >
+                      {this.props.patronscount}
+                    </span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </section>
+        </nav>
+      </div>
     );
   }
 }
