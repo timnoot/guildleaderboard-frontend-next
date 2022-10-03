@@ -19,7 +19,7 @@ import { StatBlockTop, BackButton, MenuButton } from '../../components/StatBlock
 import { Footer } from '../../components/Footer';
 import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
-import { LoadingScreen, ErrorScreen } from '../../components/Screens.js';
+import { LoadingScreen } from '../../components/Screens.js';
 
 const DiscordIcon = (
     <svg width="1.5rem" height="1.5rem" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -765,6 +765,8 @@ export default function Guild({ guild }) {
     useEffect(() => {
         if (!guild) {
             router.push(`/`);
+        } else {
+            router.push(`/guild/${guild.name}`);
         }
     }, []);
 

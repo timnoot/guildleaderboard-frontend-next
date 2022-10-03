@@ -18,10 +18,10 @@ export class ErrorScreen extends React.Component {
             <div className='bg-secondary flex justify-center items-center h-screen text-white text-lg md:text-3xl lg:text-5xl'>
                 <a className='text-center' href='https://discord.gg/ej92B474Ej'>
                     <div>
-                        Something went wrong...
+                        {this.props.title || 'Something went wrong...'}
                     </div>
                     <div>
-                        Please report this in our discord server.
+                        {this.props.report ? 'Please report this in our discord server.': ''}
                     </div>
                     <div className='text-base md:text-lg lg:text-xl pt-10'>
                         {this.props.error}
