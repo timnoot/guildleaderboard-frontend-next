@@ -10,9 +10,10 @@ export const StatsHeader = ({ stats }) => {
 	return (
 		<header>
 			<Head>
-				<meta property='title' content='Hypixel SkyBlock Guild Leaderboard'/>
-				<meta property='description' content={`Tracking 🏢${stats.guilds_tracked} Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`}/>
-				
+				<title>Hypixel SkyBlock Guild Leaderboard</title>
+				<meta name='title' content='Hypixel SkyBlock Guild Leaderboard' />
+				<meta name='description' content={`Tracking 🏢${stats.guilds_tracked} Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`} />
+
 				<meta property='og:title' content='SkyBlock Guildleaderboard' />
 				<meta property='og:site_name' content='Guildleaderboard' />
 				<meta
@@ -28,7 +29,7 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(stats.top_g
 				/>
 			</Head>
 			<h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
-				Hypixel Skyblock Guild leaderboard
+				Hypixel SkyBlock Guild Leaderboard
 			</h1>
 			<h1 className='pt-4 text-center text-white sm:text-2xl'>
 				Tracking {stats.guilds_tracked} guilds with{' '}

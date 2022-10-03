@@ -95,8 +95,9 @@ const GuildHeader = (props) => {
     return (
         <div className='text-center font-[Helvetica]'>
             <Head>
-                <meta property='title' content={`${props.guildJson.name}`} />
-                <meta property='description' content={`View the stats of ${props.guildJson.name} here!`} />
+                <title>{props.guildJson.name} - Hypixel Skyblock Statistics</title>
+                <meta name='title' content={`${props.guildJson.name} statistics`} />
+                <meta name='description' content={`View the statistics of ${props.guildJson.name} here!`} />
 
                 <meta property='og:title' content={props.guildJson.name} />
                 <meta property='og:site_name' content='Guildleaderboard' />

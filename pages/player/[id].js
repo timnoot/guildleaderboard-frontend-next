@@ -594,8 +594,9 @@ export default function Player({ player }) {
     return (
         <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar text-white text-center font-[Helvetica]'>
             <Head>
-                <meta property='title' content={`${player.name}`} />
-                <meta property='description' content={`View the stats of ${player.name} here!`} />
+                <title>{player.name} - Hypixel Skyblock Statistics</title>
+                <meta name='title' content={`${player.name} statistics`} />
+                <meta name='description' content={`View the statistics of ${player.name} here!`} />
 
                 <meta property='og:title' content={player.name} />
                 <meta property='og:site_name' content='Guildleaderboard' />
