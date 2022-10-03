@@ -1,5 +1,5 @@
-// export const APIURL = "https://api.guildleaderboard.com/"
-export const APIURL = "http://localhost:8080/"
+export const APIURL = "https://api.guildleaderboard.com/"
+// export const APIURL = "http://localhost:8080/"
 
 export const skills = [
     'combat',
