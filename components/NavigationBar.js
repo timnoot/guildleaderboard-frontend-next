@@ -55,7 +55,7 @@ const DropDown = (props) => {
 			}
 			}>
 				<span className="h-[55px] w-[55px]">
-					<Image src={img} width='50' height='50' layout='responsive' alt='weight' />
+					<Image src={img} width='50' height='50' layout='responsive' alt='' />
 				</span>
 				<span className='p-2 text-lg'>
 					{`${(props.cookies.weightUsed || 'Senither') === "Senither" ? "Lily" : "Senither"} Weight`}
@@ -67,7 +67,7 @@ const DropDown = (props) => {
 			}
 			}>
 				<span className="h-[55px] w-[55px]">
-					<Image src='/barrier.png' width='50' height='50' layout='responsive' alt='barrier' />
+					<Image src='/barrier.png' width='50' height='50' layout='responsive' alt='' />
 				</span>
 				<span className='p-2 text-lg'>
 					{props.cookies.showScammers ? 'Hide Scammers' : 'Show Scammers'}

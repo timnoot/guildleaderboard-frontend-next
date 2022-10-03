@@ -4,8 +4,6 @@ import Head from 'next/head';
 import { spaces } from '../utils/other.js'
 import { numberWithCommas } from '../utils/numformatting.js'
 
-import axios from 'axios';
-
 export const StatsHeader = ({ stats }) => {
 	return (
 		<header>
@@ -15,7 +13,7 @@ export const StatsHeader = ({ stats }) => {
 				<meta name='description' content={`Tracking 🏢${stats.guilds_tracked} Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`} />
 
 				<meta property='og:title' content='SkyBlock Guildleaderboard' />
-				<meta property='og:site_name' content='Guildleaderboard' />
+				<meta property='og:site_name' content='GuildLeaderboard' />
 				<meta
 					property='og:description'
 					content={`Tracking:
@@ -47,6 +45,3 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(stats.top_g
 		</header>
 	);
 }
-
-// export async function getStaticProps() {
-// }

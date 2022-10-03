@@ -100,7 +100,7 @@ const GuildHeader = (props) => {
                 <meta name='description' content={`View the statistics of ${props.guildJson.name} here!`} />
 
                 <meta property='og:title' content={props.guildJson.name} />
-                <meta property='og:site_name' content='Guildleaderboard' />
+                <meta property='og:site_name' content='GuildLeaderboard' />
                 <meta
                     property='og:description'
                     content={`👥 Members: ${props.guildJson.members.length}

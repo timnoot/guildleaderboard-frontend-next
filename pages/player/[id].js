@@ -599,7 +599,7 @@ export default function Player({ player }) {
                 <meta name='description' content={`View the statistics of ${player.name} here!`} />
 
                 <meta property='og:title' content={player.name} />
-                <meta property='og:site_name' content='Guildleaderboard' />
+                <meta property='og:site_name' content='GuildLeaderboard' />
                 <meta
                     property='og:description'
                     content={`

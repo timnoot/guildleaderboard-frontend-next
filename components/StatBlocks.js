@@ -24,7 +24,7 @@ export const OutsideLink = (props) => {
                 <div className='pr-1'>
                     {props.name}
                 </div>
-                <Image src='/offwebsite.png' height='20' width='20' />
+                <Image src='/offwebsite.png' height='20' width='20' alt=''/>
             </a>
         </div>
     )
@@ -46,7 +46,7 @@ export const CopyButton = (props) => {
                     <div className='pr-1'>
                         {props.text}
                     </div>
-                    <Image src='/copy.png' height='20' width='20' />
+                    <Image src='/copy.png' height='20' width='20' alt=''/>
                 </div>
             </div>
         </Tippy>
@@ -57,7 +57,7 @@ export const BackButton = (props) => {
     return (
         <div className='inline-block'>
             <div className={`${props.className} flex align-middle p-2 text-sm font-normal text-white rounded-lg m-1`}>
-                <Image src='/back.png' height='20' width='20' />
+                <Image src='/back.png' height='20' width='20' alt=''/>
                 <div className='pl-1'>
                     {props.name}
                 </div>
