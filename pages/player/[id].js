@@ -558,7 +558,7 @@ export default function Player({ player }) {
     const router = useRouter();
     useEffect(() => {
         router.push(`/player/${player.name}`);
-    }, [player.name]);
+    }, []);
 
     let component
 
@@ -704,11 +704,7 @@ export default function Player({ player }) {
             <Footer />
         </div>
     )
-
-
-
 }
-
 
 //     getUUID(nameOrUUID) {
 //         fetch(`https://playerdb.co/api/player/minecraft/${nameOrUUID}`)
@@ -751,7 +747,15 @@ export default function Player({ player }) {
 //     }
 
 export const getServerSideProps = async (context) => {
-    const player = await axios.get(`${APIURL}player/${context.params?.id}`).then(res => res.data)
+    let player = await axios.get(`${APIURL}player/${context.params?.id}`).then(res => res.data)
+    if (!player) {
+        player = {
+            name: context.params?.id,
+            uuid: context.params?.id,
+            limited: true
+        }
+        
+    }
 
     return {
         props: {
