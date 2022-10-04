@@ -106,8 +106,8 @@ const GuildHeader = (props) => {
                     content={`👥 Members: ${props.guildJson.members.length}
 💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
 
-💪 Senither: ${numberWithCommas(props.guildJson.senither_weight)}
-🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight)}
+💪 Senither: ${numberWithCommas(props.guildJson.senither_weight * props.guildJson.multiplier)}
+🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier)}
 
 📚 Avg Skill: ${props.guildJson.skills}
 💀 Catacombs: ${props.guildJson.catacombs}                        
@@ -762,7 +762,7 @@ class CompareGuilds extends React.Component {
 
 export default function Guild({ guild }) {
     const router = useRouter();
-    
+
     useEffect(() => {
         if (!guild) {
             router.push(`/`);

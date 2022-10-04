@@ -147,7 +147,7 @@ const Guild = (props) => {
 			</th>
 			<th>
 				<Tippy
-					content={`${numberWithCommas(weight)} ${guildJson.usedWeight} Weight with a multiplier of ${numberWithCommas(guildJson.multiplier)}`}
+					content={`${numberWithCommas(weight)} ${props.usedWeight} Weight with a multiplier of ${numberWithCommas(guildJson.multiplier)}`}
 				>
 					<span className={`px-1 font-normal ${weightColor} rounded-md`}>
 						{numberWithCommas(weight * guildJson.multiplier)}
