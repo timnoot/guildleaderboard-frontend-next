@@ -8,13 +8,13 @@ export const getServerSideProps = async (ctx) => {
 
     const guilds = urls.guilds.map((name) => {
         return {
-            loc: `https://guildleaderboard.com/guild/${name}`,
+            loc: encodeURI(`https://guildleaderboard.com/guild/${name}`),
             lastmod: new Date().toISOString(),
         }
     })
     const players = urls.players.map((name) => {
         return {
-            loc: `https://guildleaderboard.com/player/${name}`,
+            loc: encodeURI(`https://guildleaderboard.com/player/${name}`),
             lastmod: new Date().toISOString(),
         }
     })
