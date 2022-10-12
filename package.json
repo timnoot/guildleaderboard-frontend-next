@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@tippyjs/react": "^4.2.6",
     "apexcharts": "^3.35.5",
     "axios": "^0.27.2",
     "next": "12.3.1",
+    "next-sitemap": "^3.1.24",
     "react": "18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-cookie": "^4.1.1",

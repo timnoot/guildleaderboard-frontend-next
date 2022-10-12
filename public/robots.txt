@@ -1,2 +1,10 @@
+# *
 User-agent: *
 Allow: /
+
+# Host
+Host: https://guildleaderboard.com
+
+# Sitemaps
+Sitemap: https://guildleaderboard.com/sitemap.xml
+Sitemap: https://guildleaderboard.com/server-sitemap.xml
