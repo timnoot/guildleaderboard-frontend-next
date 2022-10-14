@@ -28,28 +28,6 @@ import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
 
-const DiscordIcon = (
-  <svg
-    width='1.5rem'
-    height='1.5rem'
-    viewBox='0 0 71 55'
-    fill='none'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <g clipPath='url(#clip0)'>
-      <path
-        d='M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z'
-        fill='#ffffff'
-      />
-    </g>
-    <defs>
-      <clipPath id='clip0'>
-        <rect width='71' height='55' fill='white' />
-      </clipPath>
-    </defs>
-  </svg>
-);
-
 const GuildHeader = (props) => {
   let backButtonElement = (
     <div className='mx-auto w-max'>
@@ -66,48 +44,47 @@ const GuildHeader = (props) => {
       <div className='text-center font-[Helvetica]'>{backButtonElement}</div>
     );
   }
-  let element;
-  if (props.selectedPage === 'players') {
-    element = (
-      <h1 className='pb-2 text-center text-white sm:text-1xl'>
-        Scammer Database provided by{' '}
-        <a
-          className='text-blue-500 underline'
-          href='https://discord.gg/skyblock'
-        >
-          SkyBlockZ
-        </a>
-      </h1>
-    );
-  } else {
-    element = '';
-  }
-  let guild_discord;
-  if (props.guildJson.discord != null) {
-    guild_discord = (
-      <button className='bg-blue-800 text-[1.2em] text-center text-gray-200 drop-shadow-lg opacity-95 hover:opacity-100 hover:scale-105 px-3 py-2 rounded-md border border-gray-800'>
-        <div className='flex items-center'>
-          {DiscordIcon}
-          <span className='pl-3'>
-            <a href={`https://discord.gg/${props.guildJson.discord}`}>
-              Guild Discord
-            </a>
-          </span>
-        </div>
-      </button>
-    );
-  } else {
-    guild_discord = (
-      <button className='bg-blue-900 text-[1.2em] text-center text-gray-200 drop-shadow-lg opacity-25 px-3 py-2 rounded-md border border-gray-800'>
-        <div className='flex items-center'>
-          {DiscordIcon}
-          <span className='pl-3'>
-            <a href='https://discord.gg/ej92B474Ej'>Submit Guild Discord</a>
-          </span>
-        </div>
-      </button>
-    );
-  }
+
+  let StatBlocksProps = [
+    {
+      'color': 'bg-purple-700',
+      'value': numberWithCommas(props.guildJson.senither_weight * props.guildJson.multiplier),
+      'name': 'Senither Weight',
+      'tippy': `${numberWithCommas(props.guildJson.senither_weight)} Senither Weight with a multiplier of ${numberWithCommas(props.guildJson.multiplier)}.`
+    },
+    {
+      'color': 'bg-green-700',
+      'value': numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier),
+      'name': 'Lily Weight',
+      'tippy': `${numberWithCommas(props.guildJson.lily_weight)} Lily Weight with a multiplier of ${numberWithCommas(props.guildJson.multiplier)}.`
+    },
+    {
+      'color': 'bg-blue-700',
+      'name': 'Networth',
+      'value': numberShortener(props.guildJson.networth),
+      'tippy': `${numberShortener(props.guildJson.networth * props.guildJson.members.length)} total guild networth.`
+    },
+    {
+      'color': 'bg-blue-500',
+      'value': props.guildJson.skills,
+      'name': 'Skill Average',
+    },
+    {
+      'color': 'bg-green-500',
+      'value': props.guildJson.catacombs,
+      'name': 'Catacombs',
+    },
+    {
+      'color': 'bg-red-500',
+      'value': numberWithCommas(props.guildJson.slayer),
+      'name': 'Slayer',
+    },
+    {
+      'color': 'bg-yellow-500',
+      'value': props.guildJson.members.length,
+      'name': 'Members',
+    },
+  ]
   return (
     <div className='text-center font-[Helvetica]'>
       <Head>
@@ -123,18 +100,10 @@ const GuildHeader = (props) => {
         <meta
           property='og:description'
           content={`👥 Members: ${props.guildJson.members.length}
-💵 Networth: ${numberShortener(
-            props.guildJson.networth
-          )} (Total: ${numberShortener(
-            props.guildJson.networth * props.guildJson.members.length
-          )})
+💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
 
-💪 Senither: ${numberWithCommas(
-            props.guildJson.senither_weight * props.guildJson.multiplier
-          )}
-🌺 Lily: ${numberWithCommas(
-            props.guildJson.lily_weight * props.guildJson.multiplier
-          )}
+💪 Senither: ${numberWithCommas(props.guildJson.senither_weight * props.guildJson.multiplier)}
+🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier)}
 
 📚 Avg Skill: ${props.guildJson.skills}
 💀 Catacombs: ${props.guildJson.catacombs}                        
@@ -145,62 +114,50 @@ const GuildHeader = (props) => {
         {props.guildJson.name}
       </h1>
       <div className='p-2 text-center'>
-        <StatBlockTop
-          color='bg-purple-700'
-          value={numberWithCommas(
-            props.guildJson.senither_weight * props.guildJson.multiplier
-          )}
-          name='Senither Weight'
-          tippy={`${numberWithCommas(
-            props.guildJson.senither_weight
-          )} Senither Weight with a multiplier of ${numberWithCommas(
-            props.guildJson.multiplier
-          )}.`}
-        />
-        <StatBlockTop
-          color='bg-green-700'
-          value={numberWithCommas(
-            props.guildJson.lily_weight * props.guildJson.multiplier
-          )}
-          name='Lily Weight'
-          tippy={`${numberWithCommas(
-            props.guildJson.lily_weight
-          )} Lily Weight with a multiplier of ${numberWithCommas(
-            props.guildJson.multiplier
-          )}.`}
-        />
-        <StatBlockTop
-          value={numberShortener(props.guildJson.networth)}
-          name='Networth'
-          color='bg-blue-700'
-          tippy={`${numberShortener(
-            props.guildJson.networth * props.guildJson.members.length
-          )} total guild networth.`}
-        />
-        <StatBlockTop
-          color='bg-blue-500'
-          value={props.guildJson.skills}
-          name='Skill Average'
-        />
-        <StatBlockTop
-          color='bg-green-500'
-          value={props.guildJson.catacombs}
-          name='Catacombs'
-        />
-        <StatBlockTop
-          color='bg-red-500'
-          value={numberWithCommas(props.guildJson.slayer)}
-          name='Slayer'
-        />
-        <StatBlockTop
-          color='bg-yellow-500'
-          value={props.guildJson.members.length}
-          name='Members'
-        />
+        {
+          StatBlocksProps.map((stat, index) => {
+            return <StatBlockTop key={index} {...stat} />
+          })
+        }
       </div>
-      <div className='py-2'>{guild_discord}</div>
+      <div className='py-2'>
+        <button className={
+          `${props.guildJson.discord != null ? 'opacity-95 hover:opacity-100 hover:scale-105' : 'opacity-25'} 
+      bg-blue-900 text-[1.2em] text-center text-gray-200 drop-shadow-lg px-3 py-2 rounded-md border border-gray-800`
+        }>
+          <div className='flex items-center'>
+            <svg width='1.5rem' height='1.5rem' viewBox='0 0 71 55' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <g clipPath='url(#clip0)'>
+                <path
+                  d='M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.440769 45.4204 0.525289C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.525289C25.5141 0.443589 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C6.45866 50.0174 12.3413 52.7249 18.1147 54.5195C18.2071 54.5477 18.305 54.5139 18.3638 54.4378C19.7295 52.5728 20.9469 50.6063 21.9907 48.5383C22.0523 48.4172 21.9935 48.2735 21.8676 48.2256C19.9366 47.4931 18.0979 46.6 16.3292 45.5858C16.1893 45.5041 16.1781 45.304 16.3068 45.2082C16.679 44.9293 17.0513 44.6391 17.4067 44.3461C17.471 44.2926 17.5606 44.2813 17.6362 44.3151C29.2558 49.6202 41.8354 49.6202 53.3179 44.3151C53.3935 44.2785 53.4831 44.2898 53.5502 44.3433C53.9057 44.6363 54.2779 44.9293 54.6529 45.2082C54.7816 45.304 54.7732 45.5041 54.6333 45.5858C52.8646 46.6197 51.0259 47.4931 49.0921 48.2228C48.9662 48.2707 48.9102 48.4172 48.9718 48.5383C50.038 50.6034 51.2554 52.5699 52.5959 54.435C52.6519 54.5139 52.7526 54.5477 52.845 54.5195C58.6464 52.7249 64.529 50.0174 70.6019 45.5576C70.6551 45.5182 70.6887 45.459 70.6943 45.3942C72.1747 30.0791 68.2147 16.7757 60.1968 4.9823C60.1772 4.9429 60.1437 4.9147 60.1045 4.8978ZM23.7259 37.3253C20.2276 37.3253 17.3451 34.1136 17.3451 30.1693C17.3451 26.225 20.1717 23.0133 23.7259 23.0133C27.308 23.0133 30.1626 26.2532 30.1066 30.1693C30.1066 34.1136 27.28 37.3253 23.7259 37.3253ZM47.3178 37.3253C43.8196 37.3253 40.9371 34.1136 40.9371 30.1693C40.9371 26.225 43.7636 23.0133 47.3178 23.0133C50.9 23.0133 53.7545 26.2532 53.6986 30.1693C53.6986 34.1136 50.9 37.3253 47.3178 37.3253Z'
+                  fill='#ffffff'
+                />
+              </g>
+              <defs>
+                <clipPath id='clip0'>
+                  <rect width='71' height='55' fill='white' />
+                </clipPath>
+              </defs>
+            </svg>
+            <span className='pl-3'>
+              {
+                props.guildJson.discord != null ? <a href={`https://discord.gg/${props.guildJson.discord}`}>Guild Discord</a> :
+                  <a href='https://discord.gg/ej92B474Ej'>Submit Guild Discord</a>
+              }
+            </span>
+          </div>
+        </button>
+      </div>
       <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
-      {element}
+      {props.selectedPage === 'players' && <h1 className='pb-2 text-center text-white sm:text-1xl'>
+        Scammer Database provided by{' '}
+        <a
+          className='text-blue-500 underline'
+          href='https://discord.gg/skyblock'
+        >
+          SkyBlockZ
+        </a>
+      </h1>}
       {backButtonElement}
     </div>
   );
@@ -211,40 +168,11 @@ const Player = (props) => {
 
   const ref = useRef();
 
-  let element;
   const router = useRouter();
   const goRouteId = (id) => {
     router.push(`/player/${id}`);
   };
 
-  if (player_data.scam_reason) {
-    element = (
-      <Tippy
-        reference={ref}
-        theme='tomato'
-        interactive={true}
-        // appendTo={document.body}
-        followCursor='horizontal'
-        plugins={[followCursor]}
-        content={
-          <>
-            <div>{player_data.scam_reason}</div>
-            <div>
-              Scammer Database by{' '}
-              <a
-                className='text-blue-500 underline'
-                href='https://discord.gg/skyblock'
-              >
-                SkyBlockZ
-              </a>
-            </div>
-          </>
-        }
-      />
-    );
-  } else {
-    element = '';
-  }
   const [TimeAgo, SetTimeAgo] = useState('Loading...');
   useEffect(() => {
     SetTimeAgo(TimeDelta.fromDate(player_data.capture_date).toNiceString());
@@ -292,7 +220,27 @@ const Player = (props) => {
         <th className='hidden sm:px-5 lg:table-cell'>{TimeAgo}</th>
         <th></th>
       </tr>
-      {element}
+      {player_data.scam_reason && <Tippy
+        reference={ref}
+        theme='tomato'
+        interactive={true}
+        followCursor='horizontal'
+        plugins={[followCursor]}
+        content={
+          <>
+            <div>{player_data.scam_reason}</div>
+            <div>
+              Scammer Database by{' '}
+              <a
+                className='text-blue-500 underline'
+                href='https://discord.gg/skyblock'
+              >
+                SkyBlockZ
+              </a>
+            </div>
+          </>
+        }
+      />}
     </>
   );
 };
@@ -356,62 +304,52 @@ class Players extends React.Component {
     }
     players.push(<tr key='spacer' className='h-2'></tr>);
 
+    let tableHeadersProps = [
+      {
+        id: 'senither_weight',
+        name: 'Senither',
+      },
+      {
+        id: 'lily_weight',
+        name: 'Lily',
+      },
+      {
+        id: 'networth',
+        name: 'Networth',
+      },
+      {
+        id: 'average_skill',
+        name: 'Average Skill',
+      },
+      {
+        id: 'total_slayer',
+        name: 'Total Slayer',
+      },
+      {
+        id: 'catacombs',
+        name: 'Catacombs',
+      },
+    ]
+
     return (
       <table className='text-white bg-primary text-center rounded-md w-[90%] text-[0.6em] xs:text-[0.8em] sm:text-base md:text-sm lg:text-[1rem] xl:w-4/5 2xl:text-xl mx-auto'>
         <tbody>
           <tr>
             <th>#</th>
-            {/* <th></th> */}
             <th className='text-left'>Name</th>
-            <th
-              className='hover:cursor-pointer'
-              onClick={() => {
-                this.onSortClick('senither_weight');
-              }}
-            >
-              Senither
-            </th>
-            <th
-              className='hover:cursor-pointer'
-              onClick={() => {
-                this.onSortClick('lily_weight');
-              }}
-            >
-              Lily
-            </th>
-            <th
-              className='hover:cursor-pointer'
-              onClick={() => {
-                this.onSortClick('networth');
-              }}
-            >
-              Networth
-            </th>
-            <th
-              className='hidden hover:cursor-pointer md:table-cell'
-              onClick={() => {
-                this.onSortClick('average_skill');
-              }}
-            >
-              Average <br />
-              Skills
-            </th>
-            <th
-              className='hidden hover:cursor-pointer md:table-cell'
-              onClick={() => {
-                this.onSortClick('total_slayer');
-              }}
-            >
-              Slayers
-            </th>
-            <th
-              className='hidden hover:cursor-pointer md:table-cell'
-              onClick={() => {
-                this.onSortClick('catacombs');
-              }}
-            >
-              Catacombs
-            </th>
+            {
+              tableHeadersProps.map((header) => {
+                return (
+                  <th
+                    key={header.id}
+                    className='cursor-pointer'
+                    onClick={() => this.onSortClick(header.id)}
+                  >
+                    {header.name}
+                  </th>
+                )
+              })
+            }
             <th className='hidden lg:table-cell'>Last updated</th>
           </tr>
           {players}
@@ -532,11 +470,10 @@ class JoinLogs extends React.Component {
           <div className='inline-flex w-11/12 p-2 text-xs text-white rounded-md bg-tertiary md:p-6 xl:w-2/3 xs:text-sm md:text-xl'>
             <div className='text-left align-middle' style={{ flexGrow: 1 }}>
               <button
-                className={`bg-primary rounded-md p-2 ${
-                  allow_previous
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
-                }`}
+                className={`bg-primary rounded-md p-2 ${allow_previous
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  }`}
                 onClick={() => {
                   if (allow_previous) {
                     this.loadHistory(this.guildId, this.state.current_page - 1);
@@ -554,11 +491,10 @@ class JoinLogs extends React.Component {
               style={{ flexGrow: 1 }}
             >
               <button
-                className={`bg-primary  rounded-md p-2 ${
-                  allow_next
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
-                }`}
+                className={`bg-primary  rounded-md p-2 ${allow_next
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  }`}
                 onClick={() => {
                   if (allow_next) {
                     this.loadHistory(this.guildId, this.state.current_page + 1);
@@ -713,6 +649,41 @@ class CompareGuilds extends React.Component {
   render() {
     let daysShow = this.state.daysShow;
 
+    let daysProps = [
+      7, 30, 90
+    ]
+
+    let chartsProps = [
+      {
+        id: "senither_weight",
+        title: "Senither Weight",
+      },
+      {
+        id: "lily_weight",
+        title: "Lily Weight",
+      },
+      {
+        id: 'networth',
+        title: 'Networth',
+      },
+      {
+        id: 'skills',
+        title: 'Skills',
+      },
+      {
+        id: 'catacombs',
+        title: 'Catacombs',
+      },
+      {
+        id: 'slayer',
+        title: 'Slayer',
+      },
+      {
+        id: 'member_count',
+        title: 'Members',
+      },
+    ]
+
     return (
       <div>
         <div className='text-center'>
@@ -729,98 +700,39 @@ class CompareGuilds extends React.Component {
           </div>
         </div>
         <div className='text-sm text-center text-white'>
-          <MenuButton
-            onClick={() => {
-              this.setState({ daysShow: 7, change: this.state.change + 1 });
-            }}
-            disabled={daysShow === 7}
-            className='mx-1'
-          >
-            7 days
-          </MenuButton>
-          <MenuButton
-            onClick={() => {
-              this.setState({ daysShow: 30, change: this.state.change + 1 });
-            }}
-            disabled={daysShow === 30}
-            className='mx-1'
-          >
-            30 days
-          </MenuButton>
-          <MenuButton
-            onClick={() => {
-              this.setState({ daysShow: 90, change: this.state.change + 1 });
-            }}
-            disabled={daysShow === 90}
-            className='mx-1'
-          >
-            90 days
-          </MenuButton>
+          {
+            daysProps.map((days) => {
+              return (
+                <MenuButton
+                  onClick={() => {
+                    this.setState({ daysShow: days, change: this.state.change + 1 });
+                  }}
+                  disabled={daysShow === days}
+                  className='mx-1'
+                >
+                  {days} days
+                </MenuButton>
+              )
+            })
+          }
+
         </div>
         <div className='text-center'>
-          <div className='p-4 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('senither_weight', daysShow)}
-              title={'Senither Weight'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
-          <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('lily_weight', daysShow)}
-              title={'Lily Weight'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
-          <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('networth', daysShow)}
-              title={'Networth'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
-          <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('skills', daysShow)}
-              title={'Average Skills'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
-          <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('catacombs', daysShow)}
-              title={'Average Catacombs'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
-          <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('slayer', daysShow)}
-              title={'Average Slayer'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
-          <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-            <CustomChart2
-              series={this.getSeries('member_count', daysShow)}
-              title={'Members'}
-              width={'100%'}
-              height={'100%'}
-              key={this.state.change}
-            />
-          </div>
+          {
+            chartsProps.map((chart) => {
+              return (
+                <div className='p-4 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
+                  <CustomChart2
+                    series={this.getSeries(chart.id, daysShow)}
+                    title={chart.title}
+                    width={'100%'}
+                    height={'100%'}
+                    key={this.state.change}
+                  />
+                </div>
+              )
+            })
+          }
         </div>
       </div>
     );

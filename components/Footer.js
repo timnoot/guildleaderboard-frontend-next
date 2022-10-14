@@ -2,15 +2,15 @@ import React from 'react';
 
 export class Footer extends React.Component {
   render() {
-    const scrollToTop = () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    };
+    // const scrollToTop = () => {
+    //   window.scrollTo({
+    //     top: 0,
+    //     behavior: 'smooth',
+    //   });
+    // };
     return (
       <footer className='py-2 text-[0.6em] md:text-sm text-center text-white rounded-t-lg pt-5 bg-primary w-full'>
-        <div>
+        {/* <div>
           <button
             className='w-10 h-10 border rounded-lg border-secondary'
             onClick={() => scrollToTop()}
@@ -34,7 +34,7 @@ export class Footer extends React.Component {
               </div>
             </a>
           </button>
-        </div>
+        </div> */}
         <div>
           Inspired by{' '}
           <a

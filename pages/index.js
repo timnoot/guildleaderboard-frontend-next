@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { TimeDelta } from '../utils/timedelta.js';
 import { numberShortener, numberWithCommas } from '../utils/numformatting.js';
@@ -16,35 +16,17 @@ import { useCookies } from 'react-cookie';
 function positionChange(change) {
   if (change > 0) {
     return (
-      <svg
-        width='1.5em'
-        height='1.5em'
-        viewBox='0 0 487 487'
-        style={{ 'enable-background': 'new 0 0 487 487' }}
-        xmlns='http://www.w3.org/2000/svg'
-      >
+      <svg width='1.5em' height='1.5em' viewBox='0 0 487 487' style={{ 'enable-background': 'new 0 0 487 487' }} xmlns='http://www.w3.org/2000/svg'      >
         <g>
-          <path
-            d='M397.7,376.1c20.4,20.4,53.6,20.4,74,0s20.4-53.6,0-74L280.5,110.9c-20.4-20.4-53.6-20.4-74,0L15.3,302.1 c-20.4,20.4-20.4,53.6,0,74s53.6,20.4,74,0l154.2-154.2L397.7,376.1z'
-            style={{ fill: 'rgb(0, 255, 21)' }}
-          />
+          <path d='M397.7,376.1c20.4,20.4,53.6,20.4,74,0s20.4-53.6,0-74L280.5,110.9c-20.4-20.4-53.6-20.4-74,0L15.3,302.1 c-20.4,20.4-20.4,53.6,0,74s53.6,20.4,74,0l154.2-154.2L397.7,376.1z' style={{ fill: 'rgb(0, 255, 21)' }} />
         </g>
       </svg>
     );
   } else {
     return (
-      <svg
-        width='1.5em'
-        height='1.5em'
-        viewBox='0 0 487 487'
-        style={{ 'enable-background': 'new 0 0 487 487' }}
-        xmlns='http://www.w3.org/2000/svg'
-      >
+      <svg width='1.5em' height='1.5em' viewBox='0 0 487 487' style={{ 'enable-background': 'new 0 0 487 487' }} xmlns='http://www.w3.org/2000/svg'      >
         <g transform='matrix(-1, 0, 0, -1, 487, 487)'>
-          <path
-            d='M397.7,376.1c20.4,20.4,53.6,20.4,74,0s20.4-53.6,0-74L280.5,110.9c-20.4-20.4-53.6-20.4-74,0L15.3,302.1 c-20.4,20.4-20.4,53.6,0,74s53.6,20.4,74,0l154.2-154.2L397.7,376.1z'
-            style={{ fill: 'rgb(255, 26, 68)' }}
-          />
+          <path d='M397.7,376.1c20.4,20.4,53.6,20.4,74,0s20.4-53.6,0-74L280.5,110.9c-20.4-20.4-53.6-20.4-74,0L15.3,302.1 c-20.4,20.4-20.4,53.6,0,74s53.6,20.4,74,0l154.2-154.2L397.7,376.1z' style={{ fill: 'rgb(255, 26, 68)' }} />
         </g>
       </svg>
     );
@@ -59,138 +41,35 @@ const Guild = (props) => {
     router.push(`/guild/${guildJson.name}`);
   };
 
-  let scammerElement = (
-    <th className='md:pr-2'>
+  const [ScammerInGuild, setScammerInGuild] = useState(<th></th>);
+
+  useEffect(() => {
+    setScammerInGuild(guildJson.scammers > 0 && props.showScammers1 ? <th className='md:pr-2'>
       <Tippy
-        // position="top"
-        // animation={false}
         interactive={true}
-        // appendTo={document.body}
         duration={0}
         theme='tomato'
         content={
           <div className='block-inline'>
-            <a
-              className='text-blue-500 underline'
-              href='https://discord.gg/skyblock'
-            >
+            <a className='text-blue-500 underline' href='https://discord.gg/skyblock'>
               SkyBlockZ
-            </a>{' '}
-            found {guildJson.scammers} scammers in this guild.
+            </a>
+            {' '}found {guildJson.scammers} scammers in this guild.
           </div>
         }
       >
         <div>
-          <svg
-            width='1.5em'
-            height='1.5em'
-            viewBox='0 0 64 64'
-            xmlns='http://www.w3.org/2000/svg'
-            textRendering='geometricPrecision'
-            shapeRendering='geometricPrecision'
-          >
-            <polygon
-              id='svg_1'
-              y='50%'
-              x='50%'
-              stroke='#e6d2d2'
-              fill='#d54e4e'
-              points='44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703'
-            />
-            <text
-              id='svg_2'
-              textAnchor='middle'
-              dominantBaseline='middle'
-              fontSize='40px'
-              fill='rgb(255, 255, 255)'
-              y='50%'
-              x='50%'
-            >
+          <svg width='1.5em' height='1.5em' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg' textRendering='geometricPrecision' shapeRendering='geometricPrecision'>
+            <polygon id='svg_1' y='50%' x='50%' stroke='#e6d2d2' fill='#d54e4e' points='44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703' />
+            <text id='svg_2' textAnchor='middle' dominantBaseline='middle' fontSize='40px' fill='rgb(255, 255, 255)' y='50%' x='50%'>
               {guildJson.scammers}
             </text>
           </svg>
         </div>
       </Tippy>
-    </th>
-  );
-  const [ScammerInGuild, setScammerInGuild] = useState(<th></th>);
-  if (guildJson.scammers > 0 && props.showScammers) {
-    scammerElement = (
-      <th className='md:pr-2'>
-        <Tippy
-          // position="top"
-          // animation={false}
-          interactive={true}
-          // appendTo={document.body}
-          duration={0}
-          theme='tomato'
-          content={
-            <div className='block-inline'>
-              <a
-                className='text-blue-500 underline'
-                href='https://discord.gg/skyblock'
-              >
-                SkyBlockZ
-              </a>{' '}
-              found {guildJson.scammers} scammers in this guild.
-            </div>
-          }
-        >
-          <div>
-            <svg
-              width='1.5em'
-              height='1.5em'
-              viewBox='0 0 64 64'
-              xmlns='http://www.w3.org/2000/svg'
-              textRendering='geometricPrecision'
-              shapeRendering='geometricPrecision'
-            >
-              <polygon
-                id='svg_1'
-                y='50%'
-                x='50%'
-                stroke='#e6d2d2'
-                fill='#d54e4e'
-                points='44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703'
-              />
-              <text
-                id='svg_2'
-                textAnchor='middle'
-                dominantBaseline='middle'
-                fontSize='40px'
-                fill='rgb(255, 255, 255)'
-                y='50%'
-                x='50%'
-              >
-                {guildJson.scammers}
-              </text>
-            </svg>
-          </div>
-        </Tippy>
-      </th>
+    </th> : <th></th>
     );
-  } else {
-    scammerElement = <th></th>;
-  }
-  useEffect(() => {
-    setScammerInGuild(scammerElement);
-  }, [props.showScammers]);
-
-  let position_change;
-
-  if (
-    Boolean(guildJson.position_change) &&
-    props.sortOn === 'senither_weight' &&
-    !props.sortReversed
-  ) {
-    position_change = (
-      <th className='text-left md:px-1'>
-        {positionChange(guildJson.position_change)}
-      </th>
-    );
-  } else {
-    position_change = <th></th>;
-  }
+  }, [props.showScammers1]);
 
   let weight;
   let weightColor;
@@ -210,11 +89,17 @@ const Guild = (props) => {
 
   return (
     <tr
-      className={`${props.color} font-[Helvetica] hover:cursor-pointer`} // text-[.9em] font-semibold
+      className={`${props.color} ${props.hidden ? 'hidden' : ''} font-[Helvetica] hover:cursor-pointer`} // text-[.9em] font-semibold
       onClick={goRouteId}
     >
       <th className='pl-1 lg:pl-6'>{props.position}</th>
-      {position_change}
+      {
+        (Boolean(guildJson.position_change) && props.sortOn === 'senither_weight' && !props.sortReversed) ? (
+          <th className='text-left md:px-1'>
+            {positionChange(guildJson.position_change)}
+          </th>
+        ) : <th></th>
+      }
       {ScammerInGuild}
       <th className='text-left'>{guildJson.name}</th>
       <th>
@@ -224,11 +109,10 @@ const Guild = (props) => {
       </th>
       <th>
         <Tippy
-          content={`${numberWithCommas(weight)} ${
-            props.usedWeight
-          } Weight with a multiplier of ${numberWithCommas(
-            guildJson.multiplier
-          )}`}
+          content={`${numberWithCommas(weight)} ${props.usedWeight
+            } Weight with a multiplier of ${numberWithCommas(
+              guildJson.multiplier
+            )}`}
         >
           <div
             className={`font-normal my-1 ${weightColor} rounded-md px-1 xl:px-0`}
@@ -283,6 +167,7 @@ const Guild = (props) => {
 };
 
 const sortOnFunct = (guild_data, sortOn) => {
+  console.log(`Running sortOnFunct on ${sortOn}`);
   let r = guild_data.slice();
 
   r.sort(function (a, b) {
@@ -296,42 +181,32 @@ const Guilds = (props) => {
 
   const [usedWeight, setUsedWeight] = useState('Senither');
 
-  // let usedWeight = props.cookies.weightUsed || 'Senither';
-  let usedWeightKey =
-    usedWeight === 'Senither' ? 'senither_weight' : 'lily_weight';
-  // let usedWeight = 'Senither';
-  // let usedWeightKey = usedWeight;
+  let usedWeightKey = usedWeight === 'Senither' ? 'senither_weight' : 'lily_weight';
 
   const [sortOn, setSortOn] = useState(usedWeightKey);
   useEffect(() => {
     let newUsedWeight = props.cookies.weightUsed || 'Senither';
     setUsedWeight(newUsedWeight);
-    setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
+    // setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
   }, [props.cookies.weightUsed]);
 
   const [sortReversed, setSortReversed] = useState(false);
 
-  const [sortedOnSlayer, setSortedOnSlayer] = useState(
-    sortOnFunct(guild_data, 'slayer')
-  );
-  const [sortedOnCatacombs, setSortedOnCatacombs] = useState(
-    sortOnFunct(guild_data, 'catacombs')
-  );
-  const [sortedOnSkill, setSortedOnSkills] = useState(
-    sortOnFunct(guild_data, 'skills')
-  );
+  const sortedOnSlayer = useMemo(() => sortOnFunct(guild_data, 'slayer'), []);
+  const sortedOnCatacombs = useMemo(() => sortOnFunct(guild_data, 'catacombs'), []);
+  const sortedOnSkill = useMemo(() => sortOnFunct(guild_data, 'skills'), []);
 
-  let showScammers;
-  if (props.cookies.showScammers === undefined) {
-    showScammers = true;
+  let showScammers1;
+  if (props.cookies.showScammers1 === undefined) {
+    showScammers1 = false;
   } else {
     if (
-      typeof props.cookies.showScammers === 'string' ||
-      props.cookies.showScammers instanceof String
+      typeof props.cookies.showScammers1 === 'string' ||
+      props.cookies.showScammers1 instanceof String
     ) {
-      showScammers = props.cookies.showScammers === 'true';
+      showScammers1 = props.cookies.showScammers1 === 'true';
     } else {
-      showScammers = props.cookies.showScammers;
+      showScammers1 = props.cookies.showScammers1;
     }
   }
 
@@ -349,26 +224,27 @@ const Guilds = (props) => {
     }
   });
 
-  let guilds = [];
+  const [searchQuery, setSearchQuery] = useState('');
 
+  let guilds = [];
+  let colorIndex = 1;
   for (const i in guild_data) {
     let guild_json = guild_data[i];
 
-    let slayer_index =
-      sortedOnSlayer.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let catacombs_index =
-      sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let skills_index =
-      sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let slayer_index = sortedOnSlayer.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let catacombs_index = sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let skills_index = sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
+
+    if (searchQuery !== '' && guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+      colorIndex++
+    }
 
     guilds.push(
       <Guild
         position={parseInt(i) + 1}
         guildJson={guild_json}
-        capture_date={TimeDelta.fromDate(
-          guild_json.capture_date
-        ).toNiceString()}
-        showScammers={showScammers}
+        capture_date={TimeDelta.fromDate(guild_json.capture_date).toNiceString()}
+        showScammers1={showScammers1}
         usedWeight={usedWeight}
         sortOn={sortOn}
         sortReversed={sortReversed}
@@ -377,10 +253,11 @@ const Guilds = (props) => {
         skills_index={skills_index}
         key={guild_json.id}
         color={
-          i % 2 === 0
+          (searchQuery !== '' ? colorIndex : i) % 2 === 0
             ? 'bg-tertiary hover:bg-lighttertiary'
             : 'hover:bg-lightprimary'
         }
+        hidden={searchQuery !== '' && !guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())}
       />
     );
   }
@@ -396,72 +273,82 @@ const Guilds = (props) => {
   };
 
   return (
-    <table className='text-white bg-primary text-center rounded-md w-[90%] text-[0.6em] xs:text-[0.8em] sm:text-base md:text-sm lg:text-[1rem] xl:w-4/5 2xl:text-xl mx-auto table-auto'>
-      <tbody>
-        <tr>
-          <th className='pl-1 md:pl-6'>#</th>
-          <th></th>
-          <th></th>
-          <th className='tracking-[.1em] text-left'>Guilds</th>
-          <th
-            className='hover:cursor-pointer'
-            onClick={() => {
-              onSortClick('members');
-            }}
-          >
-            Member
-          </th>
-          <th
-            className='hover:cursor-pointer'
-            onClick={() => {
-              onSortClick(usedWeightKey);
-            }}
-          >
-            Weight
-          </th>
-          <th
-            className='hover:cursor-pointer'
-            onClick={() => {
-              onSortClick('networth');
-            }}
-          >
-            Networth
-          </th>
-          <th
-            className='hidden hover:cursor-pointer md:table-cell'
-            onClick={() => {
-              onSortClick('skills');
-            }}
-          >
-            Average <br />
-            Skills
-          </th>
-          <th
-            className='hidden hover:cursor-pointer md:table-cell min-w-fit'
-            onClick={() => {
-              onSortClick('slayer');
-            }}
-          >
-            Slayers
-          </th>
-          <th
-            className='hidden hover:cursor-pointer md:table-cell'
-            onClick={() => {
-              onSortClick('catacombs');
-            }}
-          >
-            Catacombs
-          </th>
-          <th className='hidden lg:table-cell'>Last updated</th>
-        </tr>
-        {guilds}
-      </tbody>
-    </table>
+    <div className='text-[0.6em] xs:text-[0.8em] sm:text-base md:text-sm lg:text-[1rem] 2xl:text-xl text-white'>
+      <div class="relative m-auto my-10 w-[90%] lg:w-1/2 ">
+        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+          <svg aria-hidden="true" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <input type="search" id="default-search" class="block p-4 pl-10 w-full text-sm rounded-lg border bg-primary border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500" placeholder="Search for Guilds" required
+          onInput={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+      <table className='bg-primary text-center rounded-md w-[90%] xl:w-4/5 mx-auto table-auto'>
+        <tbody>
+          <tr>
+            <th className='pl-1 md:pl-6'>#</th>
+            <th></th>
+            <th></th>
+            <th className='tracking-[.1em] text-left'>Guilds</th>
+            <th
+              className='hover:cursor-pointer'
+              onClick={() => {
+                onSortClick('members');
+              }}
+            >
+              Member
+            </th>
+            <th
+              className='hover:cursor-pointer'
+              onClick={() => {
+                onSortClick(usedWeightKey);
+              }}
+            >
+              Weight
+            </th>
+            <th
+              className='hover:cursor-pointer'
+              onClick={() => {
+                onSortClick('networth');
+              }}
+            >
+              Networth
+            </th>
+            <th
+              className='hidden hover:cursor-pointer md:table-cell'
+              onClick={() => {
+                onSortClick('skills');
+              }}
+            >
+              Average <br />
+              Skills
+            </th>
+            <th
+              className='hidden hover:cursor-pointer md:table-cell min-w-fit'
+              onClick={() => {
+                onSortClick('slayer');
+              }}
+            >
+              Slayers
+            </th>
+            <th
+              className='hidden hover:cursor-pointer md:table-cell'
+              onClick={() => {
+                onSortClick('catacombs');
+              }}
+            >
+              Catacombs
+            </th>
+            <th className='hidden lg:table-cell'>Last updated</th>
+          </tr>
+          {guilds}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
 export default function Home({ guildsJson, stats }) {
-  const [cookies, setCookie] = useCookies(['showScammers', 'weightUsed']);
+  const [cookies, setCookie] = useCookies(['showScammers1', 'weightUsed']);
 
   function changeCookie(key, value) {
     setCookie(key, value, { path: '/' });
