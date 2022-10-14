@@ -151,8 +151,8 @@ class JoinLogs extends React.Component {
             <div className='text-left align-middle' style={{ flexGrow: 1 }}>
               <button
                 className={`bg-primary rounded-md p-2 ${allow_previous
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
                   }`}
                 onClick={() => {
                   if (allow_previous) {
@@ -172,8 +172,8 @@ class JoinLogs extends React.Component {
             >
               <button
                 className={`bg-primary  rounded-md p-2 ${allow_next
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
                   }`}
                 onClick={() => {
                   if (allow_next) {
@@ -451,6 +451,7 @@ class PlayerMetrics extends React.Component {
             daysProps.map((days) => {
               return (
                 <MenuButton
+                  key={days}
                   onClick={() => {
                     this.setState({
                       daysShow: days,
@@ -470,7 +471,7 @@ class PlayerMetrics extends React.Component {
                 </MenuButton>
               )
             })
-          }          
+          }
         </div>
         <div className='text-center'>{metricsCharts}</div>
       </div>

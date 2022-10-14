@@ -709,6 +709,7 @@ class CompareGuilds extends React.Component {
                   }}
                   disabled={daysShow === days}
                   className='mx-1'
+                  key={days}
                 >
                   {days} days
                 </MenuButton>
@@ -721,7 +722,7 @@ class CompareGuilds extends React.Component {
           {
             chartsProps.map((chart) => {
               return (
-                <div className='p-4 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
+                <div className='p-4 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary' key={chart.id}>
                   <CustomChart2
                     series={this.getSeries(chart.id, daysShow)}
                     title={chart.title}
