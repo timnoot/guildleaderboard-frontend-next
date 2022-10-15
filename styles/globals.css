@@ -26,13 +26,16 @@
 .react-tags {
   position: relative;
   padding: 6px 0 0 6px;
-  border: 1px solid #D1D1D1;
+  border: 1px solid rgb(75 85 99);
   border-radius: 1px;
-  background: white;
+  background: #36393f;
+  border-radius: 8px;
+  
 
   /* shared font styles */
-  font-size: 1em;
+  font-size: 1.25em;
   line-height: 1.2;
+  color: white;
 
   /* clicking anywhere will focus the input */
   cursor: text;
@@ -51,9 +54,9 @@
   box-sizing: border-box;
   margin: 0 6px 6px 0;
   padding: 6px 8px;
-  border: 1px solid #D1D1D1;
-  border-radius: 2px;
-  background: #F1F1F1;
+  border: 1px solid rgb(75 85 99);
+  border-radius: 8px;
+  background: #36393f;
 
   /* match the font styles */
   font-size: inherit;
@@ -100,6 +103,8 @@
   padding: 0;
   border: 0;
   outline: none;
+  background: #36393f;
+
 
   /* match the font styles */
   font-size: inherit;
@@ -121,6 +126,7 @@
 
   .react-tags__suggestions {
     width: 240px;
+    z-index: 1000000;
   }
 
 }
@@ -129,26 +135,27 @@
   margin: 4px -1px;
   padding: 0;
   list-style: none;
-  background: white;
+  background: #36393f;
   border: 1px solid #D1D1D1;
-  border-radius: 2px;
+  border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .react-tags__suggestions li {
-  border-bottom: 1px solid #ddd;
-  padding: 6px 8px;
+  padding: 6px 8px 6px;
 }
 
 .react-tags__suggestions li mark {
   text-decoration: underline;
   background: none;
   font-weight: 600;
+  color: white;
+
 }
 
 .react-tags__suggestions li:hover {
   cursor: pointer;
-  background: #eee;
+  background: #484c54;
 }
 
 .react-tags__suggestions li.is-active {

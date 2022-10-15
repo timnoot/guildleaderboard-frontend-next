@@ -465,7 +465,7 @@ class PlayerMetrics extends React.Component {
                     });
                   }}
                   disabled={daysShow === days}
-                  className='mx-1'
+                  className='mx-1 text-base'
                 >
                   {days} days
                 </MenuButton>
@@ -763,7 +763,7 @@ export default function Player({ player }) {
           </Link>
         </div>
       </div>
-      <div className='text-center font-[Helvetica] my-4'>
+      <div className='text-center font-[Helvetica] my-4 text-lg'>
         <div className='inline-block p-1'>
           <MenuButton
             onClick={(i) => setSelectedPage('stats')}

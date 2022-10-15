@@ -167,7 +167,6 @@ const Guild = (props) => {
 };
 
 const sortOnFunct = (guild_data, sortOn) => {
-  console.log(`Running sortOnFunct on ${sortOn}`);
   let r = guild_data.slice();
 
   r.sort(function (a, b) {
@@ -274,11 +273,11 @@ const Guilds = (props) => {
 
   return (
     <div className='text-[0.6em] xs:text-[0.8em] sm:text-base md:text-sm lg:text-[1rem] 2xl:text-xl text-white'>
-      <div class="relative m-auto my-10 w-[90%] lg:w-1/2 ">
-        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-          <svg aria-hidden="true" class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+      <div className="relative m-auto my-10 w-[90%] lg:w-1/2 ">
+        <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+          <svg aria-hidden="true" className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
-        <input type="search" id="default-search" class="block p-4 pl-10 w-full text-sm rounded-lg border bg-primary border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500" placeholder="Search for Guilds" required
+        <input type="search" id="default-search" className="block p-4 pl-10 w-full text-sm rounded-lg border bg-primary border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500" placeholder="Search for Guilds" required
           onInput={(e) => setSearchQuery(e.target.value)}
         />
       </div>
@@ -366,7 +365,7 @@ export default function Home({ guildsJson, stats }) {
         changeCookie={changeCookie}
         patronscount={stats.patrons}
       />
-      <StatsHeader stats={stats} />
+      <StatsHeader stats={stats} cookies={cookies} />
       <Guilds cookies={cookies} guildsJson={guildsJson} />
       <Footer />
     </div>

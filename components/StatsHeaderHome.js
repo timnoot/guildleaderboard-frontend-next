@@ -4,7 +4,22 @@ import Head from 'next/head';
 import { spaces } from '../utils/other.js';
 import { numberWithCommas } from '../utils/numformatting.js';
 
-export const StatsHeader = ({ stats }) => {
+export const StatsHeader = ({ stats, cookies }) => {
+  let showScammers1;
+  if (cookies.showScammers1 === undefined) {
+    showScammers1 = false;
+  } else {
+    if (
+      typeof cookies.showScammers1 === 'string' ||
+      cookies.showScammers1 instanceof String
+    ) {
+      showScammers1 = cookies.showScammers1 === 'true';
+    } else {
+      showScammers1 = cookies.showScammers1;
+    }
+  }
+
+
   return (
     <header>
       <Head>
@@ -12,9 +27,7 @@ export const StatsHeader = ({ stats }) => {
         <meta name='title' content='Hypixel SkyBlock Guild Leaderboard' />
         <meta
           name='description'
-          content={`Tracking 🏢${
-            stats.guilds_tracked
-          } Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`}
+          content={`Tracking 🏢${stats.guilds_tracked} Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`}
         />
 
         <meta property='og:title' content='SkyBlock Guildleaderboard' />
@@ -43,16 +56,17 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
       <h1 className='pt-4 text-center text-white sm:text-2xl'>
         Tracking {stats.guilds_tracked} guilds with {stats.players_tracked}{' '}
         players
-      </h1>
-      <h1 className='text-center text-white sm:text-1xl pt-'>
-        Scammer Database provided by{' '}
-        <a
-          className='text-blue-500 underline'
-          href='https://discord.gg/skyblock'
-        >
-          SkyBlockZ
-        </a>
-      </h1>
+      </h1>{
+        showScammers1 && <h1 className='text-center text-white sm:text-1xl pt-'>
+          Scammer Database provided by{' '}
+          <a
+            className='text-blue-500 underline'
+            href='https://discord.gg/skyblock'
+          >
+            SkyBlockZ
+          </a>
+        </h1>
+      }
     </header>
   );
 };

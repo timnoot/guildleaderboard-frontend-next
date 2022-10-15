@@ -181,7 +181,7 @@ const Player = (props) => {
   return (
     <>
       <tr
-        className={`${props.color} font-[Helvetica] hover:opacity-60 hover:cursor-pointer`}
+        className={`${props.color} ${props.hidden ? 'hidden' : ''} font-[Helvetica] hover:opacity-60 hover:cursor-pointer`}
         ref={ref}
         onClick={() => goRouteId(player_data.name)}
       >
@@ -251,6 +251,7 @@ class Players extends React.Component {
     this.state = {
       sortOn: 'senither_weight',
       sortReversed: false,
+      searchQuery: '',
     };
   }
 
@@ -284,21 +285,27 @@ class Players extends React.Component {
       }
     });
 
+    let colorIndex = 1;
     for (const i in players_data) {
       let player_data = players_data[i];
-      let color =
-        i % 2 === 0
-          ? 'bg-tertiary hover:bg-lighttertiary'
-          : 'hover:bg-lightprimary';
+
+      if (this.state.searchQuery !== '' && player_data.name.toLowerCase().includes(this.state.searchQuery.toLowerCase())) {
+        colorIndex++
+      }
+
+      let color = (this.state.searchQuery !== '' ? colorIndex : i) % 2 === 0 ? 'bg-tertiary hover:bg-lighttertiary' : 'hover:bg-lightprimary';
+
       if (player_data.scam_reason) {
         color = 'bg-scamred';
       }
+
       players.push(
         <Player
           key={player_data.uuid}
           player_data={player_data}
           position={parseInt(i) + 1}
           color={color}
+          hidden={this.state.searchQuery !== '' && !player_data.name.toLowerCase().includes(this.state.searchQuery.toLowerCase())}
         />
       );
     }
@@ -320,41 +327,54 @@ class Players extends React.Component {
       {
         id: 'average_skill',
         name: 'Average Skill',
+        classname: 'hidden md:table-cell',
       },
       {
         id: 'total_slayer',
         name: 'Total Slayer',
+        classname: 'hidden md:table-cell',
       },
       {
         id: 'catacombs',
         name: 'Catacombs',
+        classname: 'hidden md:table-cell',
       },
     ]
 
     return (
-      <table className='text-white bg-primary text-center rounded-md w-[90%] text-[0.6em] xs:text-[0.8em] sm:text-base md:text-sm lg:text-[1rem] xl:w-4/5 2xl:text-xl mx-auto'>
-        <tbody>
-          <tr>
-            <th>#</th>
-            <th className='text-left'>Name</th>
-            {
-              tableHeadersProps.map((header) => {
-                return (
-                  <th
-                    key={header.id}
-                    className='cursor-pointer'
-                    onClick={() => this.onSortClick(header.id)}
-                  >
-                    {header.name}
-                  </th>
-                )
-              })
-            }
-            <th className='hidden lg:table-cell'>Last updated</th>
-          </tr>
-          {players}
-        </tbody>
-      </table>
+      <div className='text-white text-[0.6em] xs:text-[0.8em] sm:text-base md:text-sm lg:text-[1rem] 2xl:text-xl'>
+        <div className="relative m-auto my-10 w-[90%] lg:w-1/2 ">
+          <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg aria-hidden="true" className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input type="search" id="default-search" className="block p-4 pl-10 w-full text-sm rounded-lg border bg-primary border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500" placeholder="Search for Guilds" required
+            onInput={(e) => this.setState({ searchQuery: e.target.value })}
+          />
+        </div>
+        <table className='bg-primary text-center rounded-md w-[90%] xl:w-4/5 mx-auto'>
+          <tbody>
+            <tr>
+              <th>#</th>
+              <th className='text-left'>Name</th>
+              {
+                tableHeadersProps.map((header) => {
+                  return (
+                    <th
+                      key={header.id}
+                      className={`cursor-pointer ${header.classname}`}
+                      onClick={() => this.onSortClick(header.id)}
+                    >
+                      {header.name}
+                    </th>
+                  )
+                })
+              }
+              <th className='hidden lg:table-cell'>Last updated</th>
+            </tr>
+            {players}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }
@@ -708,7 +728,7 @@ class CompareGuilds extends React.Component {
                     this.setState({ daysShow: days, change: this.state.change + 1 });
                   }}
                   disabled={daysShow === days}
-                  className='mx-1'
+                  className='mx-1 text-base'
                   key={days}
                 >
                   {days} days
@@ -798,8 +818,8 @@ export default function Guild({ guild }) {
       }}
     >
       <GuildHeader guildJson={guild} selectedPage={selectedPage} />
-      <div className='text-center font-[Helvetica]'>
-        <div className='inline-block p-1'>
+      <div className='text-center font-[Helvetica] text-lg'>
+        <div className='inline-block p-1 '>
           <MenuButton
             onClick={(i) => setSelectedPage('players')}
             disabled={selectedPage === 'players'}
