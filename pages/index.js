@@ -186,7 +186,7 @@ const Guilds = (props) => {
   useEffect(() => {
     let newUsedWeight = props.cookies.weightUsed || 'Senither';
     setUsedWeight(newUsedWeight);
-    // setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
+    setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
   }, [props.cookies.weightUsed]);
 
   const [sortReversed, setSortReversed] = useState(false);
