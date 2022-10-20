@@ -150,11 +150,10 @@ class JoinLogs extends React.Component {
           <div className='inline-flex w-11/12 p-2 text-xs text-white rounded-md bg-tertiary md:p-6 xl:w-2/3 xs:text-sm md:text-xl'>
             <div className='text-left align-middle' style={{ flexGrow: 1 }}>
               <button
-                className={`bg-primary rounded-md p-2 ${
-                  allow_previous
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
-                }`}
+                className={`bg-primary rounded-md p-2 ${allow_previous
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  }`}
                 onClick={() => {
                   if (allow_previous) {
                     this.loadHistory(this.uuid, this.state.current_page - 1);
@@ -172,11 +171,10 @@ class JoinLogs extends React.Component {
               style={{ flexGrow: 1 }}
             >
               <button
-                className={`bg-primary  rounded-md p-2 ${
-                  allow_next
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
-                }`}
+                className={`bg-primary  rounded-md p-2 ${allow_next
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  }`}
                 onClick={() => {
                   if (allow_next) {
                     this.loadHistory(this.uuid, this.state.current_page + 1);
@@ -430,6 +428,9 @@ class PlayerMetrics extends React.Component {
         );
       }
     }
+    let daysProps = [
+      7, 30, 90
+    ]
 
     return (
       <div className='text-black'>
@@ -446,60 +447,31 @@ class PlayerMetrics extends React.Component {
           </div>
         </div>
         <div className='text-sm text-center text-white'>
-          <MenuButton
-            onClick={() => {
-              this.setState({
-                daysShow: 7,
-                change: this.state.change + 1,
-                showMetrics: {
-                  general: true,
-                  skill: false,
-                  dungeon: false,
-                  slayer: false,
-                },
-              });
-            }}
-            disabled={daysShow === 7}
-            className='mx-1'
-          >
-            7 days
-          </MenuButton>
-          <MenuButton
-            onClick={() => {
-              this.setState({
-                daysShow: 30,
-                change: this.state.change + 1,
-                showMetrics: {
-                  general: true,
-                  skill: false,
-                  dungeon: false,
-                  slayer: false,
-                },
-              });
-            }}
-            disabled={daysShow === 30}
-            className='mx-1'
-          >
-            30 days
-          </MenuButton>
-          <MenuButton
-            onClick={() => {
-              this.setState({
-                daysShow: 90,
-                change: this.state.change + 1,
-                showMetrics: {
-                  general: true,
-                  skill: false,
-                  dungeon: false,
-                  slayer: false,
-                },
-              });
-            }}
-            disabled={daysShow === 90}
-            className='mx-1'
-          >
-            90 days
-          </MenuButton>
+          {
+            daysProps.map((days) => {
+              return (
+                <MenuButton
+                  key={days}
+                  onClick={() => {
+                    this.setState({
+                      daysShow: days,
+                      change: this.state.change + 1,
+                      showMetrics: {
+                        general: true,
+                        skill: false,
+                        dungeon: false,
+                        slayer: false,
+                      },
+                    });
+                  }}
+                  disabled={daysShow === days}
+                  className='mx-1 text-base'
+                >
+                  {days} days
+                </MenuButton>
+              )
+            })
+          }
         </div>
         <div className='text-center'>{metricsCharts}</div>
       </div>
@@ -696,15 +668,13 @@ export default function Player({ player }) {
           )} 🏹 ${parseInt(player.archer)} 🛡️ ${parseInt(player.tank)})
 🔫 Slayer: ${numberShortener(
             player.wolf_xp +
-              player.spider_xp +
-              player.zombie_xp +
-              player.blaze_xp +
-              player.enderman_xp
-          )} 🧟 ${getSlayerLevel('zombie', player.zombie_xp).level} 🕸️ ${
-            getSlayerLevel('spider', player.spider_xp).level
-          } 🐺 ${getSlayerLevel('wolf', player.wolf_xp).level} 🔮 ${
-            getSlayerLevel('enderman', player.enderman_xp).level
-          } 🔥 ${getSlayerLevel('blaze', player.blaze_xp).level}`}
+            player.spider_xp +
+            player.zombie_xp +
+            player.blaze_xp +
+            player.enderman_xp
+          )} 🧟 ${getSlayerLevel('zombie', player.zombie_xp).level} 🕸️ ${getSlayerLevel('spider', player.spider_xp).level
+            } 🐺 ${getSlayerLevel('wolf', player.wolf_xp).level} 🔮 ${getSlayerLevel('enderman', player.enderman_xp).level
+            } 🔥 ${getSlayerLevel('blaze', player.blaze_xp).level}`}
         />
         <meta
           property='og:image'
@@ -717,9 +687,8 @@ export default function Player({ player }) {
             {player.name}
           </h1>
           <h2
-            className={`text-[1em] sm:text-[1.5em] font-semibold ${
-              Boolean(player.guild_name) ? '' : 'hidden'
-            }`}
+            className={`text-[1em] sm:text-[1.5em] font-semibold ${Boolean(player.guild_name) ? '' : 'hidden'
+              }`}
           >
             From{' '}
             <Link href={`/guild/${player.guild_name}`}>
@@ -759,10 +728,10 @@ export default function Player({ player }) {
               color='bg-red-500'
               value={numberWithCommas(
                 player.wolf_xp +
-                  player.spider_xp +
-                  player.zombie_xp +
-                  player.blaze_xp +
-                  player.enderman_xp
+                player.spider_xp +
+                player.zombie_xp +
+                player.blaze_xp +
+                player.enderman_xp
               )}
               name='Slayer'
             />
@@ -794,7 +763,7 @@ export default function Player({ player }) {
           </Link>
         </div>
       </div>
-      <div className='text-center font-[Helvetica] my-4'>
+      <div className='text-center font-[Helvetica] my-4 text-lg'>
         <div className='inline-block p-1'>
           <MenuButton
             onClick={(i) => setSelectedPage('stats')}
@@ -825,46 +794,6 @@ export default function Player({ player }) {
     </div>
   );
 }
-
-//     getUUID(nameOrUUID) {
-//         fetch(`https://playerdb.co/api/player/minecraft/${nameOrUUID}`)
-//             .then((res) => res.json())
-//             .then(
-//                 (r) => {
-//                     let result
-//                     try {
-//                         result = {
-//                             'name': r ? r.data.player.username : nameOrUUID,
-//                             'uuid': r ? r.data.player.raw_id : nameOrUUID,
-//                             'limited': true
-//                         }
-//                     } catch (e) {
-//                         result = {
-//                             'name': nameOrUUID,
-//                             'uuid': nameOrUUID,
-//                             'limited': true
-//                         }
-//                     }
-//                     this.setState({
-//                         playerIsLoaded: true,
-//                         playerJson: result,
-//                     });
-//                     window.location.hash = `#/player/${result.name}`
-//                 },
-//                 (error) => {
-//                     console.log(error);
-//                     let result = {
-//                         'name': nameOrUUID,
-//                         'uuid': nameOrUUID,
-//                         'limited': true
-//                     }
-//                     this.setState({
-//                         playerIsLoaded: true,
-//                         playerJson: result,
-//                     });
-//                 }
-//             );
-//     }
 
 export const getServerSideProps = async (context) => {
   let player = await axios

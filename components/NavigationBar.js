@@ -54,21 +54,21 @@ const DiscordIcon = (
 );
 
 const DropDown = (props) => {
-  let showScammers;
+  let showScammers1;
 
-  if (props.cookies.showScammers === undefined) {
-    showScammers = true;
+  if (props.cookies.showScammers1 === undefined) {
+    showScammers1 = false;
   } else {
     if (
-      typeof props.cookies.showScammers === 'string' ||
-      props.cookies.showScammers instanceof String
+      typeof props.cookies.showScammers1 === 'string' ||
+      props.cookies.showScammers1 instanceof String
     ) {
-      showScammers = props.cookies.showScammers === 'true';
+      showScammers1 = props.cookies.showScammers1 === 'true';
     } else {
-      showScammers = props.cookies.showScammers;
+      showScammers1 = props.cookies.showScammers1;
     }
   }
-  props.cookies.showScammers = showScammers;
+  props.cookies.showScammers1 = showScammers1;
 
   if (props.cookies.weightUsed === undefined) {
     props.cookies.weightUsed = 'Senither';
@@ -118,8 +118,8 @@ const DropDown = (props) => {
       <div
         className='flex items-center justify-between p-2 rounded-md bg-primary hover:bg-lightprimary'
         onClick={() => {
-          props.changeCookie('showScammers', !props.cookies.showScammers);
-          props.cookies.showScammers = !props.cookies.showScammers;
+          props.changeCookie('showScammers1', !props.cookies.showScammers1);
+          props.cookies.showScammers1 = !props.cookies.showScammers1;
         }}
       >
         <span className='h-[55px] w-[55px]'>
@@ -132,7 +132,7 @@ const DropDown = (props) => {
           />
         </span>
         <span className='p-2 text-lg'>
-          {props.cookies.showScammers ? 'Hide Scammers' : 'Show Scammers'}
+          {props.cookies.showScammers1 ? 'Hide Scammers' : 'Show Scammers'}
         </span>
       </div>
     </div>
