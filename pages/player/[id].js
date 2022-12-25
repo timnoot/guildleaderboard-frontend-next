@@ -26,7 +26,6 @@ import {
   StatBlockTop,
   OutsideLink,
   CopyButton,
-  BackButton,
   MenuButton,
 } from '../../components/StatBlocks';
 import { Footer } from '../../components/Footer';
@@ -35,6 +34,8 @@ import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
 
 import ReactTags from 'react-tag-autocomplete';
+
+import { FaArrowLeft } from 'react-icons/fa';
 
 class JoinLogs extends React.Component {
   constructor(props) {
@@ -687,8 +688,7 @@ export default function Player({ player }) {
             {player.name}
           </h1>
           <h2
-            className={`text-[1em] sm:text-[1.5em] font-semibold ${Boolean(player.guild_name) ? '' : 'hidden'
-              }`}
+            className={`text-[1em] sm:text-[1.5em] font-semibold ${Boolean(player.guild_name) ? '' : 'hidden'}`}
           >
             From{' '}
             <Link href={`/guild/${player.guild_name}`}>
@@ -752,18 +752,21 @@ export default function Player({ player }) {
           />
           <CopyButton text='UUID' copy={player.uuid} />
         </div>
-        <div>
-          <Link href={player.guild_name ? `/guild/${player.guild_name}` : '/'}>
-            <a>
-              <BackButton
-                className='bg-red-600 cursor-pointer'
-                name={`Back to ${player.guild_name || 'Leaderboard'}`}
-              />
-            </a>
-          </Link>
-        </div>
+
       </div>
       <div className='text-center font-[Helvetica] my-4 text-lg'>
+        <div className='inline-block p-1 '>
+          <MenuButton disabled={false}>
+            <Link href={player.guild_name ? `/guild/${player.guild_name}` : '/'}>
+              <div className='text-center'>
+                <FaArrowLeft className='inline-block' />
+                <div className='pl-1 inline-block'>
+                  {`Back to ${player.guild_name || 'Leaderboard'}`}
+                </div>
+              </div>
+            </Link>
+          </MenuButton>
+        </div>
         <div className='inline-block p-1'>
           <MenuButton
             onClick={(i) => setSelectedPage('stats')}

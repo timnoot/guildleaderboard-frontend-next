@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-
 import axios from 'axios';
 
 import { followCursor, hideAll } from 'tippy.js';
@@ -12,30 +11,25 @@ import 'tippy.js/dist/tippy.css'; // optional
 import ReactTags from 'react-tag-autocomplete';
 
 import { APIURL } from '../../utils/constants.js';
-import {
-  numberShortener,
-  numberWithCommas,
-} from '../../utils/numformatting.js';
+import { numberShortener, numberWithCommas } from '../../utils/numformatting.js';
 import { TimeDelta } from '../../utils/timedelta.js';
 
-import {
-  StatBlockTop,
-  BackButton,
-  MenuButton,
-} from '../../components/StatBlocks';
+import { StatBlockTop, MenuButton } from '../../components/StatBlocks';
 import { Footer } from '../../components/Footer';
 import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
 
+import { FaArrowLeft } from 'react-icons/fa';
+
 const GuildHeader = (props) => {
   let backButtonElement = (
     <div className='mx-auto w-max'>
-      <Link href='/'>
+      {/* <Link href='/'>
         <a>
-          <BackButton className='bg-red-600' name={`Back to leaderboard`} />
+          <BackButton name={`Back to leaderboard`} />
         </a>
-      </Link>
+      </Link> */}
     </div>
   );
 
@@ -182,17 +176,15 @@ const GuildHeader = (props) => {
         </button>
       </div>
       <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
-      {props.selectedPage === 'players' && (
-        <h1 className='pb-2 text-center text-white sm:text-1xl'>
-          Scammer Database provided by{' '}
-          <a
-            className='text-blue-500 underline'
-            href='https://discord.gg/skyblock'
-          >
-            SkyBlockZ
-          </a>
-        </h1>
-      )}
+      {/* {props.selectedPage === 'players' && <h1 className='pb-2 text-center text-white sm:text-1xl'>
+        Scammer Database provided by{' '}
+        <a
+          className='text-blue-500 underline'
+          href='https://discord.gg/skyblock'
+        >
+          SkyBlockZ
+        </a>
+      </h1>} */}
       {backButtonElement}
     </div>
   );
@@ -897,6 +889,18 @@ export default function Guild({ guild }) {
     >
       <GuildHeader guildJson={guild} selectedPage={selectedPage} />
       <div className='text-center font-[Helvetica] text-lg'>
+        <div className='inline-block p-1 '>
+          <MenuButton disabled={false}>
+            <Link href='/guilds'>
+              <div className='text-center'>
+                <FaArrowLeft className='inline-block' />
+                <div className='pl-1 inline-block'>
+                  Back to leaderboard
+                </div>
+              </div>
+            </Link>
+          </MenuButton>
+        </div>
         <div className='inline-block p-1 '>
           <MenuButton
             onClick={(i) => setSelectedPage('players')}
