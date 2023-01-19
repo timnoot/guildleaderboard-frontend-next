@@ -47,6 +47,12 @@ const GuildHeader = (props) => {
       'tippy': `${numberWithCommas(props.guildJson.senither_weight)} Senither Weight with a multiplier of ${numberWithCommas(props.guildJson.multiplier)}.`
     },
     {
+      'color': 'bg-yellow-600',
+      'value': numberWithCommas(props.guildJson.sb_experience / 100),
+      'name': 'SkyBlock Level',
+      'tippy': `${numberWithCommas(props.guildJson.sb_experience)} Skyblock Experience.`
+    },
+    {
       'color': 'bg-green-700',
       'value': numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier),
       'name': 'Lily Weight',
@@ -97,6 +103,7 @@ const GuildHeader = (props) => {
 💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
 
 💪 Senither: ${numberWithCommas(props.guildJson.senither_weight * props.guildJson.multiplier)}
+🏆 SkyBlock level: ${numberWithCommas(props.guildJson.sb_experience / 100)}
 🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier)}
 
 📚 Avg Skill: ${props.guildJson.skills}
@@ -186,11 +193,11 @@ const Player = (props) => {
             {numberWithCommas(player_data.senither_weight)}
           </div>
         </th>
-        <th className='px-1'>
-          <div className='px-1 my-1 font-normal bg-green-700 rounded-md lg:mx-6 xl:px-0'>
-            {numberWithCommas(player_data.lily_weight)}
+        <th>
+          <div className='px-1 mx-2 my-1 font-normal bg-yellow-600 rounded-md lg:mx-6 xl:px-0'>
+            {Math.floor(player_data.sb_experience / 100)}
           </div>
-        </th>
+        </th>   
         <th className='px-1'>
           <div className='px-1 my-1 font-normal bg-blue-700 rounded-md lg:mx-2 xl:px-0'>
             {numberShortener(player_data.networth)}
@@ -311,8 +318,8 @@ class Players extends React.Component {
         name: 'Senither',
       },
       {
-        id: 'lily_weight',
-        name: 'Lily',
+        id: 'sb_experience',
+        name: 'SkyBlock level',
       },
       {
         id: 'networth',
@@ -671,6 +678,10 @@ class CompareGuilds extends React.Component {
       {
         id: "senither_weight",
         title: "Senither Weight",
+      },
+      {
+        id: "sb_experience",
+        title: "SkyBlock experience",
       },
       {
         id: "lily_weight",
