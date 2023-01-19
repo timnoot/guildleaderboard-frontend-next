@@ -246,7 +246,7 @@ class PlayerMetrics extends React.Component {
     this.reactTags = React.createRef();
     this.getSeries.bind(this);
     this.metricsKeys = {
-      general: ['senither_weight', 'lily_weight', 'average_skill', 'networth'],
+      general: ['senither_weight', 'sb_experience', 'lily_weight', 'average_skill', 'networth'],
       skill: [
         ['combat', 'combat_xp'],
         ['alchemy', 'alchemy_xp'],
@@ -347,6 +347,9 @@ class PlayerMetrics extends React.Component {
   }
 
   getMetricName(metric) {
+    if (metric === 'sb_experience') {
+      return 'SkyBlock Experience';
+    }
     return metric
       .replace('xp', 'XP')
       .split('_')
@@ -658,6 +661,7 @@ export default function Player({ player }) {
           property='og:description'
           content={`
 💪 Senither: ${numberWithCommas(player.senither_weight)}
+🏆 SkyBlock level: ${Math.floor(player.sb_experience / 100)}
 🌺 Lily: ${numberWithCommas(player.lily_weight)}
 💵 Networth: ${numberShortener(player.networth)}
 
@@ -703,6 +707,11 @@ export default function Player({ player }) {
               color='bg-purple-700'
               value={numberWithCommas(player.senither_weight)}
               name='Senither Weight'
+            />
+            <StatBlockTop
+              color='bg-yellow-600'
+              value={Math.floor(player.sb_experience / 100)}
+              name='SkyBlock level'
             />
             <StatBlockTop
               color='bg-green-700'
