@@ -45,7 +45,7 @@ const Player = (props) => {
                 </th>
                 <th className='px-1'>
                     <div className='px-1 my-1 font-normal bg-levelorange rounded-md lg:mx-6 xl:px-0'>
-                        {Math.floor(guildJson.sb_experience / 10) / 10}
+                        {Math.floor(player_data.sb_experience / 10) / 10}
                     </div>
                 </th>
                 <th className='px-1'>
@@ -220,7 +220,7 @@ class Players extends React.Component {
             {
                 id: 'sb_experience',
                 name: 'SkyBlock level',
-            },            
+            },
             {
                 id: 'networth',
                 name: 'Networth',
@@ -274,7 +274,7 @@ class Players extends React.Component {
                                             </th>
                                         )
                                     })
-                                }                                
+                                }
                                 <th className='hidden lg:table-cell'>Last updated</th>
                             </tr>
                             {players}
