@@ -44,6 +44,11 @@ const Player = (props) => {
                     </div>
                 </th>
                 <th className='px-1'>
+                    <div className='px-1 my-1 font-normal bg-levelorange rounded-md lg:mx-6 xl:px-0'>
+                        {Math.floor(guildJson.sb_experience / 10) / 10}
+                    </div>
+                </th>
+                <th className='px-1'>
                     <div className='px-1 my-1 font-normal bg-blue-700 rounded-md lg:mx-2 xl:px-0'>
                         {numberShortener(player_data.networth)}
                     </div>
@@ -212,6 +217,10 @@ class Players extends React.Component {
                 id: 'senither_weight',
                 name: 'Senither',
             },
+            {
+                id: 'sb_experience',
+                name: 'SkyBlock level',
+            },            
             {
                 id: 'networth',
                 name: 'Networth',
