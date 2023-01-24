@@ -17,6 +17,7 @@ module.exports = {
         progressblue: "#3BB9FF",
         progressgold: "#ffae00",
         primaryblue: "#1d4ed8",
+        levelorange: "#de781f",
       }
     },
     screens: {

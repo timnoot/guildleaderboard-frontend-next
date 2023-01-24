@@ -709,7 +709,7 @@ export default function Player({ player }) {
               name='Senither Weight'
             />
             <StatBlockTop
-              color='bg-yellow-600'
+              color='bg-levelorange'
               value={Math.floor(player.sb_experience / 100)}
               name='SkyBlock level'
             />

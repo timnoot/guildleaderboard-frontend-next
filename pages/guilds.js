@@ -117,63 +117,40 @@ const Guild = (props) => {
           <div
             className={`font-normal my-1 ${weightColor} rounded-md px-1 xl:px-0`}
           >
-            {numberWithCommas(weight * guildJson.multiplier)}
+            {numberWithCommas(Math.floor(weight * guildJson.multiplier))}
           </div>
         </Tippy>
       </th>
       <th>
-        <Tippy
-          content={`${numberShortener(
-            guildJson.networth * guildJson.members
-          )} total guild networth`}
-        >
-          <div
-            className={`my-1 mx-3 font-normal bg-blue-700 rounded-md px-1 xl:px-0`}
-          >
-            {numberShortener(guildJson.networth)}
-          </div>
-        </Tippy>
+        <div className="my-1 mx-1 font-normal bg-levelorange rounded-md px-1 xl:px-0 lg:mx-4">
+          {Math.floor(guildJson.sb_experience / 10) / 10}
+        </div>
+      </th>
+      <th>
+        <div className="my-1 mx-1 font-normal bg-blue-700 rounded-md px-1 xl:px-0 lg:mx-3">
+          {numberShortener(guildJson.networth)}
+        </div>
       </th>
       <th className='hidden md:table-cell'>
-        <Tippy
-          content={`${guildJson.name} is #${props.skills_index} in Average Skills`}
-        >
-          <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
-            {guildJson.skills}
-          </div>
-        </Tippy>
+        <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
+          {guildJson.skills}
+        </div>
       </th>
       <th className='hidden md:table-cell'>
-        <Tippy
-          content={`${guildJson.name} is #${props.slayer_index} in Slayers`}
-        >
-          <div className='px-1 mx-2 my-1 font-normal bg-red-500 rounded-md xl:px-0'>
-            {numberWithCommas(Math.round(guildJson.slayer))}
-          </div>
-        </Tippy>
+        <div className='px-1 mx-2 my-1 font-normal bg-red-500 rounded-md xl:px-0'>
+          {numberWithCommas(Math.round(guildJson.slayer))}
+        </div>
       </th>
       <th className='hidden md:table-cell'>
-        <Tippy
-          content={`${guildJson.name} is #${props.catacombs_index} in Catacombs`}
-        >
-          <div className='px-1 mx-2 my-1 font-normal bg-green-400 rounded-md xl:mx-8 xl:px-0'>
-            {guildJson.catacombs}
-          </div>
-        </Tippy>
+        <div className='px-1 mx-2 my-1 font-normal bg-green-400 rounded-md xl:mx-8 xl:px-0'>
+          {guildJson.catacombs}
+        </div>
       </th>
       <th className='hidden px-1 lg:px-5 lg:table-cell'>{TimeAgo}</th>
     </tr>
   );
 };
 
-const sortOnFunct = (guild_data, sortOn) => {
-  let r = guild_data.slice();
-
-  r.sort(function (a, b) {
-    return b[sortOn] - a[sortOn];
-  });
-  return r;
-};
 
 const Guilds = (props) => {
   let guild_data = props.guildsJson.slice();
@@ -191,9 +168,6 @@ const Guilds = (props) => {
 
   const [sortReversed, setSortReversed] = useState(false);
 
-  const sortedOnSlayer = useMemo(() => sortOnFunct(guild_data, 'slayer'), []);
-  const sortedOnCatacombs = useMemo(() => sortOnFunct(guild_data, 'catacombs'), []);
-  const sortedOnSkill = useMemo(() => sortOnFunct(guild_data, 'skills'), []);
 
   let showScammers1;
   if (props.cookies.showScammers1 === undefined) {
@@ -230,10 +204,6 @@ const Guilds = (props) => {
   for (const i in guild_data) {
     let guild_json = guild_data[i];
 
-    let slayer_index = sortedOnSlayer.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let catacombs_index = sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let skills_index = sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
-
     if (searchQuery !== '' && guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       colorIndex++
     }
@@ -247,9 +217,6 @@ const Guilds = (props) => {
         usedWeight={usedWeight}
         sortOn={sortOn}
         sortReversed={sortReversed}
-        slayer_index={slayer_index}
-        catacombs_index={catacombs_index}
-        skills_index={skills_index}
         key={guild_json.id}
         color={
           (searchQuery !== '' ? colorIndex : i) % 2 === 0
@@ -290,50 +257,45 @@ const Guilds = (props) => {
             <th className='tracking-[.1em] text-left'>Guilds</th>
             <th
               className='hover:cursor-pointer'
-              onClick={() => {
-                onSortClick('members');
-              }}
+              onClick={() => { onSortClick('members'); }}
             >
               Member
             </th>
             <th
               className='hover:cursor-pointer'
-              onClick={() => {
-                onSortClick(usedWeightKey);
-              }}
+              onClick={() => { onSortClick(usedWeightKey); }}
             >
               Weight
             </th>
             <th
               className='hover:cursor-pointer'
-              onClick={() => {
-                onSortClick('networth');
-              }}
+              onClick={() => { onSortClick('sb_experience'); }}
+            >
+              SkyBlock <br />
+              level
+            </th>
+            <th
+              className='hover:cursor-pointer'
+              onClick={() => { onSortClick('networth'); }}
             >
               Networth
             </th>
             <th
               className='hidden hover:cursor-pointer md:table-cell'
-              onClick={() => {
-                onSortClick('skills');
-              }}
+              onClick={() => { onSortClick('skills'); }}
             >
               Average <br />
               Skills
             </th>
             <th
               className='hidden hover:cursor-pointer md:table-cell min-w-fit'
-              onClick={() => {
-                onSortClick('slayer');
-              }}
+              onClick={() => { onSortClick('slayer'); }}
             >
               Slayers
             </th>
             <th
               className='hidden hover:cursor-pointer md:table-cell'
-              onClick={() => {
-                onSortClick('catacombs');
-              }}
+              onClick={() => { onSortClick('catacombs'); }}
             >
               Catacombs
             </th>

@@ -53,10 +53,10 @@ const GuildHeader = (props) => {
       )}.`,
     },
     {
-      'color': 'bg-yellow-600',
+      'color': 'bg-levelorange',
       'value': numberWithCommas(props.guildJson.sb_experience / 100),
       'name': 'SkyBlock Level',
-      'tippy': `${numberWithCommas(props.guildJson.sb_experience)} Skyblock Experience.`
+      'tippy': `${numberWithCommas(props.guildJson.sb_experience)} average SkyBlock Experience.`
     },
     {
       'color': 'bg-green-700',
@@ -215,7 +215,7 @@ const Player = (props) => {
           </div>
         </th>
         <th>
-          <div className='px-1 mx-2 my-1 font-normal bg-yellow-600 rounded-md lg:mx-6 xl:px-0'>
+          <div className='px-1 mx-2 my-1 font-normal bg-levelorange rounded-md lg:mx-6 xl:px-0'>
             {Math.floor(player_data.sb_experience / 100)}
           </div>
         </th>   
