@@ -131,8 +131,8 @@ const Guild = (props) => {
       </th>
       <th>
         <Tippy
-          content={`${numberWithCommas(weight)} ${props.usedWeight
-            } Weight with a multiplier of ${numberWithCommas(
+          content={`${guildJson.name} is #${props.weight_index} in Weight with ${numberWithCommas(weight)} ${props.usedWeight
+            } Weight and a multiplier of ${numberWithCommas(
               guildJson.multiplier
             )}`}
         >
@@ -207,6 +207,7 @@ const Guilds = (props) => {
   const sortedOnCatacombs = useMemo(() => sortOnFunct(guild_data, 'catacombs'), []);
   const sortedOnSkill = useMemo(() => sortOnFunct(guild_data, 'skills'), []);
   const sortedOnNetworth = useMemo(() => sortOnFunct(guild_data, 'networth'), []);
+  const sortedOnWeight = useMemo(() => sortOnFunct(guild_data, usedWeightKey), [usedWeightKey]);
 
 
   let showScammers1;
@@ -248,6 +249,7 @@ const Guilds = (props) => {
     let catacombs_index = sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
     let skills_index = sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
     let networth_index = sortedOnNetworth.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let weight_index = sortedOnWeight.findIndex((guild) => guild.id === guild_json.id) + 1;
 
     if (searchQuery !== '' && guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       colorIndex++
@@ -266,6 +268,7 @@ const Guilds = (props) => {
         catacombs_index={catacombs_index}
         skills_index={skills_index}
         networth_index={networth_index}
+        weight_index={weight_index}
         key={guild_json.id}
         color={
           (searchQuery !== '' ? colorIndex : i) % 2 === 0
