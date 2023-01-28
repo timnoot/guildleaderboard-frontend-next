@@ -246,7 +246,7 @@ class PlayerMetrics extends React.Component {
     this.reactTags = React.createRef();
     this.getSeries.bind(this);
     this.metricsKeys = {
-      general: ['senither_weight', 'sb_experience', 'lily_weight', 'average_skill', 'networth'],
+      general: ['sb_experience', 'networth', 'senither_weight', 'lily_weight', 'average_skill'],
       skill: [
         ['combat', 'combat_xp'],
         ['alchemy', 'alchemy_xp'],
@@ -660,10 +660,11 @@ export default function Player({ player }) {
         <meta
           property='og:description'
           content={`
-💪 Senither: ${numberWithCommas(player.senither_weight)}
 🏆 SkyBlock level: ${Math.floor(player.sb_experience / 100)}
-🌺 Lily: ${numberWithCommas(player.lily_weight)}
 💵 Networth: ${numberShortener(player.networth)}
+
+💪 Senither: ${numberWithCommas(player.senither_weight)}
+🌺 Lily: ${numberWithCommas(player.lily_weight)}
 
 📚 Avg Skill: ${numberWithCommas(player.average_skill)}
 💀 Catacombs: ${numberWithCommas(player.catacombs)} (🚑 ${parseInt(
@@ -704,24 +705,24 @@ export default function Player({ player }) {
 
           <div className='p-2 text-center'>
             <StatBlockTop
-              color='bg-purple-700'
-              value={numberWithCommas(player.senither_weight)}
-              name='Senither Weight'
-            />
-            <StatBlockTop
               color='bg-levelorange'
               value={Math.floor(player.sb_experience / 100)}
               name='SkyBlock level'
             />
             <StatBlockTop
-              color='bg-green-700'
-              value={numberWithCommas(player.lily_weight)}
-              name='Lily Weight'
-            />
-            <StatBlockTop
               value={numberShortener(player.networth)}
               name='Networth'
               color='bg-blue-700'
+            />
+            <StatBlockTop
+              color='bg-purple-700'
+              value={numberWithCommas(player.senither_weight)}
+              name='Senither Weight'
+            />
+            <StatBlockTop
+              color='bg-green-700'
+              value={numberWithCommas(player.lily_weight)}
+              name='Lily Weight'
             />
             <StatBlockTop
               color='bg-blue-500'

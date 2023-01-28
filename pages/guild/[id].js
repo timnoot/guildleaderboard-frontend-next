@@ -41,6 +41,25 @@ const GuildHeader = (props) => {
 
   let StatBlocksProps = [
     {
+      color: 'bg-yellow-500',
+      value: props.guildJson.members.length,
+      name: 'Members',
+    },
+    {
+      'color': 'bg-levelorange',
+      'value': numberWithCommas(props.guildJson.sb_experience / 100),
+      'name': 'SkyBlock Level',
+      'tippy': `${numberWithCommas(props.guildJson.sb_experience)} average SkyBlock Experience.`
+    },
+    {
+      color: 'bg-blue-700',
+      name: 'Networth',
+      value: numberShortener(props.guildJson.networth),
+      tippy: `${numberShortener(
+        props.guildJson.networth * props.guildJson.members.length
+      )} total guild networth.`,
+    },
+    {
       color: 'bg-purple-700',
       value: numberWithCommas(
         props.guildJson.senither_weight * props.guildJson.multiplier
@@ -53,24 +72,10 @@ const GuildHeader = (props) => {
       )}.`,
     },
     {
-      'color': 'bg-levelorange',
-      'value': numberWithCommas(props.guildJson.sb_experience / 100),
-      'name': 'SkyBlock Level',
-      'tippy': `${numberWithCommas(props.guildJson.sb_experience)} average SkyBlock Experience.`
-    },
-    {
       'color': 'bg-green-700',
       'value': numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier),
       'name': 'Lily Weight',
       'tippy': `${numberWithCommas(props.guildJson.lily_weight)} Lily Weight with a multiplier of ${numberWithCommas(props.guildJson.multiplier)}.`
-    },
-    {
-      color: 'bg-blue-700',
-      name: 'Networth',
-      value: numberShortener(props.guildJson.networth),
-      tippy: `${numberShortener(
-        props.guildJson.networth * props.guildJson.members.length
-      )} total guild networth.`,
     },
     {
       color: 'bg-blue-500',
@@ -86,11 +91,6 @@ const GuildHeader = (props) => {
       color: 'bg-red-500',
       value: numberWithCommas(props.guildJson.slayer),
       name: 'Slayer',
-    },
-    {
-      color: 'bg-yellow-500',
-      value: props.guildJson.members.length,
-      name: 'Members',
     },
   ];
   return (
@@ -108,10 +108,10 @@ const GuildHeader = (props) => {
         <meta
           property='og:description'
           content={`👥 Members: ${props.guildJson.members.length}
+🏆 SkyBlock level: ${numberWithCommas(props.guildJson.sb_experience / 100)}
 💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
 
 💪 Senither: ${numberWithCommas(props.guildJson.senither_weight * props.guildJson.multiplier)}
-🏆 SkyBlock level: ${numberWithCommas(props.guildJson.sb_experience / 100)}
 🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier)}
 
 📚 Avg Skill: ${props.guildJson.skills}
@@ -129,11 +129,10 @@ const GuildHeader = (props) => {
       </div>
       <div className='py-2'>
         <button
-          className={`${
-            props.guildJson.discord != null
-              ? 'opacity-95 hover:opacity-100 hover:scale-105'
-              : 'opacity-25'
-          } 
+          className={`${props.guildJson.discord != null
+            ? 'opacity-95 hover:opacity-100 hover:scale-105'
+            : 'opacity-25'
+            } 
       bg-blue-900 text-[1.2em] text-center text-gray-200 drop-shadow-lg px-3 py-2 rounded-md border border-gray-800`}
         >
           <div className='flex items-center'>
@@ -201,27 +200,26 @@ const Player = (props) => {
   return (
     <>
       <tr
-        className={`${props.color} ${
-          props.hidden ? 'hidden' : ''
-        } font-[Helvetica] hover:opacity-60 hover:cursor-pointer`}
+        className={`${props.color} ${props.hidden ? 'hidden' : ''
+          } font-[Helvetica] hover:opacity-60 hover:cursor-pointer`}
         ref={ref}
         onClick={() => goRouteId(player_data.name)}
       >
         <th className='px-1 sm:px-4'>{props.position}</th>
         <th className='pr-[2em] text-left'>{player_data.name}</th>
         <th>
-          <div className='px-1 my-1 font-normal bg-purple-700 rounded-md lg:mx-6 xl:px-0'>
-            {numberWithCommas(player_data.senither_weight)}
-          </div>
-        </th>
-        <th>
           <div className='px-1 mx-2 my-1 font-normal bg-levelorange rounded-md lg:mx-6 xl:px-0'>
             {Math.floor(player_data.sb_experience / 100)}
           </div>
-        </th>   
+        </th>
         <th className='px-1'>
           <div className='px-1 my-1 font-normal bg-blue-700 rounded-md lg:mx-2 xl:px-0'>
             {numberShortener(player_data.networth)}
+          </div>
+        </th>
+        <th>
+          <div className='px-1 my-1 font-normal bg-purple-700 rounded-md lg:mx-6 xl:px-0'>
+            {numberWithCommas(player_data.senither_weight)}
           </div>
         </th>
         <th className='hidden md:table-cell'>
@@ -350,16 +348,16 @@ class Players extends React.Component {
 
     let tableHeadersProps = [
       {
-        id: 'senither_weight',
-        name: 'Senither',
-      },
-      {
         id: 'sb_experience',
         name: 'SkyBlock level',
       },
       {
         id: 'networth',
         name: 'Networth',
+      },
+      {
+        id: 'senither_weight',
+        name: 'Senither',
       },
       {
         id: 'average_skill',
@@ -552,11 +550,10 @@ class JoinLogs extends React.Component {
           <div className='inline-flex w-11/12 p-2 text-xs text-white rounded-md bg-tertiary md:p-6 xl:w-2/3 xs:text-sm md:text-xl'>
             <div className='text-left align-middle' style={{ flexGrow: 1 }}>
               <button
-                className={`bg-primary rounded-md p-2 ${
-                  allow_previous
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
-                }`}
+                className={`bg-primary rounded-md p-2 ${allow_previous
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  }`}
                 onClick={() => {
                   if (allow_previous) {
                     this.loadHistory(this.guildId, this.state.current_page - 1);
@@ -574,11 +571,10 @@ class JoinLogs extends React.Component {
               style={{ flexGrow: 1 }}
             >
               <button
-                className={`bg-primary  rounded-md p-2 ${
-                  allow_next
-                    ? 'cursor-pointer border-white border-2'
-                    : 'cursor-not-allowed bg-lightprimary text-gray-400'
-                }`}
+                className={`bg-primary  rounded-md p-2 ${allow_next
+                  ? 'cursor-pointer border-white border-2'
+                  : 'cursor-not-allowed bg-lightprimary text-gray-400'
+                  }`}
                 onClick={() => {
                   if (allow_next) {
                     this.loadHistory(this.guildId, this.state.current_page + 1);
@@ -737,20 +733,20 @@ class CompareGuilds extends React.Component {
 
     let chartsProps = [
       {
-        id: 'senither_weight',
-        title: 'Senither Weight',
-      },
-      {
         id: "sb_experience",
         title: "SkyBlock experience",
       },
       {
-        id: "lily_weight",
-        title: "Lily Weight",
-      },
-      {
         id: 'networth',
         title: 'Networth',
+      },
+      {
+        id: 'senither_weight',
+        title: 'Senither Weight',
+      },
+      {
+        id: "lily_weight",
+        title: "Lily Weight",
       },
       {
         id: 'skills',
@@ -763,10 +759,6 @@ class CompareGuilds extends React.Component {
       {
         id: 'slayer',
         title: 'Slayer',
-      },
-      {
-        id: 'member_count',
-        title: 'Members',
       },
     ];
 
