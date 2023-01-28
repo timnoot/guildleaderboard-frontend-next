@@ -190,7 +190,8 @@ export class NavigationBar extends React.Component {
               className='relative flex items-center '
               href='https://discord.gg/ej92B474Ej'
             >
-              <img width='100em' src='/logo459.png' alt='SkyHub Logo' />
+              {/* <img width='100em' src='/logo459.png' alt='SkyHub Logo' /> */}
+              <Image src='/logo459.png' width='100' height='100' alt='Sky Hub' />
               <h2 className='ml-5 text-lg md:text-2xl'>Sky Hub</h2>
             </a>
             <ul className=''>

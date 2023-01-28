@@ -122,35 +122,70 @@ const Guild = (props) => {
         </Tippy>
       </th>
       <th>
-        <div className="my-1 mx-1 font-normal bg-levelorange rounded-md px-1 xl:px-0 lg:mx-4">
-          {Math.floor(guildJson.sb_experience / 10) / 10}
-        </div>
+        <Tippy
+          content={`${guildJson.name} is #${props.sb_experience_index} with a average SkyBlock level of ${Math.floor((guildJson.sb_experience) / 10) / 10} and a multiplier of ${numberWithCommas(
+            guildJson.multiplier
+          )}`}
+        >
+          <div className="my-1 mx-1 font-normal bg-levelorange rounded-md px-1 xl:px-0 lg:mx-4">
+            {Math.floor((guildJson.sb_experience * guildJson.multiplier) / 10) / 10}
+          </div>
+        </Tippy>
       </th>
       <th>
-        <div className="my-1 mx-1 font-normal bg-blue-700 rounded-md px-1 xl:px-0 lg:mx-3">
-          {numberShortener(guildJson.networth)}
-        </div>
+        <Tippy
+          content={`${guildJson.name} is #${props.networth_index} in Networth`}
+        >
+          <div
+            className="my-1 mx-1 font-normal bg-blue-700 rounded-md px-1 xl:px-0 lg:mx-3"
+          >
+            {numberShortener(guildJson.networth)}
+          </div>
+        </Tippy>
       </th>
       <th className='hidden md:table-cell'>
-        <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
-          {guildJson.skills}
-        </div>
+        <Tippy
+          content={`${guildJson.name} is #${props.skills_index} in Average Skills`}
+        >
+          <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
+            {guildJson.skills}
+          </div>
+        </Tippy>
       </th>
       <th className='hidden md:table-cell'>
-        <div className='px-1 mx-2 my-1 font-normal bg-red-500 rounded-md xl:px-0'>
-          {numberWithCommas(Math.round(guildJson.slayer))}
-        </div>
+        <Tippy
+          content={`${guildJson.name} is #${props.slayer_index} in Slayers`}
+        >
+          <div className='px-1 mx-2 my-1 font-normal bg-red-500 rounded-md xl:px-0'>
+            {numberWithCommas(Math.round(guildJson.slayer))}
+          </div>
+        </Tippy>
       </th>
       <th className='hidden md:table-cell'>
-        <div className='px-1 mx-2 my-1 font-normal bg-green-400 rounded-md xl:mx-8 xl:px-0'>
-          {guildJson.catacombs}
-        </div>
+        <Tippy
+          content={`${guildJson.name} is #${props.catacombs_index} in Catacombs`}
+        >
+          <div className='px-1 mx-2 my-1 font-normal bg-green-400 rounded-md xl:mx-8 xl:px-0'>
+            {guildJson.catacombs}
+          </div>
+        </Tippy>
       </th>
       <th className='hidden px-1 lg:px-5 lg:table-cell'>{TimeAgo}</th>
     </tr>
   );
 };
 
+const sortOnFunct = (guild_data, sortOn) => {
+  let r = guild_data.slice();
+
+  r.sort(function (a, b) {
+    if (sortOn.includes('weight') || sortOn.includes("sb_experience")) {
+      return b[sortOn] * b.multiplier - a[sortOn] * a.multiplier;
+    }
+    return b[sortOn] - a[sortOn];
+  });
+  return r;
+};
 
 const Guilds = (props) => {
   let guild_data = props.guildsJson.slice();
@@ -167,6 +202,12 @@ const Guilds = (props) => {
   }, [props.cookies.weightUsed]);
 
   const [sortReversed, setSortReversed] = useState(false);
+
+  const sortedOnSlayer = useMemo(() => sortOnFunct(guild_data, 'slayer'), []);
+  const sortedOnCatacombs = useMemo(() => sortOnFunct(guild_data, 'catacombs'), []);
+  const sortedOnSkill = useMemo(() => sortOnFunct(guild_data, 'skills'), []);
+  const sortedOnNetworth = useMemo(() => sortOnFunct(guild_data, 'networth'), []);
+  const sortedOnSBExperience = useMemo(() => sortOnFunct(guild_data, 'sb_experience'), []);
 
 
   let showScammers1;
@@ -185,12 +226,12 @@ const Guilds = (props) => {
 
   guild_data.sort(function (a, b) {
     if (sortReversed === true) {
-      if (sortOn.includes('weight')) {
+      if (sortOn.includes('weight') || sortOn.includes("sb_experience")) {
         return a[sortOn] * a.multiplier - b[sortOn] * b.multiplier;
       }
       return a[sortOn] - b[sortOn];
     } else {
-      if (sortOn.includes('weight')) {
+      if (sortOn.includes('weight') || sortOn.includes("sb_experience")) {
         return b[sortOn] * b.multiplier - a[sortOn] * a.multiplier;
       }
       return b[sortOn] - a[sortOn];
@@ -203,6 +244,12 @@ const Guilds = (props) => {
   let colorIndex = 1;
   for (const i in guild_data) {
     let guild_json = guild_data[i];
+
+    let slayer_index = sortedOnSlayer.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let catacombs_index = sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let skills_index = sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let networth_index = sortedOnNetworth.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let sb_experience_index = sortedOnSBExperience.findIndex((guild) => guild.id === guild_json.id) + 1;
 
     if (searchQuery !== '' && guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       colorIndex++
@@ -217,6 +264,11 @@ const Guilds = (props) => {
         usedWeight={usedWeight}
         sortOn={sortOn}
         sortReversed={sortReversed}
+        slayer_index={slayer_index}
+        catacombs_index={catacombs_index}
+        skills_index={skills_index}
+        networth_index={networth_index}
+        sb_experience_index={sb_experience_index}
         key={guild_json.id}
         color={
           (searchQuery !== '' ? colorIndex : i) % 2 === 0
