@@ -94,7 +94,7 @@ const Guild = (props) => {
     >
       <th className='pl-1 lg:pl-6'>{props.position}</th>
       {
-        (Boolean(guildJson.position_change) && props.sortOn === 'senither_weight' && !props.sortReversed) ? (
+        (Boolean(guildJson.position_change) && props.sortOn === 'sb_experience' && !props.sortReversed) ? (
           <th className='text-left md:px-1'>
             {positionChange(guildJson.position_change)}
           </th>
@@ -103,31 +103,17 @@ const Guild = (props) => {
       {ScammerInGuild}
       <th className='text-left'>{guildJson.name}</th>
       <th>
-        <div className='px-1 mx-2 my-1 font-normal bg-yellow-500 rounded-md xl:mx-6 xl:px-0'>
+        <div className='mx-3 my-1 font-normal bg-yellow-500 rounded-md xl:mx-6 xl:px-0'>
           {guildJson.members}
         </div>
       </th>
       <th>
         <Tippy
-          content={`${numberWithCommas(weight)} ${props.usedWeight
-            } Weight with a multiplier of ${numberWithCommas(
-              guildJson.multiplier
-            )}`}
-        >
-          <div
-            className={`font-normal my-1 ${weightColor} rounded-md px-1 xl:px-0`}
-          >
-            {numberWithCommas(Math.floor(weight * guildJson.multiplier))}
-          </div>
-        </Tippy>
-      </th>
-      <th>
-        <Tippy
-          content={`${guildJson.name} is #${props.sb_experience_index} with a average SkyBlock level of ${Math.floor((guildJson.sb_experience) / 10) / 10} and a multiplier of ${numberWithCommas(
+          content={`${Math.floor((guildJson.sb_experience) / 10) / 10} average SkyBlock level with a multiplier of ${numberWithCommas(
             guildJson.multiplier
           )}`}
         >
-          <div className="my-1 mx-1 font-normal bg-levelorange rounded-md px-1 xl:px-0 lg:mx-4">
+          <div className="my-1 mx-1 font-normal bg-levelorange rounded-md px-1 xl:px-0 lg:mx-1">
             {Math.floor((guildJson.sb_experience * guildJson.multiplier) / 10) / 10}
           </div>
         </Tippy>
@@ -140,6 +126,20 @@ const Guild = (props) => {
             className="my-1 mx-1 font-normal bg-blue-700 rounded-md px-1 xl:px-0 lg:mx-3"
           >
             {numberShortener(guildJson.networth)}
+          </div>
+        </Tippy>
+      </th>
+      <th>
+        <Tippy
+          content={`${guildJson.name} is #${props.weight_index} in Weight with ${numberWithCommas(weight)} ${props.usedWeight
+            } Weight and a multiplier of ${numberWithCommas(
+              guildJson.multiplier
+            )}`}
+        >
+          <div
+            className={`font-normal my-1 ${weightColor} rounded-md px-1 mx-1 xl:px-0 xl:mx-0`}
+          >
+            {numberWithCommas(Math.floor(weight * guildJson.multiplier))}
           </div>
         </Tippy>
       </th>
@@ -194,11 +194,11 @@ const Guilds = (props) => {
 
   let usedWeightKey = usedWeight === 'Senither' ? 'senither_weight' : 'lily_weight';
 
-  const [sortOn, setSortOn] = useState(usedWeightKey);
+  const [sortOn, setSortOn] = useState('sb_experience');
   useEffect(() => {
     let newUsedWeight = props.cookies.weightUsed || 'Senither';
     setUsedWeight(newUsedWeight);
-    setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
+    // setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
   }, [props.cookies.weightUsed]);
 
   const [sortReversed, setSortReversed] = useState(false);
@@ -207,7 +207,7 @@ const Guilds = (props) => {
   const sortedOnCatacombs = useMemo(() => sortOnFunct(guild_data, 'catacombs'), []);
   const sortedOnSkill = useMemo(() => sortOnFunct(guild_data, 'skills'), []);
   const sortedOnNetworth = useMemo(() => sortOnFunct(guild_data, 'networth'), []);
-  const sortedOnSBExperience = useMemo(() => sortOnFunct(guild_data, 'sb_experience'), []);
+  const sortedOnWeight = useMemo(() => sortOnFunct(guild_data, usedWeightKey), [usedWeightKey]);
 
 
   let showScammers1;
@@ -249,7 +249,7 @@ const Guilds = (props) => {
     let catacombs_index = sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
     let skills_index = sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
     let networth_index = sortedOnNetworth.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let sb_experience_index = sortedOnSBExperience.findIndex((guild) => guild.id === guild_json.id) + 1;
+    let weight_index = sortedOnWeight.findIndex((guild) => guild.id === guild_json.id) + 1;
 
     if (searchQuery !== '' && guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       colorIndex++
@@ -268,7 +268,7 @@ const Guilds = (props) => {
         catacombs_index={catacombs_index}
         skills_index={skills_index}
         networth_index={networth_index}
-        sb_experience_index={sb_experience_index}
+        weight_index={weight_index}
         key={guild_json.id}
         color={
           (searchQuery !== '' ? colorIndex : i) % 2 === 0
@@ -311,13 +311,7 @@ const Guilds = (props) => {
               className='hover:cursor-pointer'
               onClick={() => { onSortClick('members'); }}
             >
-              Member
-            </th>
-            <th
-              className='hover:cursor-pointer'
-              onClick={() => { onSortClick(usedWeightKey); }}
-            >
-              Weight
+              Members
             </th>
             <th
               className='hover:cursor-pointer'
@@ -331,6 +325,12 @@ const Guilds = (props) => {
               onClick={() => { onSortClick('networth'); }}
             >
               Networth
+            </th>
+            <th
+              className='hover:cursor-pointer'
+              onClick={() => { onSortClick(usedWeightKey); }}
+            >
+              Weight
             </th>
             <th
               className='hidden hover:cursor-pointer md:table-cell'
