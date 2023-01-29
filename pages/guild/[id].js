@@ -47,9 +47,13 @@ const GuildHeader = (props) => {
     },
     {
       'color': 'bg-levelorange',
-      'value': numberWithCommas(props.guildJson.sb_experience / 100),
+      'value': numberWithCommas(props.guildJson.sb_experience / 100 * props.guildJson.multiplier),
       'name': 'SkyBlock Level',
-      'tippy': `${numberWithCommas(props.guildJson.sb_experience)} average SkyBlock Experience.`
+      'tippy': `${numberWithCommas(
+        props.guildJson.sb_experience / 100
+      )} average SkyBlock level with a multiplier of ${numberWithCommas(
+        props.guildJson.multiplier
+      )}.`
     },
     {
       color: 'bg-blue-700',
@@ -271,7 +275,7 @@ class Players extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sortOn: 'senither_weight',
+      sortOn: 'sb_experience',
       sortReversed: false,
       searchQuery: '',
     };
