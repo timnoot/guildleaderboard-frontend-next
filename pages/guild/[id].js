@@ -764,6 +764,10 @@ class CompareGuilds extends React.Component {
         id: 'slayer',
         title: 'Slayer',
       },
+      {
+        id: 'member_count',
+        title: 'Members',
+      },
     ];
 
     return (
