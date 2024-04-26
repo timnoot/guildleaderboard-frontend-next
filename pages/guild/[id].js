@@ -171,16 +171,7 @@ const GuildHeader = (props) => {
           </div>
         </button>
       </div>
-      <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
-      {/* {props.selectedPage === 'players' && <h1 className='pb-2 text-center text-white sm:text-1xl'>
-        Scammer Database provided by{' '}
-        <a
-          className='text-blue-500 underline'
-          href='https://discord.gg/skyblock'
-        >
-          SkyBlockZ
-        </a>
-      </h1>} */}
+      <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />      
       {backButtonElement}
     </div>
   );

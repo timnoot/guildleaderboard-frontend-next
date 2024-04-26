@@ -1,4 +1,4 @@
-export const APIURL = "https://api.guildleaderboard.com/"
+export const APIURL = "https://apiv2.guildleaderboard.com/"
 // export const APIURL = "http://localhost:8080/"
 
 
@@ -31,7 +31,8 @@ export const slayers = [
     'spider',
     'wolf',
     'enderman',
-    'blaze'
+    'blaze',
+    'vampire'
 ]
 
 export const dungeons = [
@@ -40,5 +41,5 @@ export const dungeons = [
     'healer',
     'berserk',
     'archer',
-    'tank',    
+    'tank',
 ]

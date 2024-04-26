@@ -45,28 +45,13 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
       <h1 className='pt-4 text-center text-white sm:text-2xl'>
         Tracking {stats.guilds_tracked} guilds with {stats.players_tracked}{' '}
         players
-      </h1>     
+      </h1>
     </header>
   );
 };
 
 
-export const GuildStatsHeader = ({ stats, cookies }) => {
-  let showScammers1;
-  if (cookies.showScammers1 === undefined) {
-    showScammers1 = false;
-  } else {
-    if (
-      typeof cookies.showScammers1 === 'string' ||
-      cookies.showScammers1 instanceof String
-    ) {
-      showScammers1 = cookies.showScammers1 === 'true';
-    } else {
-      showScammers1 = cookies.showScammers1;
-    }
-  }
-
-
+export const GuildStatsHeader = ({ stats }) => {
   return (
     <header>
       <Head>
@@ -103,17 +88,7 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
       <h1 className='pt-4 text-center text-white sm:text-2xl'>
         Tracking {stats.guilds_tracked} guilds with {stats.players_tracked}{' '}
         players
-      </h1>{
-        showScammers1 && <h1 className='text-center text-white sm:text-1xl pt-'>
-          Scammer Database provided by{' '}
-          <a
-            className='text-blue-500 underline'
-            href='https://discord.gg/skyblock'
-          >
-            SkyBlockZ
-          </a>
-        </h1>
-      }
+      </h1>
       <div className='text-center font-[Helvetica] my-4 text-lg'>
         <div className='inline-block p-1 '>
           <MenuButton disabled={false}>
@@ -132,22 +107,7 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
   );
 };
 
-export const PlayerStatsHeader = ({ stats, cookies }) => {
-  let showScammers1;
-  if (cookies.showScammers1 === undefined) {
-    showScammers1 = false;
-  } else {
-    if (
-      typeof cookies.showScammers1 === 'string' ||
-      cookies.showScammers1 instanceof String
-    ) {
-      showScammers1 = cookies.showScammers1 === 'true';
-    } else {
-      showScammers1 = cookies.showScammers1;
-    }
-  }
-
-
+export const PlayerStatsHeader = ({ stats }) => {
   return (
     <header>
       <Head>
@@ -184,17 +144,7 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
       <h1 className='pt-4 text-center text-white sm:text-2xl'>
         Tracking {stats.guilds_tracked} guilds with {stats.players_tracked}{' '}
         players
-      </h1>{
-        showScammers1 && <h1 className='text-center text-white sm:text-1xl pt-'>
-          Scammer Database provided by{' '}
-          <a
-            className='text-blue-500 underline'
-            href='https://discord.gg/skyblock'
-          >
-            SkyBlockZ
-          </a>
-        </h1>
-      }
+      </h1>
       <div className='text-center font-[Helvetica] my-4 text-lg'>
         <div className='inline-block p-1 '>
           <MenuButton disabled={false}>

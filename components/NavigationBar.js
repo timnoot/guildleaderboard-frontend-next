@@ -1,36 +1,9 @@
 import React from 'react';
 // image from next
+import Link from 'next/link';
 import Image from 'next/image';
 
-// import { ReactComponent as SettingsIcon } from '../svgs/settingsicon.svg';
-// import { ReactComponent as DiscordIcon } from '../svgs/Discord-Logo-White.svg';
-const SettingsIcon = (
-  <svg
-    width='2.5em'
-    height='2.5em'
-    id='svg2'
-    version='1.0'
-    viewBox='0 0 82 82'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <g id='g3518' transform='translate(-252.4 4.5158)'>
-      <path
-        id='path58241'
-        style={{
-          'stroke-linejoin': 'round',
-          'stroke-dashoffset': '162',
-          stroke: 'rgb(255, 255, 255)',
-          'stroke-linecap': 'round',
-          'stroke-width': '2',
-          'fill-opacity': '0',
-          fill: 'none',
-          'fill-rule': 'nonzero',
-        }}
-        d='m293.4-3.5158c-2.74 0-5.41 0.2872-8 0.8125v6.1875c-3.47 0.8389-6.72 2.1847-9.68 4l-4.38-4.375c-2.24 1.4862-4.29 3.2298-6.19 5.125-1.89 1.8948-3.64 3.9448-5.12 6.1878l4.37 4.375c-1.81 2.967-3.16 6.212-4 9.687h-6.18c-0.53 2.585-0.82 5.261-0.82 8s0.29 5.415 0.82 8h6.18c0.84 3.475 2.19 6.72 4 9.688l-4.37 4.375c1.48 2.242 3.23 4.292 5.12 6.187 1.9 1.895 3.95 3.639 6.19 5.125l4.38-4.375c2.96 1.816 6.21 3.161 9.68 4v6.188c2.59 0.525 5.26 0.812 8 0.812s5.42-0.287 8-0.812v-6.188c3.48-0.839 6.72-2.184 9.69-4l4.38 4.375c2.24-1.486 4.29-3.23 6.18-5.125 1.9-1.895 3.64-3.945 5.13-6.187l-4.38-4.375c1.82-2.968 3.16-6.213 4-9.688h6.19c0.53-2.585 0.81-5.261 0.81-8s-0.28-5.415-0.81-8h-6.19c-0.84-3.475-2.18-6.72-4-9.687l4.38-4.375c-1.49-2.243-3.23-4.293-5.13-6.1878-1.89-1.8952-3.94-3.6388-6.18-5.125l-4.38 4.375c-2.97-1.8153-6.21-3.1611-9.69-4v-6.1875c-2.58-0.5253-5.26-0.8125-8-0.8125zm0 20c11.04 0 20 8.96 20 20s-8.96 20-20 20-20-8.96-20-20 8.96-20 20-20z'
-      />
-    </g>
-  </svg>
-);
+
 const DiscordIcon = (
   <svg
     width='2.5em'
@@ -53,166 +26,25 @@ const DiscordIcon = (
   </svg>
 );
 
-const DropDown = (props) => {
-  let showScammers1;
-
-  if (props.cookies.showScammers1 === undefined) {
-    showScammers1 = false;
-  } else {
-    if (
-      typeof props.cookies.showScammers1 === 'string' ||
-      props.cookies.showScammers1 instanceof String
-    ) {
-      showScammers1 = props.cookies.showScammers1 === 'true';
-    } else {
-      showScammers1 = props.cookies.showScammers1;
-    }
-  }
-  props.cookies.showScammers1 = showScammers1;
-
-  if (props.cookies.weightUsed === undefined) {
-    props.cookies.weightUsed = 'Senither';
-  }
-
-  let img;
-  if ((props.cookies.weightUsed || 'Senither') === 'Senither') {
-    img = '/lily_weight_icon.png';
-  } else {
-    img = '/weight_icon.png';
-  }
-
-  return (
-    <div className='bg-primary absolute translate-x-[-80%] rounded-md p-3 overflow-hidden w-72'>
-      <div
-        className='flex items-center justify-between p-2 rounded-md bg-primary hover:bg-lightprimary'
-        onClick={() => {
-          props.changeCookie(
-            'weightUsed',
-            (props.cookies.weightUsed || 'Senither') === 'Senither'
-              ? 'Lily'
-              : 'Senither'
-          );
-          props.cookies.weightUsed =
-            (props.cookies.weightUsed || 'Senither') === 'Senither'
-              ? 'Lily'
-              : 'Senither';
-        }}
-      >
-        <span className='h-[55px] w-[55px]'>
-          <Image
-            src={img}
-            width='50'
-            height='50'
-            layout='responsive'
-            alt='weight'
-          />
-        </span>
-        <span className='p-2 text-lg'>
-          {`${
-            (props.cookies.weightUsed || 'Senither') === 'Senither'
-              ? 'Lily'
-              : 'Senither'
-          } Weight`}
-        </span>
-      </div>
-      <div
-        className='flex items-center justify-between p-2 rounded-md bg-primary hover:bg-lightprimary'
-        onClick={() => {
-          props.changeCookie('showScammers1', !props.cookies.showScammers1);
-          props.cookies.showScammers1 = !props.cookies.showScammers1;
-        }}
-      >
-        <span className='h-[55px] w-[55px]'>
-          <Image
-            src='/barrier.png'
-            width='50'
-            height='50'
-            layout='responsive'
-            alt='barrier'
-          />
-        </span>
-        <span className='p-2 text-lg'>
-          {props.cookies.showScammers1 ? 'Hide Scammers' : 'Show Scammers'}
-        </span>
-      </div>
-    </div>
-  );
-};
 
 export class NavigationBar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isOpen: false,
-    };
-    this.wrapperRef = React.createRef();
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
-
-    this.cookies = props.cookies;
-    this.changeCookie = props.changeCookie;
   }
 
-  changeIsOpen(val) {
-    this.setState({ isOpen: val });
-  }
-
-  handleScroll(event, state1) {
-    this.setState({ isOpen: false });
-  }
-
-  handleClickOutside(event) {
-    if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
-      this.setState({ isOpen: false });
-    }
-  }
-
-  componentDidMount() {
-    document
-      .getElementById('maindiv')
-      .addEventListener('scroll', this.handleScroll);
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
-
-  componentWillUnmount() {
-    document
-      .getElementById('maindiv')
-      .removeEventListener('scroll', this.handleScroll);
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
 
   render() {
     return (
       <div id='/'>
         <nav className='block '>
           <section className='py-2.5 flex justify-between items-center text-white text-xs md:text-lg px-[5%] bg-[#2B2D31] text-center'>
-            <a
-              className='relative flex items-center '
-              href='https://discord.gg/ej92B474Ej'
-            >
-              {/* <img width='100em' src='/logo459.png' alt='SkyHub Logo' /> */}
-              <Image src='/logo459.png' width='100' height='100' alt='Sky Hub' />
-              <h2 className='ml-5 text-lg md:text-2xl'>Sky Hub</h2>
-            </a>
+            <Link href='/' >
+              <div className='relative flex items-center cursor-pointer'>
+                <Image src='/logo459.png' width='100' height='100' alt='Sky Hub' />
+                <h2 className='ml-5 text-lg md:text-2xl'>Guild Leaderboard</h2>
+              </div>
+            </Link>
             <ul className=''>
-              <li
-                className='float-right px-4 overflow-hidden hover:cursor-pointer'
-                ref={this.wrapperRef}
-              >
-                <div
-                  onClick={() => {
-                    this.setState({ isOpen: !this.state.isOpen });
-                  }}
-                >
-                  {SettingsIcon}
-                </div>
-                {this.state.isOpen ? (
-                  <DropDown
-                    cookies={this.cookies}
-                    changeCookie={this.changeCookie}
-                  />
-                ) : null}
-              </li>
               <li className='hidden float-right px-1 overflow-hidden md:px-9 xs:block'>
                 <a href='https://discord.gg/ej92B474Ej'>{DiscordIcon}</a>
               </li>

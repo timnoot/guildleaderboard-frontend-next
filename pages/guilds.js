@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { TimeDelta } from '../utils/timedelta.js';
+import { weightMultiplier } from '../utils/other.js';
 import { numberShortener, numberWithCommas } from '../utils/numformatting.js';
 import { NavigationBar } from '../components/NavigationBar.js';
 import { GuildStatsHeader } from '../components/StatsHeaderHome.js';
@@ -11,7 +12,26 @@ import { useRouter } from 'next/router';
 import 'tippy.js/dist/tippy.css'; // optional
 import Tippy from '@tippyjs/react';
 import { hideAll } from 'tippy.js';
-import { useCookies } from 'react-cookie';
+
+// {
+//   senither_weight int,
+//   skills float,                    
+//   catacombs float,
+//   slayer int,
+//   lily_weight int,
+//   networth int,
+//   sb_experience int  
+// }   
+
+const NAME_TO_POSITION = {
+  'senither_weight': 0,
+  'skills': 1,
+  'catacombs': 2,
+  'slayer': 3,
+  'lily_weight': 4,
+  'networth': 5,
+  'sb_experience': 6
+};
 
 function positionChange(change) {
   if (change > 0) {
@@ -38,49 +58,9 @@ const Guild = (props) => {
 
   const router = useRouter();
   const goRouteId = () => {
-    router.push(`/guild/${guildJson.name}`);
+    router.push(`/guild/${guildJson.guild_name}`);
   };
-
-  const [ScammerInGuild, setScammerInGuild] = useState(<th></th>);
-
-  useEffect(() => {
-    setScammerInGuild(guildJson.scammers > 0 && props.showScammers1 ? <th className='md:pr-2'>
-      <Tippy
-        interactive={true}
-        duration={0}
-        theme='tomato'
-        content={
-          <div className='block-inline'>
-            <a className='text-blue-500 underline' href='https://discord.gg/skyblock'>
-              SkyBlockZ
-            </a>
-            {' '}found {guildJson.scammers} scammers in this guild.
-          </div>
-        }
-      >
-        <div>
-          <svg width='1.5em' height='1.5em' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg' textRendering='geometricPrecision' shapeRendering='geometricPrecision'>
-            <polygon id='svg_1' y='50%' x='50%' stroke='#e6d2d2' fill='#d54e4e' points='44.24585723876953,2.435657501220703 61.5635986328125,19.754154205322266 61.56416320800781,44.24567794799805 44.24528121948242,61.5643424987793 19.754140853881836,61.56398391723633 2.4360132217407227,44.24640655517578 2.4358367919921875,19.75396156311035 19.75433349609375,2.436215877532959 44.24585723876953,2.435657501220703' />
-            <text id='svg_2' textAnchor='middle' dominantBaseline='middle' fontSize='40px' fill='rgb(255, 255, 255)' y='50%' x='50%'>
-              {guildJson.scammers}
-            </text>
-          </svg>
-        </div>
-      </Tippy>
-    </th> : <th></th>
-    );
-  }, [props.showScammers1]);
-
-  let weight;
-  let weightColor;
-
-  if (props.usedWeight === 'Senither') {
-    weight = guildJson.senither_weight;
-    weightColor = 'bg-purple-700';
-  } else {
-    weight = guildJson.lily_weight;
-    weightColor = 'bg-green-700';
-  }
+  let multiplier = weightMultiplier(guildJson.members);
 
   const [TimeAgo, SetTimeAgo] = useState('Loading...');
   useEffect(() => {
@@ -94,14 +74,14 @@ const Guild = (props) => {
     >
       <th className='pl-1 lg:pl-6'>{props.position}</th>
       {
-        (Boolean(guildJson.position_change) && props.sortOn === 'sb_experience' && !props.sortReversed) ? (
+        (Boolean(guildJson.position_change) && props.hidePositionChange) ? (
           <th className='text-left md:px-1'>
             {positionChange(guildJson.position_change)}
           </th>
         ) : <th></th>
       }
-      {ScammerInGuild}
-      <th className='text-left'>{guildJson.name}</th>
+      <th></th>
+      <th className='text-left'>{guildJson.guild_name}</th>
       <th>
         <div className='mx-3 my-1 font-normal bg-yellow-500 rounded-md xl:mx-6 xl:px-0'>
           {guildJson.members}
@@ -109,64 +89,63 @@ const Guild = (props) => {
       </th>
       <th>
         <Tippy
-          content={`${Math.floor((guildJson.sb_experience) / 10) / 10} average SkyBlock level with a multiplier of ${numberWithCommas(
-            guildJson.multiplier
+          content={`${guildJson.guild_name} is #${guildJson.positions[5]} in average SkyBlock level with ${Math.floor((guildJson.weighted_stats[6] / multiplier) / 10) / 10} levels and a multiplier of ${numberWithCommas(
+            multiplier
           )}`}
         >
           <div className="my-1 mx-1 font-normal bg-levelorange rounded-md px-1 xl:px-0 lg:mx-1">
-            {Math.floor((guildJson.sb_experience * guildJson.multiplier) / 10) / 10}
+            {Math.floor(guildJson.weighted_stats[6] / 10) / 10}
           </div>
         </Tippy>
       </th>
       <th>
         <Tippy
-          content={`${guildJson.name} is #${props.networth_index} in Networth`}
+          content={`${guildJson.guild_name} is #${guildJson.positions[4]} in Networth`}
         >
           <div
             className="my-1 mx-1 font-normal bg-blue-700 rounded-md px-1 xl:px-0 lg:mx-3"
           >
-            {numberShortener(guildJson.networth)}
+            {numberShortener(guildJson.weighted_stats[5])}
           </div>
         </Tippy>
       </th>
       <th>
         <Tippy
-          content={`${guildJson.name} is #${props.weight_index} in Weight with ${numberWithCommas(weight)} ${props.usedWeight
-            } Weight and a multiplier of ${numberWithCommas(
-              guildJson.multiplier
-            )}`}
+          content={`${guildJson.guild_name} is #${guildJson.positions[0]} in Weight with ${numberWithCommas(guildJson.weighted_stats[0] / multiplier)} Senither Weight and a multiplier of ${numberWithCommas(
+            multiplier
+          )}`}
         >
           <div
-            className={`font-normal my-1 ${weightColor} rounded-md px-1 mx-1 xl:px-0 xl:mx-0`}
+            className={`font-normal my-1 bg-purple-700 rounded-md px-1 mx-1 xl:px-0 xl:mx-0`}
           >
-            {numberWithCommas(Math.floor(weight * guildJson.multiplier))}
+            {numberWithCommas(Math.floor(guildJson.weighted_stats[0]))}
           </div>
         </Tippy>
       </th>
       <th className='hidden md:table-cell'>
         <Tippy
-          content={`${guildJson.name} is #${props.skills_index} in Average Skills`}
+          content={`${guildJson.guild_name} is #${guildJson.positions[1]} in Average Skills`}
         >
           <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
-            {guildJson.skills}
+            {guildJson.weighted_stats[1]}
           </div>
         </Tippy>
       </th>
       <th className='hidden md:table-cell'>
         <Tippy
-          content={`${guildJson.name} is #${props.slayer_index} in Slayers`}
+          content={`${guildJson.guild_name} is #${guildJson.positions[3]} in Slayers`}
         >
           <div className='px-1 mx-2 my-1 font-normal bg-red-500 rounded-md xl:px-0'>
-            {numberWithCommas(Math.round(guildJson.slayer))}
+            {numberWithCommas(Math.round(guildJson.weighted_stats[3]))}
           </div>
         </Tippy>
       </th>
       <th className='hidden md:table-cell'>
         <Tippy
-          content={`${guildJson.name} is #${props.catacombs_index} in Catacombs`}
+          content={`${guildJson.guild_name} is #${guildJson.positions[2]} in Catacombs`}
         >
           <div className='px-1 mx-2 my-1 font-normal bg-green-400 rounded-md xl:mx-8 xl:px-0'>
-            {guildJson.catacombs}
+            {guildJson.weighted_stats[2]}
           </div>
         </Tippy>
       </th>
@@ -175,107 +154,88 @@ const Guild = (props) => {
   );
 };
 
-const sortOnFunct = (guild_data, sortOn) => {
-  let r = guild_data.slice();
-
-  r.sort(function (a, b) {
-    if (sortOn.includes('weight') || sortOn.includes("sb_experience")) {
-      return b[sortOn] * b.multiplier - a[sortOn] * a.multiplier;
-    }
-    return b[sortOn] - a[sortOn];
-  });
-  return r;
-};
-
 const Guilds = (props) => {
   let guild_data = props.guildsJson.slice();
 
-  const [usedWeight, setUsedWeight] = useState('Senither');
-
-  let usedWeightKey = usedWeight === 'Senither' ? 'senither_weight' : 'lily_weight';
-
   const [sortOn, setSortOn] = useState('sb_experience');
-  useEffect(() => {
-    let newUsedWeight = props.cookies.weightUsed || 'Senither';
-    setUsedWeight(newUsedWeight);
-    // setSortOn(newUsedWeight === 'Senither' ? 'senither_weight' : 'lily_weight');
-  }, [props.cookies.weightUsed]);
-
+  let positionNum = NAME_TO_POSITION[sortOn];
   const [sortReversed, setSortReversed] = useState(false);
-
-  const sortedOnSlayer = useMemo(() => sortOnFunct(guild_data, 'slayer'), []);
-  const sortedOnCatacombs = useMemo(() => sortOnFunct(guild_data, 'catacombs'), []);
-  const sortedOnSkill = useMemo(() => sortOnFunct(guild_data, 'skills'), []);
-  const sortedOnNetworth = useMemo(() => sortOnFunct(guild_data, 'networth'), []);
-  const sortedOnWeight = useMemo(() => sortOnFunct(guild_data, usedWeightKey), [usedWeightKey]);
-
-
-  let showScammers1;
-  if (props.cookies.showScammers1 === undefined) {
-    showScammers1 = false;
-  } else {
-    if (
-      typeof props.cookies.showScammers1 === 'string' ||
-      props.cookies.showScammers1 instanceof String
-    ) {
-      showScammers1 = props.cookies.showScammers1 === 'true';
-    } else {
-      showScammers1 = props.cookies.showScammers1;
-    }
-  }
-
-  guild_data.sort(function (a, b) {
-    if (sortReversed === true) {
-      if (sortOn.includes('weight') || sortOn.includes("sb_experience")) {
-        return a[sortOn] * a.multiplier - b[sortOn] * b.multiplier;
-      }
-      return a[sortOn] - b[sortOn];
-    } else {
-      if (sortOn.includes('weight') || sortOn.includes("sb_experience")) {
-        return b[sortOn] * b.multiplier - a[sortOn] * a.multiplier;
-      }
-      return b[sortOn] - a[sortOn];
-    }
-  });
-
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [loadedPages, setLoadedPages] = useState(50);
+
+
+  useEffect(() => {
+    const handleScroll = (element) => {
+      // if close to the bottom of the page, load more guilds the page lenght should be dynamic
+      console.log(element.scrollHeight - element.scrollTop, element.clientHeight, element.scrollHeight, element.scrollTop)
+      if (element.scrollHeight - element.scrollTop - 1000 <= element.clientHeight && loadedPages < guild_data.length) {
+        setLoadedPages(loadedPages + 10);
+        console.log('loading more guilds', loadedPages)
+      }
+      // unload guilds if the user element up      
+      if (element.scrollHeight - element.scrollTop >= 3000 && loadedPages > 50) {
+        setLoadedPages(loadedPages - 10);
+        console.log('unloading guilds', loadedPages)
+      }
+      if (element.scrollTop === 0) {
+        setLoadedPages(50);
+      }
+    };
+
+    const handleMainDivScroll = () => {
+      handleScroll(maindiv);
+    };
+
+    const handleDocumentScroll = () => {
+      handleScroll(document.documentElement);
+    };
+
+    var maindiv = document.getElementById('maindiv');
+
+    maindiv.addEventListener('scroll', handleMainDivScroll);
+    document.addEventListener('scroll', handleDocumentScroll);
+
+    // Remove event listeners using the same functions
+    return () => {
+      maindiv.removeEventListener('scroll', handleMainDivScroll);
+      document.removeEventListener('scroll', handleDocumentScroll);
+    };
+  }, [loadedPages]);
+
+
+  let guildArrangement = {};
+  for (const guild of guild_data) {
+    guildArrangement[guild.positions[positionNum]] = guild;
+  }
+  guild_data = Object.values(guildArrangement);
+  if (sortReversed) {
+    guild_data.reverse();
+  }
+
+  // remove the ones that don't match the search query
+  if (searchQuery.length > 0) {
+    guild_data = guild_data.filter((guild_json) => {
+      return guild_json.guild_name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }
+
+  let hidePositionChange = sortOn === 'sb_experience' && !sortReversed
+
   let guilds = [];
-  let colorIndex = 1;
-  for (const i in guild_data) {
+  for (const i in guild_data.slice(0, loadedPages)) {
     let guild_json = guild_data[i];
-
-    let slayer_index = sortedOnSlayer.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let catacombs_index = sortedOnCatacombs.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let skills_index = sortedOnSkill.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let networth_index = sortedOnNetworth.findIndex((guild) => guild.id === guild_json.id) + 1;
-    let weight_index = sortedOnWeight.findIndex((guild) => guild.id === guild_json.id) + 1;
-
-    if (searchQuery !== '' && guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      colorIndex++
-    }
 
     guilds.push(
       <Guild
-        position={parseInt(i) + 1}
+        key={guild_json._id}
+
+        position={guild_json.positions[positionNum]}
         guildJson={guild_json}
         capture_date={TimeDelta.fromDate(guild_json.capture_date).toNiceString()}
-        showScammers1={showScammers1}
-        usedWeight={usedWeight}
-        sortOn={sortOn}
-        sortReversed={sortReversed}
-        slayer_index={slayer_index}
-        catacombs_index={catacombs_index}
-        skills_index={skills_index}
-        networth_index={networth_index}
-        weight_index={weight_index}
-        key={guild_json.id}
-        color={
-          (searchQuery !== '' ? colorIndex : i) % 2 === 0
-            ? 'bg-tertiary hover:bg-lighttertiary'
-            : 'hover:bg-lightprimary'
-        }
-        hidden={searchQuery !== '' && !guild_json.name.toLowerCase().includes(searchQuery.toLowerCase())}
+
+        hidePositionChange={hidePositionChange}
+        color={i % 2 === 0 ? 'bg-tertiary hover:bg-lighttertiary' : 'hover:bg-lightprimary'}
       />
     );
   }
@@ -307,12 +267,7 @@ const Guilds = (props) => {
             <th></th>
             <th></th>
             <th className='tracking-[.1em] text-left'>Guilds</th>
-            <th
-              className='hover:cursor-pointer'
-              onClick={() => { onSortClick('members'); }}
-            >
-              Members
-            </th>
+            <th>Members</th>
             <th
               className='hover:cursor-pointer'
               onClick={() => { onSortClick('sb_experience'); }}
@@ -328,7 +283,7 @@ const Guilds = (props) => {
             </th>
             <th
               className='hover:cursor-pointer'
-              onClick={() => { onSortClick(usedWeightKey); }}
+              onClick={() => { onSortClick('senither_weight'); }}
             >
               Weight
             </th>
@@ -361,11 +316,6 @@ const Guilds = (props) => {
 };
 
 export default function Home({ guildsJson, stats }) {
-  const [cookies, setCookie] = useCookies(['showScammers1', 'weightUsed']);
-
-  function changeCookie(key, value) {
-    setCookie(key, value, { path: '/' });
-  }
   return (
     <div
       id='maindiv'
@@ -374,27 +324,27 @@ export default function Home({ guildsJson, stats }) {
         hideAll({ duration: 0 });
       }}
     >
-      <NavigationBar
-        cookies={cookies}
-        changeCookie={changeCookie}
-        patronscount={stats.patrons}
-      />
-      <GuildStatsHeader stats={stats} cookies={cookies} />
-      <Guilds cookies={cookies} guildsJson={guildsJson} />
+      <NavigationBar patronscount={stats.patrons} />
+      <GuildStatsHeader stats={stats} />
+      <Guilds guildsJson={guildsJson} />
       <Footer />
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const res = await axios.get('https://api.guildleaderboard.com/leaderboard');
+  const res = await axios.get('https://apiv2.guildleaderboard.com/leaderboard');
+  let guildsJson = res.data;
+  for (const guild of guildsJson) {
+    guild.positions = guild.positions.split(',');
+    guild.weighted_stats = guild.weighted_stats.split(',');
+  }
 
-  const guildsJson = res.data;
   if (res.status !== 200) {
     console.error(json);
     throw new Error('Failed to fetch API');
   }
-  const res2 = await axios.get('https://api.guildleaderboard.com/stats');
+  const res2 = await axios.get('https://apiv2.guildleaderboard.com/stats');
 
   const stats = res2.data;
   if (res2.status !== 200) {
@@ -407,6 +357,6 @@ export async function getStaticProps() {
       guildsJson,
       stats,
     },
-    revalidate: 10,
+    revalidate: 60,
   };
 }

@@ -6,7 +6,7 @@ import { Footer } from '../components/Footer.js';
 
 import axios from 'axios';
 import Link from 'next/link';
-import { useCookies } from 'react-cookie';
+
 import { FaUsers, FaLandmark } from 'react-icons/fa';
 
 const Options = (props) => {
@@ -29,22 +29,12 @@ const Options = (props) => {
 }
 
 export default function Home({ stats }) {
-    const [cookies, setCookie] = useCookies(['showScammers1', 'weightUsed']);
-
-    function changeCookie(key, value) {
-        setCookie(key, value, { path: '/' });
-    }
-
     return (
         <div
             id='maindiv'
             className='min-h-screen space-y-10 overflow-x-hidden overflow-y-auto bg-secondary sm:h-96 scrollbar'
         >
-            <NavigationBar
-                cookies={cookies}
-                changeCookie={changeCookie}
-                patronscount={stats.patrons}
-            />
+            <NavigationBar patronscount={stats.patrons} />
             <MainStatsHeader stats={stats} />
             <Options />
             <Footer />
@@ -53,7 +43,7 @@ export default function Home({ stats }) {
 }
 
 export async function getStaticProps() {
-    const res = await axios.get('https://api.guildleaderboard.com/stats');
+    const res = await axios.get('https://apiv2.guildleaderboard.com/stats');
 
     const stats = res.data;
     if (res.status !== 200) {
