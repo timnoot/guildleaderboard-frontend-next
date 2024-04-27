@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { NavigationBar } from '../components/NavigationBar.js';
-import { MainStatsHeader } from '../components/StatsHeaderHome.js';
+import { GuildStatsHeader } from '../components/StatsHeaderHome.js';
 import { Footer } from '../components/Footer.js';
 
 import axios from 'axios';
@@ -35,7 +35,7 @@ export default function Home({ stats }) {
             className='min-h-screen space-y-10 overflow-x-hidden overflow-y-auto bg-secondary sm:h-96 scrollbar'
         >
             <NavigationBar patronscount={stats.patrons} />
-            <MainStatsHeader stats={stats} />
+            <GuildStatsHeader stats={stats} />
             <Options />
             <Footer />
         </div>

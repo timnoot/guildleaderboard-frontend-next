@@ -13,16 +13,6 @@ import 'tippy.js/dist/tippy.css'; // optional
 import Tippy from '@tippyjs/react';
 import { hideAll } from 'tippy.js';
 
-// {
-//   senither_weight int,
-//   skills float,                    
-//   catacombs float,
-//   slayer int,
-//   lily_weight int,
-//   networth int,
-//   sb_experience int  
-// }   
-
 const NAME_TO_POSITION = {
   'senither_weight': 0,
   'skills': 1,
@@ -325,7 +315,7 @@ export default function Home({ guildsJson, stats }) {
       }}
     >
       <NavigationBar patronscount={stats.patrons} />
-      <GuildStatsHeader stats={stats} />
+      <GuildStatsHeader stats={stats} backButton={true} />
       <Guilds guildsJson={guildsJson} />
       <Footer />
     </div>

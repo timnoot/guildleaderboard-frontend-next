@@ -8,50 +8,7 @@ import { spaces } from '../utils/other.js';
 import { numberWithCommas } from '../utils/numformatting.js';
 import { MenuButton } from '../components/StatBlocks.js';
 
-export const MainStatsHeader = ({ stats }) => {
-  return (
-    <header>
-      <Head>
-        <title>Hypixel SkyBlock Guild Leaderboard</title>
-        <meta name='title' content='Hypixel SkyBlock Leaderboard' />
-        <meta
-          name='description'
-          content={`Tracking 🏢${stats.guilds_tracked} Guilds and 👥${numberWithCommas(stats.players_tracked)} Players`}
-        />
-
-        <meta property='og:title' content='SkyBlock Leaderboard' />
-        <meta property='og:site_name' content='SkyBlock Leaderboard' />
-        <meta
-          property='og:description'
-          content={`Tracking:
-${spaces(3)}Guilds 🏢 ${stats.guilds_tracked}
-${spaces(3)}Players 👥 ${numberWithCommas(stats.players_tracked)}
-
-Top Guilds:
-${spaces(3)}🥇 ${stats.top_guilds[0].name} 💪 ${numberWithCommas(
-            stats.top_guilds[0].senither_weight
-          )} Weight
-${spaces(3)}🥈 ${stats.top_guilds[1].name} 💪 ${numberWithCommas(
-            stats.top_guilds[1].senither_weight
-          )} Weight
-${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
-            stats.top_guilds[2].senither_weight
-          )} Weight`}
-        />
-      </Head>
-      <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
-        Hypixel SkyBlock Leaderboard
-      </h1>
-      <h1 className='pt-4 text-center text-white sm:text-2xl'>
-        Tracking {stats.guilds_tracked} guilds with {stats.players_tracked}{' '}
-        players
-      </h1>
-    </header>
-  );
-};
-
-
-export const GuildStatsHeader = ({ stats }) => {
+export const GuildStatsHeader = ({ stats, backButton = false }) => {
   return (
     <header>
       <Head>
@@ -71,15 +28,15 @@ ${spaces(3)}Guilds 🏢 ${stats.guilds_tracked}
 ${spaces(3)}Players 👥 ${numberWithCommas(stats.players_tracked)}
 
 Top Guilds:
-${spaces(3)}🥇 ${stats.top_guilds[0].name} 💪 ${numberWithCommas(
-            stats.top_guilds[0].senither_weight
-          )} Weight
-${spaces(3)}🥈 ${stats.top_guilds[1].name} 💪 ${numberWithCommas(
-            stats.top_guilds[1].senither_weight
-          )} Weight
-${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
-            stats.top_guilds[2].senither_weight
-          )} Weight`}
+${spaces(3)}🥇 ${stats.top_guilds[0].guild_name} 🏆 ${numberWithCommas(
+            stats.top_guilds[0].weighted_stats.split(",")[6] / 100
+          )} SB Levels
+${spaces(3)}🥈 ${stats.top_guilds[1].guild_name} 🏆 ${numberWithCommas(
+            stats.top_guilds[1].weighted_stats.split(",")[6] / 100
+          )} SB Levels
+${spaces(3)}🥉 ${stats.top_guilds[2].guild_name} 🏆 ${numberWithCommas(
+            stats.top_guilds[2].weighted_stats.split(",")[6] / 100
+          )} SB Levels`}
         />
       </Head>
       <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
@@ -89,20 +46,22 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
         Tracking {stats.guilds_tracked} guilds with {stats.players_tracked}{' '}
         players
       </h1>
-      <div className='text-center font-[Helvetica] my-4 text-lg'>
-        <div className='inline-block p-1 '>
-          <MenuButton disabled={false}>
-            <Link href='/'>
-              <div className='text-center'>
-                <FaArrowLeft className='inline-block' />
-                <div className='pl-1 inline-block'>
-                  Back to Home
+      {backButton && (
+        <div className='text-center font-[Helvetica] my-4 text-lg'>
+          <div className='inline-block p-1 '>
+            <MenuButton disabled={false}>
+              <Link href='/'>
+                <div className='text-center'>
+                  <FaArrowLeft className='inline-block' />
+                  <div className='pl-1 inline-block'>
+                    Back to Home
+                  </div>
                 </div>
-              </div>
-            </Link>
-          </MenuButton>
+              </Link>
+            </MenuButton>
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 };
@@ -119,7 +78,7 @@ export const PlayerStatsHeader = ({ stats }) => {
         />
 
         <meta property='og:title' content='SkyBlock Playerleaderboard' />
-        <meta property='og:site_name' content='PlayerLeaderboard' />
+        <meta property='og:site_name' content='GuildLeaderboard' />
         <meta
           property='og:description'
           content={`Tracking:
@@ -127,15 +86,15 @@ ${spaces(3)}Guilds 🏢 ${stats.guilds_tracked}
 ${spaces(3)}Players 👥 ${numberWithCommas(stats.players_tracked)}
 
 Top Guilds:
-${spaces(3)}🥇 ${stats.top_guilds[0].name} 💪 ${numberWithCommas(
-            stats.top_guilds[0].senither_weight
-          )} Weight
-${spaces(3)}🥈 ${stats.top_guilds[1].name} 💪 ${numberWithCommas(
-            stats.top_guilds[1].senither_weight
-          )} Weight
-${spaces(3)}🥉 ${stats.top_guilds[2].name} 💪 ${numberWithCommas(
-            stats.top_guilds[2].senither_weight
-          )} Weight`}
+${spaces(3)}🥇 ${stats.top_guilds[0].guild_name} 🏆 ${numberWithCommas(
+            stats.top_guilds[0].weighted_stats.split(",")[6] / 100
+          )} SB Levels
+${spaces(3)}🥈 ${stats.top_guilds[1].guild_name} 🏆 ${numberWithCommas(
+            stats.top_guilds[1].weighted_stats.split(",")[6] / 100
+          )} SB Levels
+${spaces(3)}🥉 ${stats.top_guilds[2].guild_name} 🏆 ${numberWithCommas(
+            stats.top_guilds[2].weighted_stats.split(",")[6] / 100
+          )} SB Levels`}
         />
       </Head>
       <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>

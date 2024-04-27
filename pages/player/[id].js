@@ -7,27 +7,13 @@ import axios from 'axios';
 
 import 'tippy.js/dist/tippy.css'; // optional
 
-import {
-  numberShortener,
-  numberWithCommas,
-} from '../../utils/numformatting.js';
+import { numberShortener, numberWithCommas } from '../../utils/numformatting.js';
 import { capitalizeFirstLetter, getSlayerLevel } from '../../utils/other.js';
 import { TimeDelta } from '../../utils/timedelta.js';
-import {
-  APIURL,
-  skills,
-  slayers,
-  skillMaxLevel,
-  dungeons,
-} from '../../utils/constants.js';
+import { APIURL, skills, slayers, skillMaxLevel, dungeons } from '../../utils/constants.js';
 
 import { JoinLog } from '../../components/JoinLogs.js';
-import {
-  StatBlockTop,
-  OutsideLink,
-  CopyButton,
-  MenuButton,
-} from '../../components/StatBlocks';
+import { StatBlockTop, OutsideLink, CopyButton, MenuButton } from '../../components/StatBlocks';
 import { Footer } from '../../components/Footer';
 import { ProgressBar } from '../../components/ProgressBar.js';
 import { CustomChart2 } from '../../components/Chart.js';
