@@ -43,3 +43,13 @@ export const dungeons = [
     'archer',
     'tank',
 ]
+
+export const NAME_TO_POSITION = {
+    'senither_weight': 0,
+    'skills': 1,
+    'catacombs': 2,
+    'slayer': 3,
+    'lily_weight': 4,
+    'networth': 5,
+    'sb_experience': 6
+  };

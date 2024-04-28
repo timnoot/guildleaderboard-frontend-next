@@ -1,138 +1,87 @@
-import React from 'react';
-// import Chart from 'react-apexcharts'
-import dynamic from 'next/dynamic'
-
-// const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
-
-import { numberWithCommas } from '../utils/numformatting.js'
-
-
-// export class CustomChart2 extends React.Component {
-// 	constructor(props) {
-// 		super(props);
-// 		this.state = {
-// 			// https://apexcharts.com/docs/options
-// 			options: {
-// 				chart: {
-// 					id: `mychart`,
-// 					zoom: {
-// 						enabled: false
-// 					},
-// 					animations: {
-// 						enabled: false
-// 					}
-// 				},
-// 				stroke: {
-// 					curve: 'straight'
-// 				},
-// 				xaxis: {
-// 					// categories: this.props.categories, //[1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
-// 					labels: {
-// 						style: {
-// 							colors: 'white',
-// 						}
-// 					},
-// 					type: 'datetime'
-// 				},
-// 				yaxis: {
-// 					labels: {
-// 						style: {
-// 							colors: "white",
-// 						},
-// 						formatter: numberWithCommas
-// 					}
-// 				},
-// 				title: {
-// 					text: this.props.title,
-// 					align: 'center',
-// 					style: {
-// 						fontSize: '24px',
-// 						color: "white"
-// 					}
-// 				},
-// 				dataLabels: {
-// 					enabled: false
-// 				},
-// 				markers: {
-// 					size: 3,
-// 				},
-// 				legend: {
-// 					labels: {
-// 						colors: 'white',
-// 					}
-// 				}
-// 			},
-// 			series: this.props.series,
-// 		}
-
-// 	}
-
-// 	render() {
-// 		return <div>
-// 			e
-// 		</div>
-// 		return (
-// 			<Chart
-// 				options={this.state.options}
-// 				series={this.state.series}
-// 				type="area"
-// 				width={this.props.width || 500}
-// 				height={this.props.height || 420}
-// 			/>
-// 		)
-// 	}
-// }
-
-
 import { useEffect } from "react"
-import { Chart } from "chart.js";
-function CustomChart2() {
+// import { Chart } from "chart.js";
+import Chart from 'chart.js/auto';
+
+// gray ish
+Chart.defaults.color = '#d1d5db';
+
+export const CustomChart2 = ({ title, datasets, labels, options }) => {
 	useEffect(() => {
-		var ctx = document.getElementById('myChart').getContext('2d');
+		var ctx = document.getElementById(title).getContext('2d');
 		var myChart = new Chart(ctx, {
 			type: 'line',
 			data: {
-				labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-				datasets: [{
-					data: [86, 114, 106, 106, 107, 111, 133],
-					label: "Applied",
-					borderColor: "#3e95cd",
-					backgroundColor: "#7bb6dd",
-					fill: false,
-				}, {
-					data: [70, 90, 44, 60, 83, 90, 100],
-					label: "Accepted",
-					borderColor: "#3cba9f",
-					backgroundColor: "#71d1bd",
-					fill: false,
-				}, {
-					data: [10, 21, 60, 44, 17, 21, 17],
-					label: "Pending",
-					borderColor: "#ffa500",
-					backgroundColor: "#ffc04d",
-					fill: false,
-				}, {
-					data: [6, 3, 2, 2, 7, 0, 16],
-					label: "Rejected",
-					borderColor: "#c45850",
-					backgroundColor: "#d78f89",
-					fill: false,
-				}
-				]
+				labels: labels,
+				datasets: datasets
 			},
+			options: options
 		});
 	}, [])
+
+	// [{
+	// 	data: [86, 114, 106, 106, 107, 111, 133],
+	// 	label: "Applied",
+	// 	borderColor: "rgb(62,149,205)",
+	// 	backgroundColor: "rgb(62,149,205,0.1)",
+	// }, {
+	// 	data: [70, 90, 44, 60, 83, 90, 100],
+	// 	label: "Accepted",
+	// 	borderColor: "rgb(60,186,159)",
+	// 	backgroundColor: "rgb(60,186,159,0.1)",
+	// }, {
+	// 	data: [10, 21, 60, 44, 17, 21, 17],
+	// 	label: "Pending",
+	// 	borderColor: "rgb(255,165,0)",
+	// 	backgroundColor: "rgb(255,165,0,0.1)",
+	// }, {
+	// 	data: [6, 3, 2, 2, 7, 0, 16],
+	// 	label: "Rejected",
+	// 	borderColor: "rgb(196,88,80)",
+	// 	backgroundColor: "rgb(196,88,80,0.1)",
+	// }
+	// ]
+
+	const exportToCSV = () => {
+		// Convert datasets and labels to CSV format
+		let csvContent = "data:text/csv;charset=utf-8,";
+
+		// header top left cell = title of the chart, then guild names
+		csvContent += `${title},`;
+		csvContent += datasets.map(dataset => dataset.label).join(',');
+		csvContent += '\n';
+
+		for (let i = 0; i < labels.length; i++) {
+			const date = new Date(labels[i]);
+			csvContent += `${date.toISOString().split('T')[0]},`;
+			csvContent += datasets.map(dataset => dataset.data[i]).join(',');
+			csvContent += '\n';
+		}
+
+		// Create a temporary link element
+		const link = document.createElement("a");
+		link.href = encodeURI(csvContent);
+		link.download = `${title}.csv`;
+		link.click();
+	};
+
+
 	return (
-		<>
-			{/* line chart */}
-			<h1 className="w-[110px] mx-auto mt-10 text-xl font-semibold capitalize ">line Chart</h1>
-			<div className="w-[1100px] h-screen flex mx-auto my-auto">
-				<div className='border border-gray-400 pt-0 rounded-xl  w-full h-fit my-auto  shadow-xl'>
-					<canvas id='myChart'></canvas>
-				</div>
+		<div className="text-center text-white">
+			<div className="relative">
+				<h2 className='text-4xl '>{title}</h2>
+				<button className='hidden lg:block absolute right-2 top-2 bg-lightprimary rounded-lg py-1 px-2 text-center hover:bg-lighttertiary transition' onClick={exportToCSV}>
+					<svg className='inline-block' viewBox="0 0 29.978 29.978" width='1rem' height='1rem' fill='white' xmlns='http://www.w3.org/2000/svg' >
+						<path d="M25.462,19.105v6.848H4.515v-6.848H0.489v8.861c0,1.111,0.9,2.012,2.016,2.012h24.967c1.115,0,2.016-0.9,2.016-2.012v-8.861H25.462z" />
+						<path d="M14.62,18.426l-5.764-6.965c0,0-0.877-0.828,0.074-0.828s3.248,0,3.248,0s0-0.557,0-1.416c0-2.449,0-6.906,0-8.723c0,0-0.129-0.494,0.615-0.494c0.75,0,4.035,0,4.572,0c0.536,0,0.524,0.416,0.524,0.416c0,1.762,0,6.373,0,8.742c0,0.768,0,1.266,0,1.266s1.842,0,2.998,0c1.154,0,0.285,0.867,0.285,0.867s-4.904,6.51-5.588,7.193C15.092,18.979,14.62,18.426,14.62,18.426z" />
+					</svg>
+					<div className="inline-block m-1">
+						Export
+					</div>
+				</button>
 			</div>
-		</>
+
+			<canvas id={title}></canvas>
+		</div >
 	)
 }
 
-export default CustomChart2;

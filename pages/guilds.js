@@ -6,22 +6,13 @@ import { numberShortener, numberWithCommas } from '../utils/numformatting.js';
 import { NavigationBar } from '../components/NavigationBar.js';
 import { GuildStatsHeader } from '../components/StatsHeaderHome.js';
 import { Footer } from '../components/Footer.js';
+import { NAME_TO_POSITION } from '../utils/constants.js';
 
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import 'tippy.js/dist/tippy.css'; // optional
 import Tippy from '@tippyjs/react';
 import { hideAll } from 'tippy.js';
-
-const NAME_TO_POSITION = {
-  'senither_weight': 0,
-  'skills': 1,
-  'catacombs': 2,
-  'slayer': 3,
-  'lily_weight': 4,
-  'networth': 5,
-  'sb_experience': 6
-};
 
 function positionChange(change) {
   if (change > 0) {

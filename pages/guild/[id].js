@@ -4,13 +4,10 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import axios from 'axios';
 
-import { followCursor, hideAll } from 'tippy.js';
-import Tippy from '@tippyjs/react';
+import { hideAll } from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional
 
-import ReactTags from 'react-tag-autocomplete';
-
-import { APIURL } from '../../utils/constants.js';
+import { APIURL, NAME_TO_POSITION } from '../../utils/constants.js';
 import { numberShortener, numberWithCommas } from '../../utils/numformatting.js';
 import { TimeDelta } from '../../utils/timedelta.js';
 import { getCataLevel } from '../../utils/other.js';
@@ -20,6 +17,7 @@ import { Footer } from '../../components/Footer';
 import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
+import { SuggestionBar } from '../../components/SuggestionBar.js';
 
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -441,13 +439,11 @@ class JoinLogs extends React.Component {
           href={`/player/${log.uuid}`}
           key={`${log.uuid}-${log.capture_date}`}
         >
-          <a>
-            <JoinLog
-              type={log.type}
-              name={log.name}
-              time_difference={time_difference}
-            />
-          </a>
+          <JoinLog
+            type={log.type}
+            name={log.name}
+            time_difference={time_difference}
+          />
         </Link>
       );
     }
@@ -595,228 +591,266 @@ class JoinLogs extends React.Component {
   }
 }
 
-class CompareGuilds extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tags: [],
-      suggestions: [],
-      all_series: {},
-      autoCompleteLoaded: false,
-      change: 0,
-      daysShow: 90,
-    };
-    this.reactTags = React.createRef();
-    this.getSeries.bind(this);
-  }
 
-  onDelete(i) {
-    const tags = this.state.tags.slice(0);
-    let guild_id = tags.splice(i, 1)[0].id;
+const CompareGuilds = (props) => {
+  const [tags, setTags] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [autoCompleteLoaded, setAutoCompleteLoaded] = useState(false);
+
+  const [all_datasets, setAllDatasets] = useState({});
+  // const [change, setChange] = useState(0);
+  const [daysShow, setDaysShow] = useState(90);
+
+  const [labels, setLabels] = useState([]);
+  const [datasets, setDatasets] = useState({});
+
+  const [charts, setCharts] = useState([]);
+  const [chartsUpdate, setChartsUpdate] = useState(0);
+
+  const daysProps = [7, 30, 90];
+  const chartsProps = [
+    {
+      id: "sb_experience",
+      title: "SkyBlock experience",
+    },
+    {
+      id: 'networth',
+      title: 'Networth',
+    },
+    {
+      id: 'senither_weight',
+      title: 'Senither Weight',
+    },
+    {
+      id: "lily_weight",
+      title: "Lily Weight",
+    },
+    {
+      id: 'skills',
+      title: 'Skills',
+    },
+    {
+      id: 'catacombs',
+      title: 'Catacombs',
+    },
+    {
+      id: 'slayer',
+      title: 'Slayer',
+    },
+    {
+      id: 'member_count',
+      title: 'Members',
+    },
+  ];
+  const colorArray = [
+    'bg-blue-700',
+    'bg-purple-700',
+    'bg-green-700',
+    'bg-red-700',
+    'bg-yellow-700',
+    'bg-yellow-500',
+    'bg-blue-500',
+    'bg-red-500',
+    'bg-green-500',
+    'bg-yellow-500',
+
+  ];
+
+  const onDelete = (guild_id) => {
+    const tagsCopy = tags.slice(0);
+    for (const i in tagsCopy) {
+      if (tagsCopy[i].id === guild_id) {
+        tagsCopy.splice(i, 1);
+      }
+    }
     // remove guild from guild_sorted_data
-    let all_series = this.state.all_series;
-    delete all_series[guild_id];
-    this.setState({
-      tags: tags,
-      all_series: all_series,
-      change: this.state.change + 1,
-    });
-  }
+    delete all_datasets[guild_id];
+    setTags(tagsCopy);
+    setAllDatasets({ ...all_datasets });
+    // setChange(change + 1);
+  };
 
-  onAddition(tag) {
-    const tags = [].concat(this.state.tags, tag);
+  const onAddition = (tag) => {
+    const tagsCopy = [].concat(tags, tag);
     let guildid = tag.id;
 
     fetch(`${APIURL}metrics/guild/${guildid}`)
       .then((res) => res.json())
       .then(
         (result) => {
-          let all_series = this.state.all_series;
-          all_series[guildid] = result;
-          this.setState({
-            tags: tags,
-            all_series: all_series,
-            change: this.state.change + 1,
-          });
-
-          // this.addGuildMetrics(result)
+          all_datasets[guildid] = result;
+          setTags(tagsCopy);
+          setAllDatasets({ ...all_datasets });
+          // setChange(change + 1);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           console.log(error);
-          this.setState({
-            metricsIsLoaded: true,
-            error,
-          });
         }
       );
-  }
+  };
 
-  getGuildName(guildId) {
+  const getGuildName = (guildId) => {
     // loop through tags and find the name
-    for (const i in this.state.tags) {
-      if (this.state.tags[i].id === guildId) {
-        return this.state.tags[i].name;
+    for (const i in tags) {
+      if (tags[i].id === guildId) {
+        return tags[i].name;
       }
     }
   }
 
-  getSeries(wanted_key, daysShow) {
-    let result = [];
-
-    // loop through given
-    for (let guild_id in this.state.all_series) {
-      let metrics = this.state.all_series[guild_id];
-
-      let tempresult = {
-        data: [],
-        name: this.getGuildName(guild_id),
-      };
-
-      for (const i in metrics) {
-        let metric = metrics[i];
-        if (!metric[wanted_key]) {
-          continue;
-        }
-
-        let timeDelta = TimeDelta.fromDate(metric['capture_date']);
-        if (timeDelta.toSeconds() > daysShow * 24 * 60 * 60) {
-          continue;
-        }
-        tempresult['data'].push([
-          Date.now() - timeDelta.toMS(),
-          metric[wanted_key],
-        ]);
-      }
-      result.push(tempresult);
+  useEffect(() => {
+    if (autoCompleteLoaded) {
+      return;
     }
-    return result;
-  }
-
-  render() {
-    let daysShow = this.state.daysShow;
-
-    let daysProps = [7, 30, 90];
-
-    let chartsProps = [
-      {
-        id: "sb_experience",
-        title: "SkyBlock experience",
-      },
-      {
-        id: 'networth',
-        title: 'Networth',
-      },
-      {
-        id: 'senither_weight',
-        title: 'Senither Weight',
-      },
-      {
-        id: "lily_weight",
-        title: "Lily Weight",
-      },
-      {
-        id: 'skills',
-        title: 'Skills',
-      },
-      {
-        id: 'catacombs',
-        title: 'Catacombs',
-      },
-      {
-        id: 'slayer',
-        title: 'Slayer',
-      },
-      {
-        id: 'member_count',
-        title: 'Members',
-      },
-    ];
-
-    return (
-      <div>
-        <div className='text-center'>
-          <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
-            <ReactTags
-              ref={this.reactTags}
-              tags={this.state.tags}
-              suggestions={this.state.suggestions}
-              noSuggestionsText='No matching guilds found'
-              onDelete={this.onDelete.bind(this)}
-              onAddition={this.onAddition.bind(this)}
-              placeholderText='Add a guild'
-            />
-          </div>
-        </div>
-        <div className='text-sm text-center text-white'>
-          {daysProps.map((days) => {
-            return (
-              <MenuButton
-                onClick={() => {
-                  this.setState({
-                    daysShow: days,
-                    change: this.state.change + 1,
-                  });
-                }}
-                disabled={daysShow === days}
-                className='mx-1 text-base'
-                key={days}
-              >
-                {days} days
-              </MenuButton>
-            );
-          })}
-        </div>
-        <div className='text-center'>
-          {chartsProps.map((chart) => {
-            return (
-              <div
-                className='p-4 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'
-                key={chart.id}
-              >
-                <CustomChart2
-                  series={this.getSeries(chart.id, daysShow)}
-                  title={chart.title}
-                  width={'100%'}
-                  height={'100%'}
-                  key={this.state.change}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  componentDidMount() {
-    this.onAddition({ id: this.props.id, name: this.props.name });
+    onAddition({ id: props.id, name: props.name });
+    // setChange(change + 1);
     fetch(`${APIURL}autocomplete`)
       .then((res) => res.json())
       .then(
         (result) => {
-          this.setState({
-            autoCompleteLoaded: true,
-            suggestions: result,
-          });
-          if (result === null) {
-            // window.location.href = '/';
-          }
+          setAutoCompleteLoaded(true);
+          setSuggestions(result);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           console.log(error);
-          this.setState({
-            autoCompleteLoaded: true,
-            error,
-          });
         }
       );
-  }
+  }, []);
+
+  useEffect(() => { // update labels 
+    let labels2 = [];
+    const currentDate = new Date();
+
+    for (let i = 0; i < daysShow; i++) {
+      const date = new Date(currentDate);
+      date.setDate(date.getDate() - i);
+      labels2.push(date.toLocaleString('default', { month: 'short', day: 'numeric' }));
+    }
+    setLabels(labels2.reverse());
+    // setChange(change + 1);
+  }, [daysShow]);
+
+  useEffect(() => { // update datasets
+    let newDataSetDict = {};
+    for (const i in chartsProps) {
+      let chart = chartsProps[i];
+      let statNum = NAME_TO_POSITION[chart.id];
+      // loop through the guilds
+      let datasets = [];
+      for (const guild_id in all_datasets) {
+        let guildMetrics = all_datasets[guild_id];
+        let guildName = getGuildName(guild_id);
+
+        // loop through guildMetrics
+        let guildData = [];
+        let currentDate = new Date();
+        let guildMetricsIndex = 0;
+
+        for (let j = 0; j < 90; j++) {
+          let metric = guildMetrics[guildMetricsIndex];
+          let metricDate = new Date(metric.capture_date);
+
+          if (metricDate.toDateString() === currentDate.toDateString()) {
+            if (chart.id === 'member_count') {
+              guildData.push(metric.member_count);
+            } else {
+              guildData.push(metric.weighted_stats.split(',')[statNum]);
+            }
+            guildMetricsIndex++;
+          } else {
+            guildData.push(null);
+          }
+          currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        datasets.push({
+          label: guildName,
+          data: guildData.reverse(),
+          borderColor: colorArray[guild_id % colorArray.length],
+          fill: Object.keys(all_datasets).length === 1,
+          pointHitRadius: 100,
+          spanGaps: true,
+          pointBackgroundColor: 'white',
+          tension: 0.2,
+
+        });
+      }
+      newDataSetDict[chart.id] = datasets;
+    }
+
+    setDatasets(newDataSetDict);
+  }, [all_datasets]);
+
+  useEffect(() => { // update charts
+    if (Object.keys(datasets).length === 0) {
+      return;
+    }
+
+    let newCharts = [];
+    for (const i in chartsProps) {
+      let chart = chartsProps[i];
+
+      let dataSet = datasets[chart.id].map(dataset => ({ ...dataset }));
+      for (const j in dataSet) {
+        dataSet[j].data = dataSet[j].data.slice(90 - daysShow);
+      }
+
+      newCharts.push(
+        <div
+          className='p-4 m-2 rounded-md md:inline-block  md:w-2/3 bg-primary' // h-80 md:h-96
+          key={chart.id}
+        >
+          <CustomChart2
+            title={chart.title}
+            datasets={dataSet}
+            labels={labels}
+            key={chart.id + chartsUpdate}
+            options={{
+              options: {},
+            }}
+          />
+        </div>
+      );
+    }
+    setCharts(newCharts);
+    setChartsUpdate(chartsUpdate + 1);
+  }, [datasets, labels]);
+
+  return (
+    <div>
+      <div className='text-center'>
+        <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
+          <SuggestionBar
+            tags={tags}
+            suggestions={suggestions}
+            onDelete={onDelete}
+            onAddition={onAddition}
+            placeholderText='Add a guild'
+          />
+        </div>
+      </div>
+      <div className='text-sm text-center text-white'>
+        {daysProps.map((days) => {
+          return (
+            <MenuButton
+              onClick={() => {
+                setDaysShow(days);
+                // setChange(change + 1);
+              }}
+              disabled={daysShow === days}
+              className='mx-1 text-base'
+              key={days}
+            >
+              {days} days
+            </MenuButton>
+          );
+        })}
+      </div>
+      <div className='text-center' key={chartsUpdate}>
+        {charts}
+      </div>
+    </div>
+  );
 }
 
 export default function Guild({ guild }) {

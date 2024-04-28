@@ -19,7 +19,7 @@ import { ProgressBar } from '../../components/ProgressBar.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
 
-import ReactTags from 'react-tag-autocomplete';
+// import ReactTags from 'react-tag-autocomplete';
 
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -55,14 +55,12 @@ class JoinLogs extends React.Component {
 
       logsElements.push(
         <Link href={`/guild/${log.guild_id}`}>
-          <a>
-            <JoinLog
-              key={`${log.uuid}-${log.capture_date}`}
-              type={log.type}
-              name={log.guild_name}
-              time_difference={time_difference}
-            />
-          </a>
+          <JoinLog
+            key={`${log.uuid}-${log.capture_date}`}
+            type={log.type}
+            name={log.guild_name}
+            time_difference={time_difference}
+          />
         </Link>
       );
     }
@@ -183,7 +181,7 @@ class JoinLogs extends React.Component {
       uuid = paths[paths.length - 1];
     }
 
-    fetch(`${APIURL}v2/history?uuid=${uuid}&per_page=10&page=${page}`)
+    fetch(`${APIURL}history?uuid=${uuid}&per_page=10&page=${page}`)
       .then((res) => res.json())
       .then(
         (result) => {
@@ -426,14 +424,14 @@ class PlayerMetrics extends React.Component {
       <div className='text-black'>
         <div className='text-center'>
           <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
-            <ReactTags
+            {/* <ReactTags
               ref={this.reactTags}
               tags={this.state.tags}
               onDelete={this.onDelete.bind(this)}
               onAddition={this.onAddition.bind(this)}
               placeholderText='Add a player'
               allowNew={true}
-            />
+            /> */}
           </div>
         </div>
         <div className='text-sm text-center text-white'>
@@ -682,10 +680,8 @@ export default function Player({ player }) {
             className={`text-[1em] sm:text-[1.5em] font-semibold ${Boolean(player.guild_name) ? '' : 'hidden'}`}
           >
             From{' '}
-            <Link href={`/guild/${player.guild_name}`}>
-              <a className='inline-block text-blue-500 underline cursor-pointer'>
-                {player.guild_name}
-              </a>
+            <Link href={`/guild/${player.guild_name}`} className='inline-block text-blue-500 underline cursor-pointer'>
+              {player.guild_name}
             </Link>
           </h2>
 
