@@ -39,7 +39,7 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].guild_name} 🏆 ${numberWithCommas(
           )} SB Levels`}
         />
       </Head>
-      <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
+      <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl mx-2'>
         Hypixel SkyBlock Guild Leaderboard
       </h1>
       <h1 className='pt-4 text-center text-white sm:text-2xl'>
@@ -97,7 +97,7 @@ ${spaces(3)}🥉 ${stats.top_guilds[2].guild_name} 🏆 ${numberWithCommas(
           )} SB Levels`}
         />
       </Head>
-      <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl'>
+      <h1 className='text-2xl text-center text-white bg-secondary sm:text-5xl mx-2'>
         Hypixel SkyBlock Player Leaderboard
       </h1>
       <h1 className='pt-4 text-center text-white sm:text-2xl'>

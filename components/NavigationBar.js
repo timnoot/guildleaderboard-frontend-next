@@ -32,7 +32,6 @@ export class NavigationBar extends React.Component {
     super(props);
   }
 
-
   render() {
     return (
       <div id='/'>
@@ -40,8 +39,8 @@ export class NavigationBar extends React.Component {
           <section className='py-2.5 flex justify-between items-center text-white text-xs md:text-lg px-[5%] bg-[#2B2D31] text-center'>
             <Link href='/' >
               <div className='relative flex items-center cursor-pointer'>
-                <Image src='/logo459.png' width='100' height='100' alt='Sky Hub' />
-                <h2 className='ml-5 text-lg md:text-2xl'>Guild Leaderboard</h2>
+                <Image className='w-[20%] md:w-[30%]' src='/logo459.png' width='100' height='100' alt='Sky Hub' />
+                <h2 className='ml-5 text-xl md:text-2xl'>Guild Leaderboard</h2>
               </div>
             </Link>
             <ul className=''>

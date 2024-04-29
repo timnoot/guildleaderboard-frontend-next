@@ -14,14 +14,14 @@ const Options = (props) => {
         <div className='w-full text-center text-white text-xl lg:text-4xl'>
             <Link href='/guilds'>
                 <div className='inline-block cursor-pointer bg-[#2B2D31] border-4 border-primary w-[45%] lg:w-1/3 text-center rounded-xl m-1 py-16 lg:m-5 lg:py-32'>
-                    <FaLandmark className='w-full fa-6x mb-4' size={200} />
-                    Guild Leaderboard
+                    <FaLandmark className='w-[90%] m-auto fa-6x mb-4' size={200} />
+                    Guild<br className='sm:hidden' /> Leaderboard
                 </div>
             </Link>
             <Link href='/players'>
                 <div className='inline-block cursor-pointer bg-[#2B2D31] border-4 border-primary w-[45%] lg:w-1/3 text-center rounded-xl m-1 py-16 lg:m-5 lg:py-32'>
-                    <FaUsers className='w-full fa-6x mb-4' size={200} />
-                    Player Leaderboard
+                    <FaUsers className='w-[90%] m-auto fa-6x mb-4' size={200} />
+                    Player<br className='sm:hidden' /> Leaderboard
                 </div>
             </Link>
         </div>
