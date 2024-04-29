@@ -710,6 +710,11 @@ const CompareGuilds = (props) => {
         let guildMetricsIndex = 0;
 
         for (let j = 0; j < 90; j++) {
+          if (guildMetricsIndex >= guildMetrics.length) {
+            guildData.push(null);
+            currentDate.setDate(currentDate.getDate() - 1);
+            continue;
+          }
           let metric = guildMetrics[guildMetricsIndex];
           let metricDate = new Date(metric.capture_date);
 
