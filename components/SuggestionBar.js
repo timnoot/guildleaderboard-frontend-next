@@ -2,9 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 
 
-export const SuggestionBar = ({ tags, suggestions, onDelete, onAddition, placeholderText }) => {
+export const SuggestionBar = ({ tags, suggestions, onDelete, onAddition, placeholderText, mustBeSuggestion = true }) => {
     const [input, setInput] = useState('');
-    const filteredSuggestions = input.length >= 2 ? suggestions.filter((suggestion) => suggestion.name.toLowerCase().startsWith(input.toLowerCase()) && !tags.some((tag) => tag.id === suggestion.id)).slice(0, 5) : [];
+    const filteredSuggestions = input.length >= 2 ? suggestions.filter((suggestion) => suggestion.name.toLowerCase().startsWith(input.toLowerCase()) && !tags.some((tag) => tag.id === suggestion.id)).sort((a, b) => a.name.length - b.name.length).slice(0, 5) : [];
 
     return (
         <div className='relative m-auto w-[90%] lg:w-full text-white text-lg font-sans'>
@@ -35,6 +35,19 @@ export const SuggestionBar = ({ tags, suggestions, onDelete, onAddition, placeho
                             if (e.key === 'Backspace' && input === '' && tags.length > 0) {
                                 console.log(tags);
                                 onDelete(tags[tags.length - 1].id);
+                            } else if (e.key === 'Enter') {
+                                e.preventDefault();
+                                if (mustBeSuggestion) {
+                                    if (filteredSuggestions.length > 0) {
+                                        setInput('');
+                                        onAddition(filteredSuggestions[0]);
+                                    }
+                                } else {
+                                    if (!tags.some((tag) => tag.name.toLowerCase() === input.toLowerCase())) {
+                                        onAddition({ name: input, id: input });
+                                        setInput('');
+                                    }
+                                }
                             }
                         }}
                         onChange={(e) => {

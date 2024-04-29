@@ -10,7 +10,8 @@ function Loading() {
 
   useEffect(() => {
     const handleStart = (url) => (url !== router.asPath) && setLoading(true);
-    const handleComplete = (url) => (url === router.asPath) && setLoading(false);
+    // const handleComplete = (url) => (url === router.asPath) && setLoading(false);
+    const handleComplete = (url) => setLoading(false);
 
     router.events.on('routeChangeStart', handleStart)
     router.events.on('routeChangeComplete', handleComplete)
@@ -27,12 +28,6 @@ function Loading() {
 }
 
 function MyApp({ Component, pageProps }) {
-  // const router = useRouter();
-  // useEffect(() => {
-  //   if (location.hash.startsWith('#/')) { // checking if it's HashRoute
-  //     router.push(location.hash.substr(1)); // removing the #/ from the hash
-  //   }
-  // }, [])
   return (
     <div className='overflow-x-hidden'>
       <Loading />

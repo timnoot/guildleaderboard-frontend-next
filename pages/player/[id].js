@@ -8,9 +8,9 @@ import axios from 'axios';
 import 'tippy.js/dist/tippy.css'; // optional
 
 import { numberShortener, numberWithCommas } from '../../utils/numformatting.js';
-import { capitalizeFirstLetter, getSlayerLevel } from '../../utils/other.js';
+import { capitalizeFirstLetter, getSlayerLevel, getCataLevel, getSkillLevel } from '../../utils/other.js';
 import { TimeDelta } from '../../utils/timedelta.js';
-import { APIURL, skills, slayers, skillMaxLevel, dungeons } from '../../utils/constants.js';
+import { APIURL, GENERAL_NUMS, SKILL_NUMS, SLAYER_NUMS, DUNGEON_NUMS, skillMaxLevel, COLOR_ARRAY } from '../../utils/constants.js';
 
 import { JoinLog } from '../../components/JoinLogs.js';
 import { StatBlockTop, OutsideLink, CopyButton, MenuButton } from '../../components/StatBlocks';
@@ -18,8 +18,7 @@ import { Footer } from '../../components/Footer';
 import { ProgressBar } from '../../components/ProgressBar.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
-
-// import ReactTags from 'react-tag-autocomplete';
+import { SuggestionBar } from '../../components/SuggestionBar.js';
 
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -210,372 +209,404 @@ class JoinLogs extends React.Component {
   }
 }
 
-class PlayerMetrics extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tags: [],
-      suggestions: [],
-      all_series: {},
-      autoCompleteLoaded: false,
-      change: 0,
-      daysShow: 90,
-      showMetrics: {
-        general: true,
-        skill: false,
-        dungeon: false,
-        slayer: false,
-      },
-    };
-    this.reactTags = React.createRef();
-    this.getSeries.bind(this);
-    this.metricsKeys = {
-      general: ['sb_experience', 'networth', 'senither_weight', 'lily_weight', 'average_skill'],
-      skill: [
-        ['combat', 'combat_xp'],
-        ['alchemy', 'alchemy_xp'],
-        ['enchanting', 'enchanting_xp'],
-        ['farming', 'farming_xp'],
-        ['fishing', 'fishing_xp'],
-        ['foraging', 'foraging_xp'],
-        ['mining', 'mining_xp'],
-        ['taming', 'taming_xp'],
-      ],
-      dungeon: [
-        ['catacombs', 'catacombs_xp'],
-        ['archer', 'archer_xp'],
-        ['berserk', 'berserk_xp'],
-        ['healer', 'healer_xp'],
-        ['mage', 'mage_xp'],
-        ['tank', 'tank_xp'],
-      ],
-      slayer: ['zombie_xp', 'wolf_xp', 'spider_xp', 'enderman_xp', 'blaze_xp'],
-    };
-  }
+const PlayerMetrics = (props) => {
+  const [tags, setTags] = useState([]);
+  const [suggestions, setSuggestions] = useState([
+    { id: 'bf8794f505124d7da30ae238a1efb4c2', name: 'timnoot' },
+    { id: "31b5211af8b64ea8abc6b16d6dddb07b", name: 'Nemqnja' }
+  ]);
+  const [autoCompleteLoaded, setAutoCompleteLoaded] = useState(false);
 
-  onDelete(i) {
-    const tags = this.state.tags.slice(0);
-    let uuid = tags.splice(i, 1)[0].id;
+  const [all_datasets, setAllDatasets] = useState({});
+  // const [change, setChange] = useState(0);
+  const [daysShow, setDaysShow] = useState(90);
+
+  const [labels, setLabels] = useState([]);
+  const [datasets, setDatasets] = useState({});
+
+  const [charts, setCharts] = useState([]);
+  const [chartsUpdate, setChartsUpdate] = useState(0);
+
+  const daysProps = [7, 30, 90];
+
+  const chartsProps = [
+    { id: "sb_experience", title: "SkyBlock experience", },
+    { id: 'networth', title: 'Networth', },
+    { id: 'senither_weight', title: 'Senither Weight', },
+    { id: "lily_weight", title: "Lily Weight", },
+    { id: 'average_skill', title: 'Average Skill' },
+    { id: 'combat', title: 'Combat XP' },
+    { id: 'alchemy', title: 'Alchemy XP' },
+    { id: 'enchanting', title: 'Enchanting XP' },
+    { id: 'farming', title: 'Farming XP' },
+    { id: 'fishing', title: 'Fishing XP' },
+    { id: 'foraging', title: 'Foraging XP' },
+    { id: 'mining', title: 'Mining XP' },
+    { id: 'taming', title: 'Taming XP' },
+    { id: 'carpentry', title: 'Carpentry XP' },
+    { id: 'catacombs', title: 'Catacombs XP' },
+    { id: 'archer', title: 'Archer XP' },
+    { id: 'berserk', title: 'Berserk XP' },
+    { id: 'healer', title: 'Healer XP' },
+    { id: 'mage', title: 'Mage XP' },
+    { id: 'tank', title: 'Tank XP' },
+    { id: 'zombie', title: 'Zombie XP' },
+    { id: 'wolf', title: 'Wolf XP' },
+    { id: 'spider', title: 'Spider XP' },
+    { id: 'enderman', title: 'Enderman XP' },
+    { id: 'blaze', title: 'Blaze XP' },
+    { id: 'vampire', title: 'Vampire XP' },
+  ];
+  const category = {
+    general_stats: ['sb_experience', 'networth', 'senither_weight', 'lily_weight'],
+    skill_stats: ['average_skill', 'combat', 'alchemy', 'enchanting', 'farming', 'fishing', 'foraging', 'mining', 'taming', 'carpentry'],
+    dungeon_stats: ['catacombs', 'archer', 'berserk', 'healer', 'mage', 'tank'],
+    slayer_stats: ['zombie', 'wolf', 'spider', 'enderman', 'blaze', 'vampire'],
+  };
+
+  const onDelete = (uuid) => {
+    const tagsCopy = tags.slice(0);
+    for (const i in tagsCopy) {
+      if (tagsCopy[i].id === uuid) {
+        tagsCopy.splice(i, 1);
+      }
+    }
     // remove guild from guild_sorted_data
-    let all_series = this.state.all_series;
-    delete all_series[uuid];
-    this.setState({
-      tags: tags,
-      all_series: all_series,
-      change: this.state.change + 1,
-    });
-  }
+    delete all_datasets[uuid];
+    setTags(tagsCopy);
+    setAllDatasets({ ...all_datasets });
+  };
 
-  onAddition(tag) {
-    let uuid = tag.id || tag.name;
+  const onAddition = (tag) => {
+    const tagsCopy = [].concat(tags, tag);
+    let uuid = tag.id;
 
     fetch(`${APIURL}metrics/player/${uuid}`)
-      .then((res) => res.json())
-      .then(
-        (result) => {
-          let all_series = this.state.all_series;
-          if (result) {
-            uuid = result[result.length - 1].uuid;
-            let name = result[result.length - 1].name;
-
-            all_series[uuid] = result;
-            tag.name = name;
-            tag.id = uuid;
-            const tags = [].concat(this.state.tags, tag);
-            this.setState({
-              tags: tags,
-              all_series: all_series,
-              change: this.state.change + 1,
-            });
-          }
-        },
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json()
+        }
+      })
+      .then((result) => {
+        if (result) {
+          all_datasets[uuid] = result;
+          setTags(tagsCopy);
+          setAllDatasets({ ...all_datasets });
+        }
+      },
         (error) => {
           console.log(error);
-          this.setState({
-            metricsIsLoaded: true,
-            error,
-          });
         }
       );
-  }
+  };
 
-  getSeries(wanted_key, daysShow) {
-    let result = [];
-
-    // loop through given
-    for (let uuid in this.state.all_series) {
-      let metrics = this.state.all_series[uuid];
-
-      let last = metrics[metrics.length - 1];
-
-      let tempresult = {
-        data: [],
-        name: last.name,
-      };
-
-      for (const i in metrics) {
-        let metric = metrics[i];
-
-        let timeDelta = TimeDelta.fromDate(metric['capture_date']);
-        if (timeDelta.toSeconds() > daysShow * 24 * 60 * 60) {
-          continue;
-        }
-        tempresult['data'].push([
-          Date.now() - timeDelta.toMS(),
-          metric[wanted_key],
-        ]);
+  const getPlayerName = (uuid) => {
+    // loop through tags and find the name
+    for (const i in tags) {
+      if (tags[i].id === uuid) {
+        return tags[i].name;
       }
-      result.push(tempresult);
     }
-    return result;
   }
 
-  getMetricName(metric) {
-    if (metric === 'sb_experience') {
-      return 'SkyBlock Experience';
+  useEffect(() => {
+    if (autoCompleteLoaded) {
+      return;
     }
-    return metric
-      .replace('xp', 'XP')
-      .split('_')
-      .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-      .join(' ');
-  }
+    onAddition({ id: props.uuid, name: props.name });
+    // setChange(change + 1);
+    // fetch(`${APIURL}autocomplete`)
+    //   .then((res) => res.json())
+    //   .then(
+    //     (result) => {
+    //       setAutoCompleteLoaded(true);
+    //       setSuggestions(result);
+    //     },
+    //     (error) => {
+    //       console.log(error);
+    //     }
+    //   );
+  }, []);
 
-  render() {
-    let daysShow = this.state.daysShow;
-    let metricsCharts = [];
-    // loop through showMetrics
-    for (const key in this.state.showMetrics) {
-      metricsCharts.push(
-        <div className='pt-4'>
-          <div className='text-4xl text-white'>
-            {capitalizeFirstLetter(key)} Metrics
-          </div>
-          <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
-        </div>
-      );
-      if (this.state.showMetrics[key]) {
-        for (const i in this.metricsKeys[key]) {
-          let metric = this.metricsKeys[key][i];
-          if (typeof metric === 'object') {
-            let metricName1 = this.getMetricName(metric[0]);
-            let metricName2 = this.getMetricName(metric[1]);
-            metricsCharts.push(
-              <div>
-                <div className='p-2 m-1 rounded-md md:inline-block h-80 md:h-96 md:w-1/3 bg-primary'>
-                  <CustomChart2
-                    series={this.getSeries(metric[0], daysShow)}
-                    title={metricName1}
-                    width={'100%'}
-                    height={'100%'}
-                    key={this.state.change}
-                  />
-                </div>
-                <div className='p-2 m-1 rounded-md md:inline-block h-80 md:h-96 md:w-1/3 bg-primary'>
-                  <CustomChart2
-                    series={this.getSeries(metric[1], daysShow)}
-                    title={metricName2}
-                    width={'100%'}
-                    height={'100%'}
-                    key={this.state.change}
-                  />
-                </div>
-              </div>
-            );
-          } else {
-            let metricName = this.getMetricName(metric);
-            metricsCharts.push(
-              <div className='p-2 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'>
-                <CustomChart2
-                  series={this.getSeries(metric, daysShow)}
-                  title={metricName}
-                  width={'100%'}
-                  height={'100%'}
-                  key={this.state.change}
-                />
-              </div>
-            );
+  useEffect(() => { // update labels 
+    let labels2 = [];
+    const currentDate = new Date();
+
+    for (let i = 0; i < daysShow; i++) {
+      const date = new Date(currentDate);
+      date.setDate(date.getDate() - i);
+      labels2.push(date.toLocaleString('default', { month: 'short', day: 'numeric' }));
+    }
+    setLabels(labels2.reverse());
+    // setChange(change + 1);
+  }, [daysShow]);
+
+  useEffect(() => { // update datasets
+    let newDataSetDict = {};
+    for (const i in chartsProps) {
+      let chart = chartsProps[i];
+      // let statNum = GENERAL_NUMS[chart.id];
+      // let statCategory = 'general_stats';
+      // determine the stat category with category 
+      let statCategory;
+      let statNum;
+      if (category.general_stats.includes(chart.id)) {
+        statCategory = 'general_stats';
+        statNum = GENERAL_NUMS[chart.id];
+      } else if (category.skill_stats.includes(chart.id)) {
+        statCategory = 'skill_stats';
+        statNum = SKILL_NUMS[chart.id];
+      } else if (category.dungeon_stats.includes(chart.id)) {
+        statCategory = 'dungeon_stats';
+        statNum = DUNGEON_NUMS[chart.id];
+      } else if (category.slayer_stats.includes(chart.id)) {
+        statCategory = 'slayer_stats';
+        statNum = SLAYER_NUMS[chart.id];
+      }
+
+      // loop through the guilds
+      let datasets = [];
+      for (const uuid in all_datasets) {
+        let playerMetrics = all_datasets[uuid];
+        let playerName = getPlayerName(uuid);
+
+        // loop through guildMetrics
+        let playerData = [];
+        let currentDate = new Date();
+        let playerMetricsIndex = 0;
+
+        for (let j = 0; j < 90; j++) {
+          if (playerMetricsIndex >= playerMetrics.length) {
+            playerData.push(null);
+            currentDate.setDate(currentDate.getDate() - 1);
+            continue;
           }
+          let metric = playerMetrics[playerMetricsIndex];
+          let metricDate = new Date(metric.capture_date);
+          // console.log(metricDate.toDateString(), currentDate.toDateString());
+          // if the metric date is the same as the current date or the metric date is older than the current date
+          if (metricDate.toDateString() === currentDate.toDateString()) {
+            playerData.push(metric[statCategory].split(',')[statNum]);
+            playerMetricsIndex++;
+            // console.log("pushed")
+          } else if (metricDate > currentDate) {
+            playerMetricsIndex++;
+            currentDate.setDate(currentDate.getDate() + 1);
+            j--;
+            // console.log("skipped")
+          }
+          else {
+            playerData.push(null);
+            // console.log("null")
+          }
+          currentDate.setDate(currentDate.getDate() - 1);
         }
-      } else {
-        metricsCharts.push(
-          <div>
-            <button
-              className='text-white p-2 m-2 rounded-md w-[90%] md:inline-block h-80 md:h-96 md:w-2/3 bg-primary text-xl md:text-4xl lg:text-6xl'
-              onClick={() => {
-                let showMetrics = this.state.showMetrics;
-                showMetrics[key] = true;
-                this.setState({
-                  showMetrics: showMetrics,
-                });
-              }}
-            >
-              Show {capitalizeFirstLetter(key)} Metrics
-            </button>
+        // console.log(playerData.length);
+
+        datasets.push({
+          label: playerName,
+          data: playerData.reverse(),
+          borderColor: COLOR_ARRAY[uuid % COLOR_ARRAY.length],
+          fill: Object.keys(all_datasets).length === 1,
+          pointHitRadius: 100,
+          spanGaps: true,
+          pointBackgroundColor: 'white',
+          tension: 0.2,
+
+        });
+      }
+      newDataSetDict[chart.id] = datasets;
+    }
+
+    setDatasets(newDataSetDict);
+  }, [all_datasets]);
+
+  useEffect(() => { // update charts
+    if (Object.keys(datasets).length === 0) {
+      return;
+    }
+
+    let newCharts = [];
+
+    for (const i in category) {
+      let categoryData = category[i];
+      let categoryCharts = [];
+      for (const j in categoryData) {
+        let chart_id = categoryData[j];
+        // find the name of the chart
+        let chartName = chartsProps.find(chart => chart.id === chart_id).title;
+        console.log(chartName, chart_id);
+
+        let dataSet = datasets[chart_id].map(dataset => ({ ...dataset }));
+        for (const k in dataSet) {
+          dataSet[k].data = dataSet[k].data.slice(90 - daysShow);
+        }
+        categoryCharts.push(
+          <div
+            className='p-4 m-2 rounded-md md:inline-block  md:w-2/3 bg-primary' // h-80 md:h-96
+            key={chart_id}
+          >
+            <CustomChart2
+              title={chartName}
+              datasets={dataSet}
+              labels={labels}
+              key={chart_id + chartsUpdate}
+            />
           </div>
         );
       }
+      newCharts.push(
+        <div>
+          <div className='text-4xl m-2 mt-4 text-white'>{capitalizeFirstLetter(i.replace("_stats", ""))} Metrics</div>
+          <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
+          {categoryCharts}
+        </div>
+      );
     }
-    let daysProps = [
-      7, 30, 90
-    ]
+    setCharts(newCharts);
+    setChartsUpdate(chartsUpdate + 1);
+  }, [datasets, labels]);
 
-    return (
-      <div className='text-black'>
-        <div className='text-center'>
-          <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
-            {/* <ReactTags
-              ref={this.reactTags}
-              tags={this.state.tags}
-              onDelete={this.onDelete.bind(this)}
-              onAddition={this.onAddition.bind(this)}
-              placeholderText='Add a player'
-              allowNew={true}
-            /> */}
-          </div>
+  return (
+    <div>
+      <div className='text-center'>
+        <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
+          <SuggestionBar
+            tags={tags}
+            suggestions={suggestions}
+            onDelete={onDelete}
+            onAddition={onAddition}
+            placeholderText='Add a player'
+            mustBeSuggestion={false}
+          />
         </div>
-        <div className='text-sm text-center text-white'>
-          {
-            daysProps.map((days) => {
-              return (
-                <MenuButton
-                  key={days}
-                  onClick={() => {
-                    this.setState({
-                      daysShow: days,
-                      change: this.state.change + 1,
-                      showMetrics: {
-                        general: true,
-                        skill: false,
-                        dungeon: false,
-                        slayer: false,
-                      },
-                    });
-                  }}
-                  disabled={daysShow === days}
-                  className='mx-1 text-base'
-                >
-                  {days} days
-                </MenuButton>
-              )
-            })
-          }
-        </div>
-        <div className='text-center'>{metricsCharts}</div>
       </div>
-    );
-  }
-
-  componentDidMount() {
-    this.onAddition({ id: this.props.uuid, name: this.props.name });
-  }
+      <div className='text-sm text-center text-white'>
+        {daysProps.map((days) => {
+          return (
+            <MenuButton
+              onClick={() => setDaysShow(days)}
+              disabled={daysShow === days}
+              className='mx-1 text-base'
+              key={days}
+            >
+              {days} days
+            </MenuButton>
+          );
+        })}
+      </div>
+      <div className='text-center' key={chartsUpdate}>
+        {charts}
+      </div>
+    </div>
+  );
 }
 
-class PlayerStats extends React.Component {
-  constructor(props) {
-    super(props);
-    this.playerJson = props.playerJson;
-  }
+const PlayerStats = (props) => {
+  let skill_stats = props.player.metrics[0].skill_stats.split(',');
+  let skillProgressBars = [];
 
-  render() {
-    let skillProgressBars = [];
-    for (const skill in skills) {
-      let skillName = skills[skill];
-      let level = this.playerJson[skillName];
-      let levelProgress = level - parseInt(level);
-
-      if (level >= skillMaxLevel[skillName]) {
-        levelProgress = 1;
-      }
-
-      skillProgressBars.push(
-        <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
-          <ProgressBar
-            key={skillName}
-            name={`${capitalizeFirstLetter(skillName)} ${numberWithCommas(
-              this.playerJson[skillName]
-            )}`}
-            xp={this.playerJson[`${skillName}_xp`]}
-            levelProgress={levelProgress}
-            color={
-              level >= skillMaxLevel[skillName]
-                ? 'bg-progressgold'
-                : 'bg-progressblue'
-            }
-          />
-        </div>
-      );
+  for (const skillName in SKILL_NUMS) {
+    if (skillName === 'average_skill') {
+      continue;
     }
-    let slayerProgressBars = [];
-    for (const slayer in slayers) {
-      let slayerName = slayers[slayer];
+    let skillNum = SKILL_NUMS[skillName];
+    let xp = skill_stats[skillNum];
+    let level = getSkillLevel(xp, skillMaxLevel[skillName]);
+    let levelProgress = level - parseInt(level);
 
-      let { level, progress } = getSlayerLevel(
-        slayerName,
-        this.playerJson[`${slayerName}_xp`]
-      );
-      if (level >= 9) {
-        progress = 1;
-      }
-
-      slayerProgressBars.push(
-        <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
-          <ProgressBar
-            key={slayerName}
-            name={`${capitalizeFirstLetter(slayerName)} ${level}`}
-            xp={this.playerJson[`${slayerName}_xp`]}
-            levelProgress={progress}
-            color={level >= 9 ? 'bg-progressgold' : 'bg-progressblue'}
-          />
-        </div>
-      );
+    if (level >= skillMaxLevel[skillName]) {
+      levelProgress = 1;
     }
 
-    let dungeonProgressBars = [];
-    for (const dungeon in dungeons) {
-      let dungeonName = dungeons[dungeon];
-      let level = this.playerJson[dungeonName];
-      let levelProgress = level - parseInt(level);
-
-      if (level >= 50) {
-        levelProgress = 1;
-      }
-
-      dungeonProgressBars.push(
-        <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
-          <ProgressBar
-            key={dungeonName}
-            name={`${capitalizeFirstLetter(dungeonName)} ${numberWithCommas(
-              this.playerJson[dungeonName]
-            )}`}
-            xp={this.playerJson[`${dungeonName}_xp`]}
-            levelProgress={levelProgress}
-            color={level >= 50 ? 'bg-progressgold' : 'bg-progressblue'}
-          />
-        </div>
-      );
-    }
-
-    return (
-      <div className='text-center'>
-        <div className='inline-block w-full pb-20'>
-          <div className='text-4xl'>Skills</div>
-          <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
-          {skillProgressBars}
-        </div>
-        <div className='inline-block w-full pb-20'>
-          <div className='text-4xl'>Slayers</div>
-          <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
-          {slayerProgressBars}
-        </div>
-        <div className='inline-block w-full pb-20'>
-          <div className='text-4xl'>Dungeons</div>
-          <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
-          {dungeonProgressBars}
-        </div>
+    skillProgressBars.push(
+      <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
+        <ProgressBar
+          key={skillName}
+          name={`${capitalizeFirstLetter(skillName)} ${numberWithCommas(level)}`}
+          xp={xp}
+          levelProgress={levelProgress}
+          color={
+            level >= skillMaxLevel[skillName]
+              ? 'bg-progressgold'
+              : 'bg-progressblue'
+          }
+        />
       </div>
     );
   }
+
+  let slayer_stats = props.player.metrics[0].slayer_stats.split(',');
+  let slayerProgressBars = [];
+
+  for (const slayerName in SLAYER_NUMS) {
+    let slayerNum = SLAYER_NUMS[slayerName];
+
+    let { level, progress } = getSlayerLevel(slayerName, slayer_stats[slayerNum]);
+    if (level >= 9) {
+      progress = 1;
+    }
+
+    slayerProgressBars.push(
+      <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
+        <ProgressBar
+          key={slayerName}
+          name={`${capitalizeFirstLetter(slayerName)} ${level}`}
+          xp={slayer_stats[slayerNum]}
+          levelProgress={progress}
+          color={level >= 9 ? 'bg-progressgold' : 'bg-progressblue'}
+        />
+      </div>
+    );
+  }
+
+  let dungeon_stats = props.player.metrics[0].dungeon_stats.split(',');
+  let dungeonProgressBars = [];
+  for (const dungeonName in DUNGEON_NUMS) {
+    let dungeonNum = DUNGEON_NUMS[dungeonName];
+    let xp = dungeon_stats[dungeonNum];
+    let level = getCataLevel(xp);
+
+    let levelProgress = level - parseInt(level);
+
+    if (level >= 50) {
+      levelProgress = 1;
+    }
+
+    dungeonProgressBars.push(
+      <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
+        <ProgressBar
+          key={dungeonName}
+          name={`${capitalizeFirstLetter(dungeonName)} ${numberWithCommas(
+            level
+          )}`}
+          xp={xp}
+          levelProgress={levelProgress}
+          color={level >= 50 ? 'bg-progressgold' : 'bg-progressblue'}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className='text-center'>
+      <div className='inline-block w-full pb-20'>
+        <div className='text-4xl'>Skills</div>
+        <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
+        {skillProgressBars}
+      </div>
+      <div className='inline-block w-full pb-20'>
+        <div className='text-4xl'>Slayers</div>
+        <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
+        {slayerProgressBars}
+      </div>
+      <div className='inline-block w-full pb-20'>
+        <div className='text-4xl'>Dungeons</div>
+        <hr className='border-none bg-tertiary h-[2px] my-4 mx-[5%]' />
+        {dungeonProgressBars}
+      </div>
+    </div>
+  );
 }
 
 export default function Player({ player }) {
@@ -583,17 +614,20 @@ export default function Player({ player }) {
 
   const router = useRouter();
   useEffect(() => {
-    router.push(`/player/${player.name}`);
+    // change to player name but do not reload the page
+    if (player.name !== router.query.id) {
+      router.replace(`/player/${player.name}`);
+    }
   }, []);
 
   let component;
 
   if (selectedPage === 'stats') {
-    component = <PlayerStats playerJson={player} />;
+    component = <PlayerStats player={player} />;
   } else if (selectedPage === 'metrics') {
-    component = <PlayerMetrics uuid={player.uuid} name={player.name} />;
+    component = <PlayerMetrics uuid={player._id} name={player.name} />;
   } else if (selectedPage === 'history') {
-    component = <JoinLogs uuid={player.uuid} />;
+    component = <JoinLogs uuid={player._id} />;
   }
 
   if (player.limited && selectedPage !== 'history') {
@@ -616,7 +650,7 @@ export default function Player({ player }) {
     );
   }
 
-  let last_updated = TimeDelta.fromDate(player.capture_date);
+  let last_updated = TimeDelta.fromDate(player.latest_capture_date);
   let notUpdatedText;
   // 25 hours
   if (last_updated.toMS() > 1000 * 60 * 60 * 25) {
@@ -628,6 +662,9 @@ export default function Player({ player }) {
   } else {
     notUpdatedText = <></>;
   }
+
+  let slayer_stats = player.metrics[0].slayer_stats.split(',');
+  let dungeon_stats = player.metrics[0].dungeon_stats.split(',');
 
   return (
     <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar text-white text-center font-[Helvetica]'>
@@ -644,31 +681,21 @@ export default function Player({ player }) {
         <meta
           property='og:description'
           content={`
-🏆 SkyBlock level: ${Math.floor(player.sb_experience / 100)}
-💵 Networth: ${numberShortener(player.networth)}
+🏆 SkyBlock level: ${Math.floor(player.latest_sb_xp / 100)}
+💵 Networth: ${numberShortener(player.latest_nw)}
 
-💪 Senither: ${numberWithCommas(player.senither_weight)}
-🌺 Lily: ${numberWithCommas(player.lily_weight)}
+💪 Senither: ${numberWithCommas(player.latest_senither)}
+🌺 Lily: ${numberWithCommas(player.latest_lily)}
 
-📚 Avg Skill: ${numberWithCommas(player.average_skill)}
-💀 Catacombs: ${numberWithCommas(player.catacombs)} (🚑 ${parseInt(
-            player.healer
-          )} 🧙🏽 ${parseInt(player.mage)} 🗡️ ${parseInt(
-            player.berserk
-          )} 🏹 ${parseInt(player.archer)} 🛡️ ${parseInt(player.tank)})
-🔫 Slayer: ${numberShortener(
-            player.wolf_xp +
-            player.spider_xp +
-            player.zombie_xp +
-            player.blaze_xp +
-            player.enderman_xp
-          )} 🧟 ${getSlayerLevel('zombie', player.zombie_xp).level} 🕸️ ${getSlayerLevel('spider', player.spider_xp).level
-            } 🐺 ${getSlayerLevel('wolf', player.wolf_xp).level} 🔮 ${getSlayerLevel('enderman', player.enderman_xp).level
-            } 🔥 ${getSlayerLevel('blaze', player.blaze_xp).level}`}
+📚 Avg Skill: ${numberWithCommas(player.latest_asl)}
+💀 Catacombs: ${numberWithCommas(getCataLevel(player.latest_cata))} (🚑 ${numberWithCommas(getCataLevel(dungeon_stats[1]))} 🧙🏽 ${numberWithCommas(getCataLevel(dungeon_stats[2]))} 🗡️ ${numberWithCommas(getCataLevel(dungeon_stats[3]))} 🏹 ${numberWithCommas(getCataLevel(dungeon_stats[4]))} 🛡️ ${numberWithCommas(getCataLevel(dungeon_stats[5]))})
+🔫 Slayer: ${numberShortener(slayer_stats[0])} 🧟 ${getSlayerLevel('zombie', slayer_stats[1]).level} 🕸️ ${getSlayerLevel('spider', slayer_stats[2]).level
+            } 🐺 ${getSlayerLevel('wolf', slayer_stats[3]).level} 🔮 ${getSlayerLevel('enderman', slayer_stats[4]).level
+            } 🔥 ${getSlayerLevel('blaze', slayer_stats[5]).level} 🧛 ${getSlayerLevel('enderman', slayer_stats[6]).level}`}
         />
         <meta
           property='og:image'
-          content={`https://crafatar.com/avatars/${player.uuid}?size=512&overlay`}
+          content={`https://crafatar.com/avatars/${player._id}?size=512&overlay`}
         />
       </Head>
       <div>
@@ -688,61 +715,55 @@ export default function Player({ player }) {
           <div className='p-2 text-center'>
             <StatBlockTop
               color='bg-levelorange'
-              value={Math.floor(player.sb_experience / 100)}
+              value={Math.floor(player.latest_sb_xp / 100)}
               name='SkyBlock level'
             />
             <StatBlockTop
-              value={numberShortener(player.networth)}
+              value={numberShortener(player.latest_nw)}
               name='Networth'
               color='bg-blue-700'
             />
             <StatBlockTop
               color='bg-purple-700'
-              value={numberWithCommas(player.senither_weight)}
+              value={numberWithCommas(player.latest_senither)}
               name='Senither Weight'
             />
             <StatBlockTop
               color='bg-green-700'
-              value={numberWithCommas(player.lily_weight)}
+              value={numberWithCommas(player.latest_lily)}
               name='Lily Weight'
             />
             <StatBlockTop
               color='bg-blue-500'
-              value={numberWithCommas(player.average_skill)}
+              value={numberWithCommas(player.latest_asl)}
               name='Skill Average'
             />
             <StatBlockTop
               color='bg-green-500'
-              value={numberWithCommas(player.catacombs)}
+              value={numberWithCommas(getCataLevel(player.latest_cata))}
               name='Catacombs'
             />
             <StatBlockTop
               color='bg-red-500'
-              value={numberWithCommas(
-                player.wolf_xp +
-                player.spider_xp +
-                player.zombie_xp +
-                player.blaze_xp +
-                player.enderman_xp
-              )}
+              value={numberWithCommas(slayer_stats[0])}
               name='Slayer'
             />
           </div>
           {notUpdatedText}
           <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
           <OutsideLink
-            href={`https://sky.shiiyu.moe/${player.uuid}`}
+            href={`https://sky.shiiyu.moe/stats/${player._id}`}
             name='SkyCrypt'
           />
           <OutsideLink
-            href={`https://plancke.io/hypixel/player/stats/${player.uuid}`}
+            href={`https://plancke.io/hypixel/player/stats/${player._id}`}
             name='Plancke'
           />
           <OutsideLink
-            href={`https://sky.coflnet.com/player/${player.uuid}`}
+            href={`https://sky.coflnet.com/player/${player._id}`}
             name='Coflnet'
           />
-          <CopyButton text='UUID' copy={player.uuid} />
+          <CopyButton text='UUID' copy={player._id} />
         </div>
 
       </div>

@@ -14,12 +14,12 @@ export const ProgressBar = (props) => {
                 <span className='relative text-center -top-5'
                     onMouseEnter={
                         (e) => {
-                            e.target.innerText = numberWithCommas(props.xp);
+                            e.target.innerText = numberWithCommas(props.xp) + ' XP';
                         }
                     }
                     onMouseLeave={
                         (e) => {
-                            e.target.innerText = numberShortener(props.xp);
+                            e.target.innerText = numberShortener(props.xp) + ' XP';
                         }
                     }
                 >

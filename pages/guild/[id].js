@@ -7,7 +7,7 @@ import axios from 'axios';
 import { hideAll } from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional
 
-import { APIURL, NAME_TO_POSITION } from '../../utils/constants.js';
+import { APIURL, NAME_TO_POSITION, COLOR_ARRAY } from '../../utils/constants.js';
 import { numberShortener, numberWithCommas } from '../../utils/numformatting.js';
 import { TimeDelta } from '../../utils/timedelta.js';
 import { getCataLevel } from '../../utils/other.js';
@@ -609,51 +609,14 @@ const CompareGuilds = (props) => {
 
   const daysProps = [7, 30, 90];
   const chartsProps = [
-    {
-      id: "sb_experience",
-      title: "SkyBlock experience",
-    },
-    {
-      id: 'networth',
-      title: 'Networth',
-    },
-    {
-      id: 'senither_weight',
-      title: 'Senither Weight',
-    },
-    {
-      id: "lily_weight",
-      title: "Lily Weight",
-    },
-    {
-      id: 'skills',
-      title: 'Skills',
-    },
-    {
-      id: 'catacombs',
-      title: 'Catacombs',
-    },
-    {
-      id: 'slayer',
-      title: 'Slayer',
-    },
-    {
-      id: 'member_count',
-      title: 'Members',
-    },
-  ];
-  const colorArray = [
-    'bg-blue-700',
-    'bg-purple-700',
-    'bg-green-700',
-    'bg-red-700',
-    'bg-yellow-700',
-    'bg-yellow-500',
-    'bg-blue-500',
-    'bg-red-500',
-    'bg-green-500',
-    'bg-yellow-500',
-
+    { id: "sb_experience", title: "SkyBlock experience", },
+    { id: 'networth', title: 'Networth', },
+    { id: 'senither_weight', title: 'Senither Weight', },
+    { id: "lily_weight", title: "Lily Weight", },
+    { id: 'skills', title: 'Skills', },
+    { id: 'catacombs', title: 'Catacombs', },
+    { id: 'slayer', title: 'Slayer', },
+    { id: 'member_count', title: 'Members', },
   ];
 
   const onDelete = (guild_id) => {
@@ -766,7 +729,7 @@ const CompareGuilds = (props) => {
         datasets.push({
           label: guildName,
           data: guildData.reverse(),
-          borderColor: colorArray[guild_id % colorArray.length],
+          borderColor: COLOR_ARRAY[guild_id % COLOR_ARRAY.length],
           fill: Object.keys(all_datasets).length === 1,
           pointHitRadius: 100,
           spanGaps: true,
