@@ -435,7 +435,6 @@ const PlayerMetrics = (props) => {
         let chart_id = categoryData[j];
         // find the name of the chart
         let chartName = chartsProps.find(chart => chart.id === chart_id).title;
-        console.log(chartName, chart_id);
 
         let dataSet = datasets[chart_id].map(dataset => ({ ...dataset }));
         for (const k in dataSet) {
@@ -684,11 +683,11 @@ export default function Player({ player }) {
 🏆 SkyBlock level: ${Math.floor(player.latest_sb_xp / 100)}
 💵 Networth: ${numberShortener(player.latest_nw)}
 
-💪 Senither: ${numberWithCommas(player.latest_senither)}
-🌺 Lily: ${numberWithCommas(player.latest_lily)}
+💪 Senither: ${numberWithCommas(Math.round(player.latest_senither))}
+🌺 Lily: ${numberWithCommas(Math.round(player.latest_lily))}
 
 📚 Avg Skill: ${numberWithCommas(player.latest_asl)}
-💀 Catacombs: ${numberWithCommas(getCataLevel(player.latest_cata))} (🚑 ${numberWithCommas(getCataLevel(dungeon_stats[1]))} 🧙🏽 ${numberWithCommas(getCataLevel(dungeon_stats[2]))} 🗡️ ${numberWithCommas(getCataLevel(dungeon_stats[3]))} 🏹 ${numberWithCommas(getCataLevel(dungeon_stats[4]))} 🛡️ ${numberWithCommas(getCataLevel(dungeon_stats[5]))})
+💀 Catacombs: ${numberWithCommas(parseInt(getCataLevel(player.latest_cata)))} (🚑 ${numberWithCommas(parseInt(getCataLevel(dungeon_stats[1])))} 🧙🏽 ${numberWithCommas(parseInt(getCataLevel(dungeon_stats[2])))} 🗡️ ${numberWithCommas(parseInt(getCataLevel(dungeon_stats[3])))} 🏹 ${numberWithCommas(parseInt(getCataLevel(dungeon_stats[4])))} 🛡️ ${numberWithCommas(parseInt(getCataLevel(dungeon_stats[5])))})
 🔫 Slayer: ${numberShortener(slayer_stats[0])} 🧟 ${getSlayerLevel('zombie', slayer_stats[1]).level} 🕸️ ${getSlayerLevel('spider', slayer_stats[2]).level
             } 🐺 ${getSlayerLevel('wolf', slayer_stats[3]).level} 🔮 ${getSlayerLevel('enderman', slayer_stats[4]).level
             } 🔥 ${getSlayerLevel('blaze', slayer_stats[5]).level} 🧛 ${getSlayerLevel('enderman', slayer_stats[6]).level}`}
