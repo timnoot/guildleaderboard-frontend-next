@@ -823,7 +823,7 @@ export default function Guild({ guild }) {
     if (!guild) {
       router.push(`/`);
     } else {
-      router.push(`/guild/${guild.guild_name}`);
+      router.replace(`/guild/${guild.guild_name}`, undefined, { shallow: true });
     }
   }, []);
 

@@ -615,7 +615,7 @@ export default function Player({ player }) {
   useEffect(() => {
     // change to player name but do not reload the page
     if (player.name !== router.query.id) {
-      router.replace(`/player/${player.name}`);
+      router.replace(`/player/${player.name}`, undefined, { shallow: true });
     }
   }, []);
 
@@ -661,9 +661,9 @@ export default function Player({ player }) {
   } else {
     notUpdatedText = <></>;
   }
-
-  let slayer_stats = player.metrics[0].slayer_stats.split(',');
-  let dungeon_stats = player.metrics[0].dungeon_stats.split(',');
+  console.log(player)
+  let slayer_stats = player.limited ? [] : player.metrics[0].slayer_stats.split(',');
+  let dungeon_stats = player.limited ? [] : player.metrics[0].dungeon_stats.split(',');
 
   return (
     <div className='min-h-screen space-y-10 overflow-y-auto bg-secondary pt-7 sm:h-96 scrollbar text-white text-center font-[Helvetica]'>
