@@ -70,7 +70,7 @@ const Guild = (props) => {
       </th>
       <th>
         <Tippy
-          content={`${guildJson.guild_name} is #${guildJson.positions[5]} in average SkyBlock level with ${Math.floor((guildJson.weighted_stats[6] / multiplier) / 10) / 10} levels and a multiplier of ${numberWithCommas(
+          content={`${guildJson.guild_name} is #${guildJson.positions[6]} in average SkyBlock level with ${Math.floor((guildJson.weighted_stats[6] / multiplier) / 10) / 10} levels and a multiplier of ${numberWithCommas(
             multiplier
           )}`}
         >
@@ -81,7 +81,7 @@ const Guild = (props) => {
       </th>
       <th>
         <Tippy
-          content={`${guildJson.guild_name} is #${guildJson.positions[4]} in Networth`}
+          content={`${guildJson.guild_name} is #${guildJson.positions[5]} in Networth`}
         >
           <div
             className="my-1 mx-1 font-normal bg-blue-700 rounded-md px-1 xl:px-0 lg:mx-3"
