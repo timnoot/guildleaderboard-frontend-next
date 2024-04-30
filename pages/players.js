@@ -5,14 +5,26 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // optional
 
 import { TimeDelta } from '../utils/timedelta.js';
+import { getCataLevel } from '../utils/other.js';
 import { numberShortener, numberWithCommas } from '../utils/numformatting.js';
 import { Footer } from '../components/Footer.js';
 import { NavigationBar } from '../components/NavigationBar.js';
-import { PlayerStatsHeader } from '../components/StatsHeaderHome.js';
+import { GuildStatsHeader } from '../components/StatsHeaderHome.js';
 
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import { useCookies } from 'react-cookie';
+
+
+const NAME_TO_POSITION_PLAYER = {
+  'latest_senither': 0,
+  'latest_asl': 1,
+  'latest_cata': 2,
+  'latest_slayer': 3,
+  'latest_lily': 4,
+  'latest_nw': 5,
+  'latest_sb_xp': 6
+};
+
 
 const Player = (props) => {
   let player_data = props.player_data;
@@ -26,8 +38,7 @@ const Player = (props) => {
 
   // const TimeAgo = TimeDelta.fromDate(player_data.capture_date).toNiceString();
   // Improve above code to not get a hydration error
-  const TimeAgo = TimeDelta.fromDate(player_data.capture_date).toNiceString();
-
+  const TimeAgo = TimeDelta.fromDate(player_data.latest_capture_date).toNiceString();
 
   return (
     <>
@@ -40,58 +51,37 @@ const Player = (props) => {
         <th className='pr-[2em] text-left'>{player_data.name}</th>
         <th className='px-1'>
           <div className='px-1 my-1 font-normal bg-levelorange rounded-md lg:mx-6 xl:px-0'>
-            {Math.floor(player_data.sb_experience / 10) / 10}
+            {Math.floor(player_data.latest_sb_xp / 10) / 10}
           </div>
         </th>
         <th className='px-1'>
           <div className='px-1 my-1 font-normal bg-blue-700 rounded-md lg:mx-2 xl:px-0'>
-            {numberShortener(player_data.networth)}
+            {numberShortener(player_data.latest_nw)}
           </div>
         </th>
         <th>
           <div className='px-1 my-1 font-normal bg-purple-700 rounded-md lg:mx-6 xl:px-0'>
-            {numberWithCommas(player_data.senither_weight)}
+            {numberWithCommas(player_data.latest_senither)}
           </div>
         </th>
         <th className='hidden md:table-cell'>
           <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
-            {player_data.average_skill}
+            {player_data.latest_asl}
           </div>
         </th>
         <th className='hidden md:table-cell'>
           <div className='px-1 my-1 font-normal bg-red-500 rounded-md lg:mx-2 xl:px-0'>
-            {numberWithCommas(Math.round(player_data.total_slayer))}
+            {numberWithCommas(Math.round(player_data.latest_slayer))}
           </div>
         </th>
         <th className='hidden md:table-cell'>
           <div className='px-1 mx-6 my-1 font-normal bg-green-400 rounded-md xl:px-0'>
-            {player_data.catacombs}
+            {Math.round(getCataLevel(player_data.latest_cata) * 10) / 10}
           </div>
         </th>
         <th className='hidden sm:px-5 lg:table-cell'>{TimeAgo}</th>
         <th></th>
       </tr>
-      {player_data.scam_reason && <Tippy
-        reference={ref}
-        theme='tomato'
-        interactive={true}
-        followCursor='horizontal'
-        plugins={[followCursor]}
-        content={
-          <>
-            <div>{player_data.scam_reason}</div>
-            <div>
-              Scammer Database by{' '}
-              <a
-                className='text-blue-500 underline'
-                href='https://discord.gg/skyblock'
-              >
-                SkyBlockZ
-              </a>
-            </div>
-          </>
-        }
-      />}
     </>
   );
 };
@@ -100,20 +90,16 @@ class Players extends React.Component {
   constructor(props) {
     super(props);
     this.props = props
-    // let usedWeight = props.cookies.weightUsed || 'Senither';
 
     this.state = {
       playerJson: props.playerJson,
       isLoaded: null,
       current_page: 1,
       last_page: null,
-      sortOn: 'sb_experience',
+      sortOn: 'latest_sb_xp',
       searchQuery: '',
-      // usedWeight: usedWeight
     };
     this.loadPage = this.loadPage.bind(this);
-
-    // console.log(props.cookies.weightUsed)
   }
 
   render() {
@@ -124,16 +110,13 @@ class Players extends React.Component {
       let player_data = players_data[i];
 
       let color = i % 2 === 0 ? 'bg-tertiary hover:bg-lighttertiary' : 'hover:bg-lightprimary'
-      if (player_data.scam_reason) {
-        color = 'bg-scamred';
-      }
 
       players.push(
         <Player
-          position={player_data.position ? player_data.position : parseInt(i) + (this.state.current_page - 1) * 25 + 1}
+          position={player_data.positions.split(',')[NAME_TO_POSITION_PLAYER[this.state.sortOn]]}
           player_data={player_data}
           capture_date={TimeDelta.fromDate(player_data.capture_date).toNiceString()}
-          key={player_data.uuid}
+          key={player_data._id}
           color={color}
         />
       );
@@ -142,9 +125,6 @@ class Players extends React.Component {
 
     const onSortClick = (sortOnValue) => {
       this.setState({ sortOn: sortOnValue, current_page: 1 });
-      if (sortOnValue === 'catacombs') {
-        sortOnValue = 'catacomb_xp';
-      }
       this.loadPage(sortOnValue, 1, this.state.searchQuery);
     };
     let allow_previous = this.state.current_page > 1;
@@ -194,10 +174,7 @@ class Players extends React.Component {
           </span>
         );
       }
-      let active =
-        number === this.state.current_page
-          ? 'bg-green-800 text-white'
-          : 'bg-primary text-white';
+      let active = number === this.state.current_page ? 'bg-green-800 text-white' : 'bg-primary text-white';
       middleButtons.push(
         <button
           className={`${active} rounded-md py-1 px-1 xs:px-2 my-1 mx-[0.125rem] align-middle inline-block`}
@@ -214,29 +191,29 @@ class Players extends React.Component {
 
     let tableHeadersProps = [
       {
-        id: 'sb_experience',
+        id: 'latest_sb_xp',
         name: 'SkyBlock level',
       },
       {
-        id: 'networth',
+        id: 'latest_nw',
         name: 'Networth',
       },
       {
-        id: 'senither_weight',
+        id: 'latest_senither',
         name: 'Senither',
       },
       {
-        id: 'average_skill',
+        id: 'latest_asl',
         name: 'Average Skill',
         classname: 'hidden md:table-cell',
       },
       {
-        id: 'total_slayer',
+        id: 'latest_slayer',
         name: 'Total Slayer',
         classname: 'hidden md:table-cell',
       },
       {
-        id: 'catacombs',
+        id: 'latest_cata',
         name: 'Catacombs',
         classname: 'hidden md:table-cell',
       },
@@ -253,7 +230,6 @@ class Players extends React.Component {
               this.setState({ searchQuery: e.target.value, current_page: 1 });
               this.loadPage(this.state.sortOn, 1, e.target.value);
             }}
-
           />
         </div>
         <div className='inline-block w-[90%] xl:w-4/5 text-center'>
@@ -327,7 +303,7 @@ class Players extends React.Component {
 
   loadPage(sortOn, page, searchQuery = null) {
     console.log(sortOn)
-    fetch(`https://api.guildleaderboard.com/leaderboard/player?sort_by=${sortOn}&page=${page}${searchQuery ? `&username=${searchQuery}` : ''}`)
+    fetch(`https://apiv2.guildleaderboard.com/leaderboard/player?sort_by=${sortOn}&page=${page}${searchQuery ? `&username=${searchQuery}` : ''}`)
       .then((res) => res.json())
       .then(
         (result) => {
@@ -364,11 +340,6 @@ class Players extends React.Component {
 }
 
 export default function Home({ playerJson, stats }) {
-  const [cookies, setCookie] = useCookies(['showScammers1', 'weightUsed']);
-
-  function changeCookie(key, value) {
-    setCookie(key, value, { path: '/' });
-  }
   return (
     <div
       id='maindiv'
@@ -377,20 +348,16 @@ export default function Home({ playerJson, stats }) {
         hideAll({ duration: 0 });
       }}
     >
-      <NavigationBar
-        cookies={cookies}
-        changeCookie={changeCookie}
-        patronscount={stats.patrons}
-      />
-      <PlayerStatsHeader stats={stats} cookies={cookies} />
-      <Players cookies={cookies} playerJson={playerJson} />
+      <NavigationBar patronscount={stats.patrons} />
+      <GuildStatsHeader stats={stats} title={'Player'} backButton={true} />
+      <Players playerJson={playerJson} />
       <Footer />
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const res = await axios.get('https://api.guildleaderboard.com/leaderboard/player?sort_by=sb_experience');
+  const res = await axios.get('https://apiv2.guildleaderboard.com/leaderboard/player?sort_by=latest_sb_xp');
 
   const playerJson = res.data;
   if (res.status !== 200) {
@@ -398,7 +365,7 @@ export async function getStaticProps() {
     throw new Error('Failed to fetch API');
   }
 
-  const res2 = await axios.get('https://api.guildleaderboard.com/stats');
+  const res2 = await axios.get('https://apiv2.guildleaderboard.com/stats');
 
   const stats = res2.data;
   if (res2.status !== 200) {
@@ -411,6 +378,6 @@ export async function getStaticProps() {
       playerJson,
       stats,
     },
-    revalidate: 10,
+    revalidate: 60,
   };
 }

@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { NavigationBar } from '../components/NavigationBar.js';
-import { MainStatsHeader } from '../components/StatsHeaderHome.js';
+import { GuildStatsHeader } from '../components/StatsHeaderHome.js';
 import { Footer } from '../components/Footer.js';
 
 import axios from 'axios';
 import Link from 'next/link';
-import { useCookies } from 'react-cookie';
+
 import { FaUsers, FaLandmark } from 'react-icons/fa';
 
 const Options = (props) => {
@@ -14,14 +14,14 @@ const Options = (props) => {
         <div className='w-full text-center text-white text-xl lg:text-4xl'>
             <Link href='/guilds'>
                 <div className='inline-block cursor-pointer bg-[#2B2D31] border-4 border-primary w-[45%] lg:w-1/3 text-center rounded-xl m-1 py-16 lg:m-5 lg:py-32'>
-                    <FaLandmark className='w-full fa-6x mb-4' size={200} />
-                    Guild Leaderboard
+                    <FaLandmark className='w-[90%] m-auto fa-6x mb-4' size={200} />
+                    Guild<br className='sm:hidden' /> Leaderboard
                 </div>
             </Link>
             <Link href='/players'>
                 <div className='inline-block cursor-pointer bg-[#2B2D31] border-4 border-primary w-[45%] lg:w-1/3 text-center rounded-xl m-1 py-16 lg:m-5 lg:py-32'>
-                    <FaUsers className='w-full fa-6x mb-4' size={200} />
-                    Player Leaderboard
+                    <FaUsers className='w-[90%] m-auto fa-6x mb-4' size={200} />
+                    Player<br className='sm:hidden' /> Leaderboard
                 </div>
             </Link>
         </div>
@@ -29,23 +29,13 @@ const Options = (props) => {
 }
 
 export default function Home({ stats }) {
-    const [cookies, setCookie] = useCookies(['showScammers1', 'weightUsed']);
-
-    function changeCookie(key, value) {
-        setCookie(key, value, { path: '/' });
-    }
-
     return (
         <div
             id='maindiv'
             className='min-h-screen space-y-10 overflow-x-hidden overflow-y-auto bg-secondary sm:h-96 scrollbar'
         >
-            <NavigationBar
-                cookies={cookies}
-                changeCookie={changeCookie}
-                patronscount={stats.patrons}
-            />
-            <MainStatsHeader stats={stats} />
+            <NavigationBar patronscount={stats.patrons} />
+            <GuildStatsHeader stats={stats} />
             <Options />
             <Footer />
         </div>
@@ -53,7 +43,7 @@ export default function Home({ stats }) {
 }
 
 export async function getStaticProps() {
-    const res = await axios.get('https://api.guildleaderboard.com/stats');
+    const res = await axios.get('https://apiv2.guildleaderboard.com/stats');
 
     const stats = res.data;
     if (res.status !== 200) {

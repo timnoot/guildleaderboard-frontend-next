@@ -4,21 +4,20 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import axios from 'axios';
 
-import { followCursor, hideAll } from 'tippy.js';
-import Tippy from '@tippyjs/react';
+import { hideAll } from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // optional
 
-import ReactTags from 'react-tag-autocomplete';
-
-import { APIURL } from '../../utils/constants.js';
+import { APIURL, NAME_TO_POSITION, COLOR_ARRAY } from '../../utils/constants.js';
 import { numberShortener, numberWithCommas } from '../../utils/numformatting.js';
 import { TimeDelta } from '../../utils/timedelta.js';
+import { getCataLevel } from '../../utils/other.js';
 
 import { StatBlockTop, MenuButton } from '../../components/StatBlocks';
 import { Footer } from '../../components/Footer';
 import { JoinLog } from '../../components/JoinLogs.js';
 import { CustomChart2 } from '../../components/Chart.js';
 import { LoadingScreen } from '../../components/Screens.js';
+import { SuggestionBar } from '../../components/SuggestionBar.js';
 
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -38,93 +37,105 @@ const GuildHeader = (props) => {
       <div className='text-center font-[Helvetica]'>{backButtonElement}</div>
     );
   }
+  let stats = props.guildJson.metrics[0];
+
+  //   {
+  //     senither_weight int,
+  //     skills float,                    
+  //     catacombs float,
+  //     slayer int,
+  //     lily_weight int,
+  //     networth int,
+  //     sb_experience int
+  // }
+  let weightedStats = stats.weighted_stats.split(',');
+  let positions = props.guildJson.positions.split(',');
 
   let StatBlocksProps = [
     {
       color: 'bg-yellow-500',
-      value: props.guildJson.members.length,
+      value: stats.players.length,
       name: 'Members',
     },
     {
       'color': 'bg-levelorange',
-      'value': numberWithCommas(props.guildJson.sb_experience / 100 * props.guildJson.multiplier),
+      'value': numberWithCommas(weightedStats[6] / 100),
       'name': 'SkyBlock Level',
-      'tippy': `${numberWithCommas(
-        props.guildJson.sb_experience / 100
-      )} average SkyBlock level with a multiplier of ${numberWithCommas(
-        props.guildJson.multiplier
-      )}.`
+      'tippy': `#${positions[6]} in SkyBlock Levels with ${numberWithCommas(
+        (weightedStats[6] / stats.multiplier) / 100
+      )} average SkyBlock level and a multiplier of ${stats.multiplier}.`
     },
     {
       color: 'bg-blue-700',
       name: 'Networth',
-      value: numberShortener(props.guildJson.networth),
-      tippy: `${numberShortener(
-        props.guildJson.networth * props.guildJson.members.length
+      value: numberShortener(weightedStats[5]),
+      tippy: `#${positions[5]} in Networth and ${numberShortener(
+        weightedStats[5] * stats.players.length
       )} total guild networth.`,
     },
     {
       color: 'bg-purple-700',
       value: numberWithCommas(
-        props.guildJson.senither_weight * props.guildJson.multiplier
+        weightedStats[0]
       ),
       name: 'Senither Weight',
-      tippy: `${numberWithCommas(
-        props.guildJson.senither_weight
-      )} Senither Weight with a multiplier of ${numberWithCommas(
-        props.guildJson.multiplier
-      )}.`,
+      tippy: `#${positions[0]} in Weight with ${numberWithCommas(
+        weightedStats[0] / stats.multiplier
+      )} Senither Weight and a multiplier of ${stats.multiplier}.`,
     },
-    {
-      'color': 'bg-green-700',
-      'value': numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier),
-      'name': 'Lily Weight',
-      'tippy': `${numberWithCommas(props.guildJson.lily_weight)} Lily Weight with a multiplier of ${numberWithCommas(props.guildJson.multiplier)}.`
-    },
+    // {
+    //   'color': 'bg-green-700',
+    //   'value': numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier),
+    //   'name': 'Lily Weight',
+    //   'tippy': `${numberWithCommas(props.guildJson.lily_weight)} Lily Weight with a multiplier of ${stats.multiplier}.`
+    // },
     {
       color: 'bg-blue-500',
-      value: props.guildJson.skills,
+      value: weightedStats[1],
       name: 'Skill Average',
+      tippy: `#${positions[1]} in Average Skill Level`,
     },
     {
       color: 'bg-green-500',
-      value: props.guildJson.catacombs,
+      value: weightedStats[2],
       name: 'Catacombs',
+      tippy: `#${positions[2]} in Catacombs`,
     },
     {
       color: 'bg-red-500',
-      value: numberWithCommas(props.guildJson.slayer),
+      value: numberWithCommas(weightedStats[3]),
       name: 'Slayer',
+      tippy: `#${positions[3]} in Slayer`,
     },
   ];
   return (
     <div className='text-center font-[Helvetica]'>
       <Head>
-        <title>{props.guildJson.name} - Hypixel Skyblock Statistics</title>
-        <meta name='title' content={`${props.guildJson.name} statistics`} />
+        <title>{props.guildJson.guild_name} - Hypixel Skyblock Statistics</title>
+        <meta name='title' content={`${props.guildJson.guild_name} statistics`} />
         <meta
           name='description'
-          content={`View the statistics of ${props.guildJson.name} here!`}
+          content={`View the statistics of ${props.guildJson.guild_name} here!`}
         />
 
-        <meta property='og:title' content={props.guildJson.name} />
+        <meta property='og:title' content={props.guildJson.guild_name} />
         <meta property='og:site_name' content='GuildLeaderboard' />
         <meta
           property='og:description'
-          content={`👥 Members: ${props.guildJson.members.length}
-🏆 SkyBlock level: ${numberWithCommas(props.guildJson.sb_experience / 100)}
-💵 Networth: ${numberShortener(props.guildJson.networth)} (Total: ${numberShortener(props.guildJson.networth * props.guildJson.members.length)})
+          content={`👥 Members: ${stats.players.length}
+🏆 SkyBlock level: ${numberWithCommas(weightedStats[6] / 100)}
+💵 Networth: ${numberShortener(weightedStats[5])} (Total: ${numberShortener(weightedStats[5] * stats.players.length)})
 
-💪 Senither: ${numberWithCommas(props.guildJson.senither_weight * props.guildJson.multiplier)}
-🌺 Lily: ${numberWithCommas(props.guildJson.lily_weight * props.guildJson.multiplier)}
+💪 Senither: ${numberWithCommas(weightedStats[0])}
+🌺 Lily: ${numberWithCommas(weightedStats[4])}
 
-📚 Avg Skill: ${props.guildJson.skills}
-💀 Catacombs: ${props.guildJson.catacombs}                        
-🔫 Slayer: ${numberWithCommas(props.guildJson.slayer)}`}
+📚 Avg Skill: ${weightedStats[1]}
+💀 Catacombs: ${weightedStats[2]}                        
+🔫 Slayer: ${numberWithCommas(weightedStats[3])}`}
         />
       </Head>
       <h1 className='text-[1.8em] sm:text-[3em] font-semibold text-white'>
-        {props.guildJson.name}
+        {props.guildJson.guild_name}
       </h1>
       <div className='p-2 text-center'>
         {StatBlocksProps.map((stat, index) => {
@@ -133,7 +144,7 @@ const GuildHeader = (props) => {
       </div>
       <div className='py-2'>
         <button
-          className={`${props.guildJson.discord != null
+          className={`${props.guildJson.discord != '' && props.guildJson.discord != null
             ? 'opacity-95 hover:opacity-100 hover:scale-105'
             : 'opacity-25'
             } 
@@ -160,7 +171,7 @@ const GuildHeader = (props) => {
               </defs>
             </svg>
             <span className='pl-3'>
-              {props.guildJson.discord != null ? (
+              {props.guildJson.discord != '' && props.guildJson.discord != null ? (
                 <a href={`https://discord.gg/${props.guildJson.discord}`}>
                   Guild Discord
                 </a>
@@ -172,15 +183,6 @@ const GuildHeader = (props) => {
         </button>
       </div>
       <hr className='border-none bg-tertiary h-[2px] my-4 mx-[15%]' />
-      {/* {props.selectedPage === 'players' && <h1 className='pb-2 text-center text-white sm:text-1xl'>
-        Scammer Database provided by{' '}
-        <a
-          className='text-blue-500 underline'
-          href='https://discord.gg/skyblock'
-        >
-          SkyBlockZ
-        </a>
-      </h1>} */}
       {backButtonElement}
     </div>
   );
@@ -198,7 +200,7 @@ const Player = (props) => {
 
   const [TimeAgo, SetTimeAgo] = useState('Loading...');
   useEffect(() => {
-    SetTimeAgo(TimeDelta.fromDate(player_data.capture_date).toNiceString());
+    SetTimeAgo(TimeDelta.fromDate(player_data.latest_capture_date).toNiceString());
   }, []);
 
   return (
@@ -213,60 +215,37 @@ const Player = (props) => {
         <th className='pr-[2em] text-left'>{player_data.name}</th>
         <th>
           <div className='px-1 mx-2 my-1 font-normal bg-levelorange rounded-md lg:mx-6 xl:px-0'>
-            {Math.floor(player_data.sb_experience / 100)}
+            {Math.round(player_data.latest_sb_xp / 10) / 10}
           </div>
         </th>
         <th className='px-1'>
           <div className='px-1 my-1 font-normal bg-blue-700 rounded-md lg:mx-2 xl:px-0'>
-            {numberShortener(player_data.networth)}
+            {numberShortener(player_data.latest_nw)}
           </div>
         </th>
         <th>
           <div className='px-1 my-1 font-normal bg-purple-700 rounded-md lg:mx-6 xl:px-0'>
-            {numberWithCommas(player_data.senither_weight)}
+            {numberWithCommas(player_data.latest_senither)}
           </div>
         </th>
         <th className='hidden md:table-cell'>
           <div className='px-1 my-1 font-normal bg-blue-500 rounded-md xl:mx-4 xl:px-0'>
-            {player_data.average_skill}
+            {player_data.latest_asl}
           </div>
         </th>
         <th className='hidden md:table-cell'>
           <div className='px-1 my-1 font-normal bg-red-500 rounded-md lg:mx-2 xl:px-0'>
-            {numberWithCommas(Math.round(player_data.total_slayer))}
+            {numberWithCommas(Math.round(player_data.latest_slayer))}
           </div>
         </th>
         <th className='hidden md:table-cell'>
           <div className='px-1 mx-6 my-1 font-normal bg-green-400 rounded-md xl:px-0'>
-            {player_data.catacombs}
+            {Math.round(getCataLevel(player_data.latest_cata) * 10) / 10}
           </div>
         </th>
         <th className='hidden sm:px-5 lg:table-cell'>{TimeAgo}</th>
         <th></th>
       </tr>
-      {player_data.scam_reason && (
-        <Tippy
-          reference={ref}
-          theme='tomato'
-          interactive={true}
-          followCursor='horizontal'
-          plugins={[followCursor]}
-          content={
-            <>
-              <div>{player_data.scam_reason}</div>
-              <div>
-                Scammer Database by{' '}
-                <a
-                  className='text-blue-500 underline'
-                  href='https://discord.gg/skyblock'
-                >
-                  SkyBlockZ
-                </a>
-              </div>
-            </>
-          }
-        />
-      )}
     </>
   );
 };
@@ -275,7 +254,7 @@ class Players extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      sortOn: 'sb_experience',
+      sortOn: 'latest_sb_xp',
       sortReversed: false,
       searchQuery: '',
     };
@@ -298,7 +277,7 @@ class Players extends React.Component {
     if (!this.props.guildJson) {
       return <LoadingScreen />;
     }
-    let players_data = this.props.guildJson.members.slice();
+    let players_data = this.props.guildJson.metrics[0].players.slice();
     let sortOn = this.state.sortOn;
     let sortReversed = this.state.sortReversed;
     let players = [];
@@ -315,35 +294,22 @@ class Players extends React.Component {
     for (const i in players_data) {
       let player_data = players_data[i];
 
-      if (
-        this.state.searchQuery !== '' &&
-        player_data.name
-          .toLowerCase()
-          .includes(this.state.searchQuery.toLowerCase())
-      ) {
+      if (this.state.searchQuery !== '' && player_data.name.toLowerCase().includes(this.state.searchQuery.toLowerCase())) {
         colorIndex++;
       }
 
-      let color =
-        (this.state.searchQuery !== '' ? colorIndex : i) % 2 === 0
-          ? 'bg-tertiary hover:bg-lighttertiary'
-          : 'hover:bg-lightprimary';
-
-      if (player_data.scam_reason) {
-        color = 'bg-scamred';
-      }
+      let color = (this.state.searchQuery !== '' ? colorIndex : i) % 2 === 0
+        ? 'bg-tertiary hover:bg-lighttertiary'
+        : 'hover:bg-lightprimary';
 
       players.push(
         <Player
-          key={player_data.uuid}
+          key={player_data._id}
           player_data={player_data}
           position={parseInt(i) + 1}
           color={color}
           hidden={
-            this.state.searchQuery !== '' &&
-            !player_data.name
-              .toLowerCase()
-              .includes(this.state.searchQuery.toLowerCase())
+            this.state.searchQuery !== '' && !player_data.name.toLowerCase().includes(this.state.searchQuery.toLowerCase())
           }
         />
       );
@@ -352,29 +318,29 @@ class Players extends React.Component {
 
     let tableHeadersProps = [
       {
-        id: 'sb_experience',
+        id: 'latest_sb_xp',
         name: 'SkyBlock level',
       },
       {
-        id: 'networth',
+        id: 'latest_nw',
         name: 'Networth',
       },
       {
-        id: 'senither_weight',
+        id: 'latest_senither',
         name: 'Senither',
       },
       {
-        id: 'average_skill',
+        id: 'latest_asl',
         name: `Average Skill`,
         classname: 'hidden md:table-cell',
       },
       {
-        id: 'total_slayer',
+        id: 'latest_slayer',
         name: 'Total Slayer',
         classname: 'hidden md:table-cell',
       },
       {
-        id: 'catacombs',
+        id: 'latest_cata',
         name: 'Catacombs',
         classname: 'hidden md:table-cell',
       },
@@ -473,13 +439,11 @@ class JoinLogs extends React.Component {
           href={`/player/${log.uuid}`}
           key={`${log.uuid}-${log.capture_date}`}
         >
-          <a>
-            <JoinLog
-              type={log.type}
-              name={log.name}
-              time_difference={time_difference}
-            />
-          </a>
+          <JoinLog
+            type={log.type}
+            name={log.name}
+            time_difference={time_difference}
+          />
         </Link>
       );
     }
@@ -530,10 +494,7 @@ class JoinLogs extends React.Component {
           </span>
         );
       }
-      let active =
-        number === this.state.current_page
-          ? 'bg-green-800 text-white'
-          : 'bg-primary text-white';
+      let active = number === this.state.current_page ? 'bg-green-800 text-white' : 'bg-primary text-white';
       middleButtons.push(
         <button
           className={`${active} rounded-md py-1 px-1 xs:px-2 my-1 mx-[0.125rem] align-middle inline-block`}
@@ -601,7 +562,7 @@ class JoinLogs extends React.Component {
     }
     console.log(guildId);
 
-    fetch(`${APIURL}v2/history?guild_id=${guildId}&per_page=10&page=${page}`)
+    fetch(`${APIURL}history?guild_id=${guildId}&per_page=10&page=${page}`)
       .then((res) => res.json())
       .then(
         (result) => {
@@ -630,228 +591,234 @@ class JoinLogs extends React.Component {
   }
 }
 
-class CompareGuilds extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tags: [],
-      suggestions: [],
-      all_series: {},
-      autoCompleteLoaded: false,
-      change: 0,
-      daysShow: 90,
-    };
-    this.reactTags = React.createRef();
-    this.getSeries.bind(this);
-  }
 
-  onDelete(i) {
-    const tags = this.state.tags.slice(0);
-    let guild_id = tags.splice(i, 1)[0].id;
+const CompareGuilds = (props) => {
+  const [tags, setTags] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [autoCompleteLoaded, setAutoCompleteLoaded] = useState(false);
+
+  const [all_datasets, setAllDatasets] = useState({});
+  // const [change, setChange] = useState(0);
+  const [daysShow, setDaysShow] = useState(90);
+
+  const [labels, setLabels] = useState([]);
+  const [datasets, setDatasets] = useState({});
+
+  const [charts, setCharts] = useState([]);
+  const [chartsUpdate, setChartsUpdate] = useState(0);
+
+  const daysProps = [7, 30, 90];
+  const chartsProps = [
+    { id: "sb_experience", title: "SkyBlock experience", },
+    { id: 'networth', title: 'Networth', },
+    { id: 'senither_weight', title: 'Senither Weight', },
+    { id: "lily_weight", title: "Lily Weight", },
+    { id: 'skills', title: 'Skills', },
+    { id: 'catacombs', title: 'Catacombs', },
+    { id: 'slayer', title: 'Slayer', },
+    { id: 'member_count', title: 'Members', },
+  ];
+
+  const onDelete = (guild_id) => {
+    const tagsCopy = tags.slice(0);
+    for (const i in tagsCopy) {
+      if (tagsCopy[i].id === guild_id) {
+        tagsCopy.splice(i, 1);
+      }
+    }
     // remove guild from guild_sorted_data
-    let all_series = this.state.all_series;
-    delete all_series[guild_id];
-    this.setState({
-      tags: tags,
-      all_series: all_series,
-      change: this.state.change + 1,
-    });
-  }
+    delete all_datasets[guild_id];
+    setTags(tagsCopy);
+    setAllDatasets({ ...all_datasets });
+    // setChange(change + 1);
+  };
 
-  onAddition(tag) {
-    const tags = [].concat(this.state.tags, tag);
+  const onAddition = (tag) => {
+    const tagsCopy = [].concat(tags, tag);
     let guildid = tag.id;
 
     fetch(`${APIURL}metrics/guild/${guildid}`)
       .then((res) => res.json())
       .then(
         (result) => {
-          let all_series = this.state.all_series;
-          all_series[guildid] = result;
-          this.setState({
-            tags: tags,
-            all_series: all_series,
-            change: this.state.change + 1,
-          });
-
-          // this.addGuildMetrics(result)
+          all_datasets[guildid] = result;
+          setTags(tagsCopy);
+          setAllDatasets({ ...all_datasets });
+          // setChange(change + 1);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           console.log(error);
-          this.setState({
-            metricsIsLoaded: true,
-            error,
-          });
         }
       );
-  }
+  };
 
-  getGuildName(guildId) {
+  const getGuildName = (guildId) => {
     // loop through tags and find the name
-    for (const i in this.state.tags) {
-      if (this.state.tags[i].id === guildId) {
-        return this.state.tags[i].name;
+    for (const i in tags) {
+      if (tags[i].id === guildId) {
+        return tags[i].name;
       }
     }
   }
 
-  getSeries(wanted_key, daysShow) {
-    let result = [];
-
-    // loop through given
-    for (let guild_id in this.state.all_series) {
-      let metrics = this.state.all_series[guild_id];
-
-      let tempresult = {
-        data: [],
-        name: this.getGuildName(guild_id),
-      };
-
-      for (const i in metrics) {
-        let metric = metrics[i];
-        if (!metric[wanted_key]) {
-          continue;
-        }
-
-        let timeDelta = TimeDelta.fromDate(metric['capture_date']);
-        if (timeDelta.toSeconds() > daysShow * 24 * 60 * 60) {
-          continue;
-        }
-        tempresult['data'].push([
-          Date.now() - timeDelta.toMS(),
-          metric[wanted_key],
-        ]);
-      }
-      result.push(tempresult);
+  useEffect(() => {
+    if (autoCompleteLoaded) {
+      return;
     }
-    return result;
-  }
-
-  render() {
-    let daysShow = this.state.daysShow;
-
-    let daysProps = [7, 30, 90];
-
-    let chartsProps = [
-      {
-        id: "sb_experience",
-        title: "SkyBlock experience",
-      },
-      {
-        id: 'networth',
-        title: 'Networth',
-      },
-      {
-        id: 'senither_weight',
-        title: 'Senither Weight',
-      },
-      {
-        id: "lily_weight",
-        title: "Lily Weight",
-      },
-      {
-        id: 'skills',
-        title: 'Skills',
-      },
-      {
-        id: 'catacombs',
-        title: 'Catacombs',
-      },
-      {
-        id: 'slayer',
-        title: 'Slayer',
-      },
-      {
-        id: 'member_count',
-        title: 'Members',
-      },
-    ];
-
-    return (
-      <div>
-        <div className='text-center'>
-          <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
-            <ReactTags
-              ref={this.reactTags}
-              tags={this.state.tags}
-              suggestions={this.state.suggestions}
-              noSuggestionsText='No matching guilds found'
-              onDelete={this.onDelete.bind(this)}
-              onAddition={this.onAddition.bind(this)}
-              placeholderText='Add a guild'
-            />
-          </div>
-        </div>
-        <div className='text-sm text-center text-white'>
-          {daysProps.map((days) => {
-            return (
-              <MenuButton
-                onClick={() => {
-                  this.setState({
-                    daysShow: days,
-                    change: this.state.change + 1,
-                  });
-                }}
-                disabled={daysShow === days}
-                className='mx-1 text-base'
-                key={days}
-              >
-                {days} days
-              </MenuButton>
-            );
-          })}
-        </div>
-        <div className='text-center'>
-          {chartsProps.map((chart) => {
-            return (
-              <div
-                className='p-4 m-2 rounded-md md:inline-block h-80 md:h-96 md:w-2/3 bg-primary'
-                key={chart.id}
-              >
-                <CustomChart2
-                  series={this.getSeries(chart.id, daysShow)}
-                  title={chart.title}
-                  width={'100%'}
-                  height={'100%'}
-                  key={this.state.change}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  componentDidMount() {
-    this.onAddition({ id: this.props.id, name: this.props.name });
+    onAddition({ id: props.id, name: props.name });
+    // setChange(change + 1);
     fetch(`${APIURL}autocomplete`)
       .then((res) => res.json())
       .then(
         (result) => {
-          this.setState({
-            autoCompleteLoaded: true,
-            suggestions: result,
-          });
-          if (result === null) {
-            // window.location.href = '/';
-          }
+          setAutoCompleteLoaded(true);
+          setSuggestions(result);
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
         (error) => {
           console.log(error);
-          this.setState({
-            autoCompleteLoaded: true,
-            error,
-          });
         }
       );
-  }
+  }, []);
+
+  useEffect(() => { // update labels 
+    let labels2 = [];
+    const currentDate = new Date();
+
+    for (let i = 0; i < daysShow; i++) {
+      const date = new Date(currentDate);
+      date.setDate(date.getDate() - i);
+      labels2.push(date.toLocaleString('default', { month: 'short', day: 'numeric' }));
+    }
+    setLabels(labels2.reverse());
+    // setChange(change + 1);
+  }, [daysShow]);
+
+  useEffect(() => { // update datasets
+    let newDataSetDict = {};
+    for (const i in chartsProps) {
+      let chart = chartsProps[i];
+      let statNum = NAME_TO_POSITION[chart.id];
+      // loop through the guilds
+      let datasets = [];
+      for (const guild_id in all_datasets) {
+        let guildMetrics = all_datasets[guild_id];
+        let guildName = getGuildName(guild_id);
+
+        // loop through guildMetrics
+        let guildData = [];
+        let currentDate = new Date();
+        let guildMetricsIndex = 0;
+
+        for (let j = 0; j < 90; j++) {
+          if (guildMetricsIndex >= guildMetrics.length) {
+            guildData.push(null);
+            currentDate.setDate(currentDate.getDate() - 1);
+            continue;
+          }
+          let metric = guildMetrics[guildMetricsIndex];
+          let metricDate = new Date(metric.capture_date);
+
+          if (metricDate.toDateString() === currentDate.toDateString()) {
+            if (chart.id === 'member_count') {
+              guildData.push(metric.member_count);
+            } else {
+              guildData.push(metric.weighted_stats.split(',')[statNum]);
+            }
+            guildMetricsIndex++;
+          } else {
+            guildData.push(null);
+          }
+          currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        datasets.push({
+          label: guildName,
+          data: guildData.reverse(),
+          borderColor: COLOR_ARRAY[guild_id % COLOR_ARRAY.length],
+          fill: Object.keys(all_datasets).length === 1,
+          pointHitRadius: 100,
+          spanGaps: true,
+          pointBackgroundColor: 'white',
+          tension: 0.2,
+
+        });
+      }
+      newDataSetDict[chart.id] = datasets;
+    }
+
+    setDatasets(newDataSetDict);
+  }, [all_datasets]);
+
+  useEffect(() => { // update charts
+    if (Object.keys(datasets).length === 0) {
+      return;
+    }
+
+    let newCharts = [];
+    for (const i in chartsProps) {
+      let chart = chartsProps[i];
+
+      let dataSet = datasets[chart.id].map(dataset => ({ ...dataset }));
+      for (const j in dataSet) {
+        dataSet[j].data = dataSet[j].data.slice(90 - daysShow);
+      }
+
+      newCharts.push(
+        <div
+          className='p-4 m-2 rounded-md md:inline-block  md:w-2/3 bg-primary' // h-80 md:h-96
+          key={chart.id}
+        >
+          <CustomChart2
+            title={chart.title}
+            datasets={dataSet}
+            labels={labels}
+            key={chart.id + chartsUpdate}
+            options={{
+              options: {},
+            }}
+          />
+        </div>
+      );
+    }
+    setCharts(newCharts);
+    setChartsUpdate(chartsUpdate + 1);
+  }, [datasets, labels]);
+
+  return (
+    <div>
+      <div className='text-center'>
+        <div className='inline-block p-1 w-[90%] md:w-2/3 text-left mb-20'>
+          <SuggestionBar
+            tags={tags}
+            suggestions={suggestions}
+            onDelete={onDelete}
+            onAddition={onAddition}
+            placeholderText='Add a guild'
+          />
+        </div>
+      </div>
+      <div className='text-sm text-center text-white'>
+        {daysProps.map((days) => {
+          return (
+            <MenuButton
+              onClick={() => {
+                setDaysShow(days);
+                // setChange(change + 1);
+              }}
+              disabled={daysShow === days}
+              className='mx-1 text-base'
+              key={days}
+            >
+              {days} days
+            </MenuButton>
+          );
+        })}
+      </div>
+      <div className='text-center' key={chartsUpdate}>
+        {charts}
+      </div>
+    </div>
+  );
 }
 
 export default function Guild({ guild }) {
@@ -861,7 +828,7 @@ export default function Guild({ guild }) {
     if (!guild) {
       router.push(`/`);
     } else {
-      router.push(`/guild/${guild.name}`);
+      router.replace(`/guild/${guild.guild_name}`, undefined, { shallow: true });
     }
   }, []);
 
@@ -872,9 +839,9 @@ export default function Guild({ guild }) {
   if (selectedPage === 'players') {
     component = <Players guildJson={guild} />;
   } else if (selectedPage === 'history') {
-    component = <JoinLogs guildId={guild.id} />;
+    component = <JoinLogs guildId={guild._id} />;
   } else if (selectedPage === 'metrics') {
-    component = <CompareGuilds id={guild.id} name={guild.name} />;
+    component = <CompareGuilds id={guild._id} name={guild.guild_name} />;
   }
 
   return (
