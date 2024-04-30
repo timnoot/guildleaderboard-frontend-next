@@ -14,6 +14,18 @@ import { PlayerStatsHeader } from '../components/StatsHeaderHome.js';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
+
+const NAME_TO_POSITION_PLAYER = {
+  'latest_senither': 0,
+  'latest_asl': 1,
+  'latest_cata': 2,
+  'latest_slayer': 3,
+  'latest_lily': 4,
+  'latest_nw': 5,
+  'latest_sb_xp': 6
+};
+
+
 const Player = (props) => {
   let player_data = props.player_data;
 
@@ -101,7 +113,7 @@ class Players extends React.Component {
 
       players.push(
         <Player
-          position={player_data.position ? player_data.position : parseInt(i) + (this.state.current_page - 1) * 25 + 1}
+          position={player_data.positions.split(',')[NAME_TO_POSITION_PLAYER[this.state.sortOn]]}
           player_data={player_data}
           capture_date={TimeDelta.fromDate(player_data.capture_date).toNiceString()}
           key={player_data._id}
