@@ -187,6 +187,9 @@ const Guilds = (props) => {
 
   let guildArrangement = {};
   for (const guild of guild_data) {
+    if (guild.positions[positionNum] === 0) {
+      continue;
+    }
     guildArrangement[guild.positions[positionNum]] = guild;
   }
   guild_data = Object.values(guildArrangement);
