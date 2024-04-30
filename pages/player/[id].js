@@ -769,7 +769,7 @@ export default function Player({ player }) {
       <div className='text-center font-[Helvetica] my-4 text-lg'>
         <div className='inline-block p-1 '>
           <MenuButton disabled={false}>
-            <Link href={player.guild_name ? `/guild/${player.guild_name}` : '/'}>
+            <Link href={player.guild_id ? `/guild/${player.guild_id}` : '/'}>
               <div className='text-center'>
                 <FaArrowLeft className='inline-block' />
                 <div className='pl-1 inline-block'>

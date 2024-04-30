@@ -144,7 +144,7 @@ const GuildHeader = (props) => {
       </div>
       <div className='py-2'>
         <button
-          className={`${props.guildJson.discord != ''
+          className={`${props.guildJson.discord != '' && props.guildJson.discord != null
             ? 'opacity-95 hover:opacity-100 hover:scale-105'
             : 'opacity-25'
             } 
@@ -171,7 +171,7 @@ const GuildHeader = (props) => {
               </defs>
             </svg>
             <span className='pl-3'>
-              {props.guildJson.discord != '' ? (
+              {props.guildJson.discord != '' && props.guildJson.discord != null ? (
                 <a href={`https://discord.gg/${props.guildJson.discord}`}>
                   Guild Discord
                 </a>
