@@ -545,6 +545,9 @@ const PlayerStats = (props) => {
     if (level >= 9) {
       progress = 1;
     }
+    if (slayerName === 'vampire' && level >= 5) {
+      progress = 1;
+    }
 
     slayerProgressBars.push(
       <div className='inline-block p-2 w-[45%] sm:w-64 lg:w-96'>
@@ -553,7 +556,7 @@ const PlayerStats = (props) => {
           name={`${capitalizeFirstLetter(slayerName)} ${level}`}
           xp={slayer_stats[slayerNum]}
           levelProgress={progress}
-          color={level >= 9 ? 'bg-progressgold' : 'bg-progressblue'}
+          color={(level >= 9 || (slayerName === 'vampire' && level >= 5)) ? 'bg-progressgold' : 'bg-progressblue'}
         />
       </div>
     );
