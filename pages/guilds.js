@@ -187,7 +187,7 @@ const Guilds = (props) => {
 
   let guildArrangement = {};
   for (const guild of guild_data) {
-    if (guild.positions[positionNum] === 0) {
+    if (guild.positions[positionNum] === '0') {
       continue;
     }
     guildArrangement[guild.positions[positionNum]] = guild;
@@ -309,7 +309,7 @@ export default function Home({ guildsJson, stats }) {
       }}
     >
       <NavigationBar patronscount={stats.patrons} />
-      <GuildStatsHeader stats={stats} backButton={true} />
+      <GuildStatsHeader stats={stats} title={'Guild'} backButton={true} />
       <Guilds guildsJson={guildsJson} />
       <Footer />
     </div>

@@ -79,7 +79,6 @@ export const CustomChart2 = ({ title, datasets, labels, options }) => {
 					</div>
 				</button>
 			</div>
-
 			<canvas id={title}></canvas>
 		</div >
 	)

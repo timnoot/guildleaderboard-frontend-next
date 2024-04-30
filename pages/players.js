@@ -9,7 +9,7 @@ import { getCataLevel } from '../utils/other.js';
 import { numberShortener, numberWithCommas } from '../utils/numformatting.js';
 import { Footer } from '../components/Footer.js';
 import { NavigationBar } from '../components/NavigationBar.js';
-import { PlayerStatsHeader } from '../components/StatsHeaderHome.js';
+import { GuildStatsHeader } from '../components/StatsHeaderHome.js';
 
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -349,7 +349,7 @@ export default function Home({ playerJson, stats }) {
       }}
     >
       <NavigationBar patronscount={stats.patrons} />
-      <PlayerStatsHeader stats={stats} />
+      <GuildStatsHeader stats={stats} title={'Player'} backButton={true} />
       <Players playerJson={playerJson} />
       <Footer />
     </div>

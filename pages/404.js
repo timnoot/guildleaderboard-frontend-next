@@ -9,7 +9,7 @@ export default function NotFoundPage() {
     const router = useRouter();
 
     setTimeout(() => {
-        router.push('/');    
+        router.push('/');
     }, 5000);
 
     return (
