@@ -3,7 +3,7 @@ import { getServerSideSitemap } from 'next-sitemap'
 export const getServerSideProps = async (ctx) => {
     // Method to source urls from cms
     // const urls = await fetch('https//example.com/api')
-    const r = await fetch('https://api.guildleaderboard.com/sitemapurls')
+    const r = await fetch('https://apiv2.guildleaderboard.com/sitemapurls')
     const urls = await r.json()
 
     const guilds = urls.guilds.map((name) => {
@@ -23,7 +23,6 @@ export const getServerSideProps = async (ctx) => {
         ...guilds,
         ...players,
     ]
-
     return getServerSideSitemap(ctx, fields)
 }
 
